@@ -183,7 +183,7 @@ export default function Home() {
           <div className="absolute top-4 right-4 z-30 flex items-center space-x-2 bg-black/40 backdrop-blur-md rounded-full px-4 py-2 border border-purple-500/40 shadow-lg">
             <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse shadow-purple-400/50 shadow-sm"></div>
             <span className="text-purple-200 text-sm font-medium">
-              Fireflies Dancing
+              Rave Mode Active
             </span>
           </div>
         )}
@@ -332,12 +332,8 @@ export default function Home() {
               ></div>
             </div>
 
-            {/* Desktop-only: Hover tooltip that mobile won't see - RAVE MODE ACTIVE */}
-            <div
-              className={`hidden lg:block absolute -top-12 left-1/2 transform -translate-x-1/2 transition-all duration-300 pointer-events-none ${
-                isPlaying ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-              }`}
-            >
+            {/* Desktop-only: Hover tooltip that mobile won't see */}
+            <div className="hidden lg:block absolute -top-12 left-1/2 transform -translate-x-1/2 transition-all duration-300 pointer-events-none opacity-0 group-hover:opacity-100">
               <div className="bg-black/80 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-full border border-purple-400/50">
                 {isPlaying ? "🎉 RAVE MODE ACTIVE! 🎉" : "Start the party"}
               </div>
