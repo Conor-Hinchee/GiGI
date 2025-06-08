@@ -383,22 +383,22 @@ export default function Home() {
           <div className="space-y-6 relative">
             {/* Desktop-only: Background text effect */}
             <div className="hidden xl:block absolute inset-0 -z-10">
-              <h1 className="text-7xl md:text-8xl lg:text-9xl font-black text-purple-500/5 tracking-wider uppercase blur-sm transform scale-110">
-                GiGi Dagostino
+              <h1 className="text-7xl md:text-8xl lg:text-9xl font-black text-white/5 tracking-wider uppercase blur-sm transform scale-110">
+                GiGi D&apos;Agostino
               </h1>
             </div>
 
             <h1
               className={`text-7xl md:text-8xl lg:text-9xl font-black tracking-wider uppercase transition-all duration-700 cursor-default relative ${
                 isPlaying
-                  ? "text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-yellow-400"
-                  : "text-white hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-purple-400 hover:via-pink-400 hover:to-yellow-400"
+                  ? "text-transparent bg-clip-text bg-gradient-to-r from-gold-300 via-gold-400 to-gold-600"
+                  : "text-white hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-gold-300 hover:via-gold-400 hover:to-gold-600"
               }`}
             >
-              <span className="relative z-10">GiGi Dagostino</span>
+              <span className="relative z-10">GiGi D&apos;Agostino</span>
               {/* Desktop-only: Shimmer effect on hover - RAVE MODE ACTIVE */}
               <div
-                className={`hidden lg:block absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transition-opacity duration-500 ${
+                className={`hidden lg:block absolute inset-0 bg-gradient-to-r from-transparent via-gold-300/30 to-transparent -skew-x-12 transition-opacity duration-500 ${
                   isPlaying
                     ? "opacity-100 animate-shimmer"
                     : "opacity-0 hover:opacity-100 hover:animate-shimmer"
@@ -414,10 +414,10 @@ export default function Home() {
               }`}
             ></h2>
             <div
-              className={`bg-gradient-to-r from-purple-500 to-pink-500 mx-auto transition-all duration-500 ${
+              className={`mx-auto transition-all duration-500 ${
                 isPlaying
-                  ? "w-64 h-2 shadow-purple-500/50 shadow-lg"
-                  : "w-32 h-1 hover:w-64 hover:h-2 hover:shadow-purple-500/50 hover:shadow-lg"
+                  ? "w-64 h-2 bg-gradient-to-r from-gold-300 via-gold-400 to-gold-600 shadow-gold-500/50 shadow-lg"
+                  : "w-32 h-1 bg-white hover:w-64 hover:h-2 hover:bg-gradient-to-r hover:from-gold-300 hover:via-gold-400 hover:to-gold-600 hover:shadow-gold-500/50 hover:shadow-lg"
               }`}
             ></div>
           </div>
