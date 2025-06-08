@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import FirefliesScene from "../components/FirefliesScene";
 
 export default function Home() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
   const audioRef = useRef<HTMLAudioElement>(null);
   const danceAreaRef = useRef<HTMLDivElement>(null);
 
@@ -56,7 +57,7 @@ export default function Home() {
   };
 
   // Listen for fullscreen changes
-  React.useEffect(() => {
+  useEffect(() => {
     const handleFullscreenChange = () => {
       setIsFullscreen(!!document.fullscreenElement);
     };
@@ -64,6 +65,16 @@ export default function Home() {
     document.addEventListener("fullscreenchange", handleFullscreenChange);
     return () =>
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
+  }, []);
+
+  // Parallax scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
@@ -219,7 +230,7 @@ export default function Home() {
               isPlaying
                 ? "animate-bounce shadow-purple-500/60"
                 : "shadow-purple-400/20"
-            }`}
+            } gigi-hero-btn`}
           >
             {/* Desktop-only: Advanced hover trails that mobile won't see - RAVE MODE ACTIVE */}
             <div
@@ -297,7 +308,7 @@ export default function Home() {
                   isPlaying
                     ? "text-yellow-200"
                     : "group-hover:scale-110 group-hover:text-yellow-200"
-                }`}
+                } gigi-hero-text`}
               >
                 舞
               </span>
@@ -368,13 +379,843 @@ export default function Home() {
         ></div>
       </div>
 
-      {/* Main content - Responsive Bottom Area */}
+      {/* Main content - Responsive Bottom Area with Parallax */}
       <div
-        className={`flex items-center justify-center p-4 bg-gray-900 transition-all duration-1000 ease-in-out ${
-          isPlaying ? "min-h-[25vh]" : "min-h-[50vh]"
-        }`}
+        className={`relative flex items-center justify-center p-4 transition-all duration-1000 ease-in-out overflow-hidden ${
+          isPlaying ? "min-h-[150vh]" : "min-h-[200vh]"
+        } gigi-main-content`}
+        style={{
+          background: `
+            linear-gradient(
+              ${135 + Math.sin(scrollY * 0.002) * 45}deg,
+              rgb(17, 24, 39) 0%,
+              rgb(${31 + Math.sin(scrollY * 0.003) * 20}, ${
+            41 + Math.cos(scrollY * 0.004) * 30
+          }, ${59 + Math.sin(scrollY * 0.005) * 40}) 50%,
+              rgb(17, 24, 39) 100%
+            )
+          `,
+        }}
       >
-        <div className="text-center space-y-8 max-w-4xl mx-auto">
+        {/* Parallax Background Layers */}
+        <div className="absolute inset-0 overflow-hidden">
+          {/* Layer 0.5 - Ultra-slow floating mini-images for depth */}
+          <div
+            className="absolute inset-0 opacity-8 parallax-layer"
+            style={{
+              transform: `translateY(${scrollY * 0.05}px) rotate(${
+                scrollY * 0.002
+              }deg)`,
+            }}
+          >
+            {/* Tiny floating GiGi portraits */}
+            <div
+              className={`absolute top-1/8 left-1/12 w-8 h-12 bg-cover bg-center rounded-md opacity-40 blur-lg ${
+                isPlaying ? "animate-image-pulse-glow" : "animate-image-drift"
+              }`}
+              style={{
+                backgroundImage: "url('/gigi1.png')",
+                filter:
+                  "sepia(60%) hue-rotate(240deg) brightness(0.4) contrast(2.0)",
+                mixBlendMode: "soft-light",
+                animationDelay: "0s",
+                animationDuration: "20s",
+              }}
+            />
+
+            <div
+              className={`absolute top-3/8 right-1/10 w-6 h-6 bg-cover bg-center rounded-full opacity-30 blur-md ${
+                isPlaying
+                  ? "animate-rave-mode-image-dance"
+                  : "animate-responsive-image-scale"
+              }`}
+              style={{
+                backgroundImage: "url('/舞.png')",
+                filter:
+                  "sepia(40%) hue-rotate(300deg) brightness(0.6) contrast(1.8)",
+                mixBlendMode: "color-dodge",
+                animationDelay: "5s",
+                animationDuration: "25s",
+              }}
+            />
+
+            <div
+              className={`absolute bottom-2/5 left-1/5 w-10 h-6 bg-cover bg-center rounded-lg opacity-35 blur-lg ${
+                isPlaying ? "animate-image-pulse-glow" : "animate-image-drift"
+              }`}
+              style={{
+                backgroundImage: "url('/wave.jpg')",
+                filter:
+                  "sepia(80%) hue-rotate(200deg) brightness(0.3) contrast(2.2)",
+                mixBlendMode: "multiply",
+                animationDelay: "10s",
+                animationDuration: "30s",
+              }}
+            />
+
+            <div
+              className={`absolute top-2/3 right-1/8 w-7 h-7 bg-cover bg-center rounded-full opacity-25 blur-xl ${
+                isPlaying
+                  ? "animate-rave-mode-image-dance"
+                  : "animate-responsive-image-scale"
+              }`}
+              style={{
+                backgroundImage: "url('/totaleclipse.jpg')",
+                filter:
+                  "sepia(90%) hue-rotate(180deg) brightness(0.2) contrast(3.0)",
+                mixBlendMode: "overlay",
+                animationDelay: "15s",
+                animationDuration: "35s",
+              }}
+            />
+          </div>
+
+          {/* Layer 1 - Slowest moving background with GiGi images */}
+          <div
+            className="absolute inset-0 opacity-10 parallax-layer"
+            style={{
+              transform: `translateY(${scrollY * 0.1}px)`,
+              backgroundImage: `
+                radial-gradient(circle at 20% 30%, rgba(147, 51, 234, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(236, 72, 153, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 50% 90%, rgba(59, 130, 246, 0.25) 0%, transparent 50%)
+              `,
+              backgroundSize: "400px 400px, 300px 300px, 500px 500px",
+              backgroundPosition: "0% 0%, 100% 0%, 50% 100%",
+            }}
+          />
+
+          {/* Layer 1.5 - GiGi Portrait Images (Very slow parallax) */}
+          <div
+            className="absolute inset-0 opacity-15 parallax-layer"
+            style={{
+              transform: `translateY(${scrollY * 0.15}px) scale(${
+                1 + scrollY * 0.0001
+              })`,
+            }}
+          >
+            {/* GiGi Portrait 1 */}
+            <div
+              className={`absolute top-1/4 right-1/6 w-32 h-48 bg-cover bg-center rounded-lg opacity-60 blur-sm ${
+                isPlaying
+                  ? "animate-rave-mode-image-dance"
+                  : "animate-image-drift"
+              }`}
+              style={{
+                backgroundImage: "url('/gigi1.png')",
+                filter:
+                  "sepia(30%) hue-rotate(240deg) brightness(0.7) contrast(1.2)",
+                mixBlendMode: "overlay",
+              }}
+            />
+
+            {/* GiGi Portrait 2 */}
+            <div
+              className={`absolute bottom-1/3 left-1/8 w-40 h-60 bg-cover bg-center rounded-lg opacity-50 blur-sm ${
+                isPlaying ? "animate-image-pulse-glow" : "animate-image-drift"
+              }`}
+              style={{
+                backgroundImage: "url('/gigi2.jpg')",
+                filter:
+                  "sepia(40%) hue-rotate(280deg) brightness(0.6) contrast(1.3)",
+                mixBlendMode: "soft-light",
+                transform: `rotate(${scrollY * 0.02}deg)`,
+                animationDelay: "1s",
+              }}
+            />
+
+            {/* GiGi Portrait 3 - New addition */}
+            <div
+              className={`absolute top-1/6 left-1/2 w-28 h-42 bg-cover bg-center rounded-lg opacity-55 blur-sm ${
+                isPlaying ? "animate-image-pulse-glow" : "animate-image-drift"
+              }`}
+              style={{
+                backgroundImage: "url('/gigi3.jpg')",
+                filter:
+                  "sepia(35%) hue-rotate(320deg) brightness(0.8) contrast(1.4)",
+                mixBlendMode: "color-burn",
+                transform: `translateX(-50%) rotate(${scrollY * -0.015}deg)`,
+                animationDelay: "3s",
+              }}
+            />
+
+            {/* L'amour Toujours album art */}
+            <div
+              className={`absolute bottom-1/6 right-1/3 w-44 h-32 bg-cover bg-center rounded-xl opacity-45 blur-md ${
+                isPlaying
+                  ? "animate-rave-mode-image-dance"
+                  : "animate-image-drift"
+              }`}
+              style={{
+                backgroundImage: "url('/L'amour_toujours.JPG')",
+                filter:
+                  "sepia(45%) hue-rotate(200deg) brightness(0.9) contrast(1.3)",
+                mixBlendMode: "overlay",
+                animationDelay: "4s",
+              }}
+            />
+
+            {/* Live performance image */}
+            <div
+              className={`absolute top-1/2 left-1/8 w-36 h-24 bg-cover bg-center rounded-lg opacity-50 blur-sm ${
+                isPlaying ? "animate-image-pulse-glow" : "animate-image-drift"
+              }`}
+              style={{
+                backgroundImage: "url('/live.jpg')",
+                filter:
+                  "sepia(40%) hue-rotate(350deg) brightness(1.1) contrast(1.2)",
+                mixBlendMode: "screen",
+                transform: `translateY(${scrollY * 0.05}px)`,
+                animationDelay: "5s",
+              }}
+            />
+
+            {/* Beautiful abstract image */}
+            <div
+              className={`absolute top-3/4 right-1/4 w-36 h-36 bg-cover bg-center rounded-full opacity-40 blur-md ${
+                isPlaying
+                  ? "animate-rave-mode-image-dance"
+                  : "animate-image-drift"
+              }`}
+              style={{
+                backgroundImage: "url('/beautiful.jpg')",
+                filter:
+                  "sepia(50%) hue-rotate(300deg) brightness(0.8) contrast(1.1)",
+                mixBlendMode: "color-dodge",
+                animationDelay: "2s",
+              }}
+            />
+          </div>
+
+          {/* Layer 2 - Medium speed background with album artwork */}
+          <div
+            className="absolute inset-0 opacity-15 parallax-layer"
+            style={{
+              transform: `translateY(${scrollY * 0.3}px)`,
+              backgroundImage: `
+                linear-gradient(45deg, transparent 40%, rgba(147, 51, 234, 0.1) 50%, transparent 60%),
+                linear-gradient(-45deg, transparent 40%, rgba(236, 72, 153, 0.1) 50%, transparent 60%)
+              `,
+              backgroundSize: "200px 200px, 150px 150px",
+              backgroundPosition: "0% 0%, 50% 50%",
+            }}
+          >
+            {/* Album/Event Images */}
+            <div
+              className={`absolute top-1/6 left-1/3 w-24 h-24 bg-cover bg-center rounded-lg opacity-70 blur-sm ${
+                isPlaying
+                  ? "animate-rave-mode-image-dance"
+                  : "animate-image-drift"
+              }`}
+              style={{
+                backgroundImage: "url('/2023-12-11-b.jpg')",
+                filter:
+                  "sepia(30%) hue-rotate(260deg) brightness(0.9) contrast(1.2)",
+                mixBlendMode: "multiply",
+                transform: `rotate(${-scrollY * 0.03}deg)`,
+                animationDelay: "0.5s",
+              }}
+            />
+
+            <div
+              className={`absolute bottom-1/4 right-1/6 w-28 h-28 bg-cover bg-center rounded-full opacity-60 blur-sm ${
+                isPlaying ? "animate-image-pulse-glow" : "animate-image-drift"
+              }`}
+              style={{
+                backgroundImage: "url('/2410soundoflove(1).jpg')",
+                filter:
+                  "sepia(25%) hue-rotate(300deg) brightness(1.1) contrast(1.1)",
+                mixBlendMode: "screen",
+                animationDelay: "1.5s",
+              }}
+            />
+
+            {/* Total Eclipse themed element */}
+            <div
+              className={`absolute top-2/3 left-1/8 w-32 h-20 bg-cover bg-center rounded-xl opacity-50 blur-md ${
+                isPlaying
+                  ? "animate-rave-mode-image-dance"
+                  : "animate-image-drift"
+              }`}
+              style={{
+                backgroundImage: "url('/totaleclipse.jpg')",
+                filter:
+                  "sepia(60%) hue-rotate(240deg) brightness(0.7) contrast(1.4)",
+                mixBlendMode: "overlay",
+                transform: `translateX(${scrollY * 0.1}px)`,
+                animationDelay: "2.5s",
+              }}
+            />
+
+            {/* MaxRes Default - Music video thumbnail */}
+            <div
+              className={`absolute top-1/8 right-1/8 w-20 h-15 bg-cover bg-center rounded-md opacity-65 blur-sm ${
+                isPlaying ? "animate-image-pulse-glow" : "animate-image-drift"
+              }`}
+              style={{
+                backgroundImage: "url('/maxresdefault.jpg')",
+                filter:
+                  "sepia(50%) hue-rotate(180deg) brightness(1.2) contrast(1.1)",
+                mixBlendMode: "multiply",
+                transform: `rotate(${scrollY * 0.04}deg)`,
+                animationDelay: "3.5s",
+              }}
+            />
+
+            {/* Wave pattern image */}
+            <div
+              className={`absolute bottom-1/8 left-1/4 w-40 h-20 bg-cover bg-center rounded-2xl opacity-40 blur-lg ${
+                isPlaying
+                  ? "animate-rave-mode-image-dance"
+                  : "animate-image-drift"
+              }`}
+              style={{
+                backgroundImage: "url('/wave.jpg')",
+                filter:
+                  "sepia(30%) hue-rotate(220deg) brightness(0.8) contrast(1.5)",
+                mixBlendMode: "color-dodge",
+                transform: `translateX(${scrollY * -0.08}px)`,
+                animationDelay: "4.5s",
+              }}
+            />
+          </div>
+
+          {/* Layer 3 - Faster moving particles with image fragments */}
+          <div
+            className="absolute inset-0 opacity-20 parallax-layer"
+            style={{
+              transform: `translateY(${scrollY * 0.5}px)`,
+              backgroundImage: `
+                radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.4) 1px, transparent 0),
+                radial-gradient(circle at 1px 1px, rgba(147, 51, 234, 0.6) 1px, transparent 0)
+              `,
+              backgroundSize: "50px 50px, 75px 75px",
+              backgroundPosition: "0 0, 25px 25px",
+            }}
+          >
+            {/* Floating image fragments */}
+            <div
+              className={`absolute top-1/2 right-1/3 w-16 h-16 bg-cover bg-center rounded-full opacity-80 blur-sm ${
+                isPlaying ? "animate-rave-mode-image-dance" : "animate-pulse"
+              }`}
+              style={{
+                backgroundImage: "url('/gigi1.png')",
+                filter:
+                  "sepia(40%) hue-rotate(280deg) brightness(1.2) contrast(1.3)",
+                mixBlendMode: "color-burn",
+                transform: `translateY(${scrollY * 0.2}px) rotate(${
+                  scrollY * 0.05
+                }deg)`,
+              }}
+            />
+
+            <div
+              className={`absolute top-1/5 left-2/3 w-12 h-12 bg-cover bg-center rounded-lg opacity-60 blur-sm ${
+                isPlaying ? "animate-image-pulse-glow" : "animate-image-drift"
+              }`}
+              style={{
+                backgroundImage: "url('/beautiful.jpg')",
+                filter:
+                  "sepia(30%) hue-rotate(320deg) brightness(1.4) contrast(0.9)",
+                mixBlendMode: "hard-light",
+                transform: `translateX(${-scrollY * 0.15}px)`,
+                animationDelay: "1s",
+              }}
+            />
+
+            {/* New floating fragments with new images */}
+            <div
+              className={`absolute bottom-1/3 left-1/4 w-14 h-14 bg-cover bg-center rounded-full opacity-70 blur-sm ${
+                isPlaying
+                  ? "animate-rave-mode-image-dance"
+                  : "animate-image-drift"
+              }`}
+              style={{
+                backgroundImage: "url('/gigi3.jpg')",
+                filter:
+                  "sepia(35%) hue-rotate(340deg) brightness(1.3) contrast(1.2)",
+                mixBlendMode: "screen",
+                transform: `translateY(${scrollY * 0.3}px) rotate(${
+                  -scrollY * 0.04
+                }deg)`,
+                animationDelay: "2s",
+              }}
+            />
+
+            <div
+              className={`absolute top-3/4 right-1/5 w-10 h-10 bg-cover bg-center rounded-lg opacity-75 blur-sm ${
+                isPlaying ? "animate-image-pulse-glow" : "animate-image-drift"
+              }`}
+              style={{
+                backgroundImage: "url('/舞.png')",
+                filter:
+                  "sepia(20%) hue-rotate(270deg) brightness(1.5) contrast(1.4)",
+                mixBlendMode: "color-dodge",
+                transform: `translateX(${scrollY * 0.12}px)`,
+                animationDelay: "3s",
+              }}
+            />
+
+            <div
+              className={`absolute top-1/8 left-1/5 w-18 h-12 bg-cover bg-center rounded-xl opacity-65 blur-sm ${
+                isPlaying
+                  ? "animate-rave-mode-image-dance"
+                  : "animate-image-drift"
+              }`}
+              style={{
+                backgroundImage: "url('/Untitled.jpg')",
+                filter:
+                  "sepia(45%) hue-rotate(190deg) brightness(1.1) contrast(1.3)",
+                mixBlendMode: "multiply",
+                transform: `translateY(${-scrollY * 0.18}px)`,
+                animationDelay: "4s",
+              }}
+            />
+          </div>
+
+          {/* Layer 4 - Abstract shapes with image overlays */}
+          <div
+            className="absolute inset-0 opacity-5 parallax-layer"
+            style={{
+              transform: `translateY(${scrollY * 0.7}px) rotate(${
+                scrollY * 0.02
+              }deg)`,
+            }}
+          >
+            <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-gradient-to-br from-purple-500/20 to-transparent rounded-full blur-3xl" />
+            <div className="absolute top-3/4 right-1/4 w-48 h-48 bg-gradient-to-br from-pink-500/20 to-transparent rounded-full blur-2xl" />
+            <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-gradient-to-br from-blue-500/10 to-transparent rounded-full blur-3xl transform -translate-x-1/2 -translate-y-1/2" />
+
+            {/* Large background images with heavy blur and low opacity */}
+            <div
+              className="absolute top-1/3 left-1/5 w-80 h-80 bg-cover bg-center rounded-full opacity-20 blur-3xl"
+              style={{
+                backgroundImage: "url('/gigi2.jpg')",
+                filter:
+                  "sepia(70%) hue-rotate(250deg) brightness(0.5) contrast(1.5)",
+                mixBlendMode: "multiply",
+                transform: `scale(${1 + scrollY * 0.0002})`,
+              }}
+            />
+
+            <div
+              className="absolute bottom-1/5 right-1/3 w-72 h-72 bg-cover bg-center rounded-full opacity-15 blur-3xl"
+              style={{
+                backgroundImage: "url('/totaleclipse.jpg')",
+                filter:
+                  "sepia(80%) hue-rotate(300deg) brightness(0.4) contrast(1.8)",
+                mixBlendMode: "color-dodge",
+              }}
+            />
+
+            {/* New large background elements */}
+            <div
+              className="absolute top-1/5 right-1/6 w-96 h-64 bg-cover bg-center rounded-full opacity-12 blur-3xl"
+              style={{
+                backgroundImage: "url('/live.jpg')",
+                filter:
+                  "sepia(60%) hue-rotate(200deg) brightness(0.3) contrast(2)",
+                mixBlendMode: "overlay",
+                transform: `rotate(${scrollY * 0.01}deg)`,
+              }}
+            />
+
+            <div
+              className="absolute bottom-1/6 left-1/4 w-88 h-88 bg-cover bg-center rounded-full opacity-10 blur-3xl"
+              style={{
+                backgroundImage: "url('/wave.jpg')",
+                filter:
+                  "sepia(90%) hue-rotate(220deg) brightness(0.2) contrast(2.5)",
+                mixBlendMode: "soft-light",
+                transform: `scale(${0.8 + scrollY * 0.0001})`,
+              }}
+            />
+          </div>
+
+          {/* Layer 5 - Concert venue silhouettes (placeholder shapes) */}
+          <div
+            className="absolute inset-0 opacity-8 parallax-layer"
+            style={{
+              transform: `translateY(${scrollY * 0.4}px)`,
+            }}
+          >
+            {/* Stage/DJ booth silhouette */}
+            <div className="absolute bottom-0 left-1/4 w-32 h-16 bg-gradient-to-t from-gray-800/30 to-transparent transform skew-x-12" />
+            <div className="absolute bottom-0 right-1/4 w-40 h-20 bg-gradient-to-t from-gray-800/25 to-transparent transform -skew-x-6" />
+
+            {/* Crowd silhouettes */}
+            <div className="absolute bottom-0 left-0 w-full h-12 bg-gradient-to-t from-gray-900/40 to-transparent" />
+            <div className="absolute bottom-0 left-10 w-4 h-8 bg-gray-800/20 rounded-t-full" />
+            <div className="absolute bottom-0 left-20 w-3 h-12 bg-gray-800/25 rounded-t-full" />
+            <div className="absolute bottom-0 left-32 w-5 h-10 bg-gray-800/20 rounded-t-full" />
+            <div className="absolute bottom-0 right-10 w-4 h-9 bg-gray-800/20 rounded-t-full" />
+            <div className="absolute bottom-0 right-24 w-3 h-11 bg-gray-800/25 rounded-t-full" />
+          </div>
+
+          {/* Layer 6 - Musical note shapes */}
+          <div
+            className="absolute inset-0 opacity-12 parallax-layer"
+            style={{
+              transform: `translateY(${scrollY * 0.6}px)`,
+            }}
+          >
+            <div className="absolute top-1/3 left-1/6 w-2 h-2 bg-purple-400/40 rounded-full animate-music-note" />
+            <div
+              className="absolute top-2/3 right-1/6 w-1.5 h-1.5 bg-pink-400/40 rounded-full animate-music-note"
+              style={{ animationDelay: "1s" }}
+            />
+            <div
+              className="absolute top-1/2 left-3/4 w-2.5 h-2.5 bg-blue-400/30 rounded-full animate-music-note"
+              style={{ animationDelay: "2s" }}
+            />
+            <div
+              className="absolute top-1/4 right-1/3 w-1 h-1 bg-yellow-400/50 rounded-full animate-music-note"
+              style={{ animationDelay: "0.5s" }}
+            />
+          </div>
+
+          {/* Layer 6.5 - Dance Character and Special Images (Medium-Fast Parallax) */}
+          <div
+            className="absolute inset-0 opacity-18 parallax-layer"
+            style={{
+              transform: `translateY(${scrollY * 0.65}px) scale(${
+                1 + Math.sin(scrollY * 0.008) * 0.05
+              })`,
+            }}
+          >
+            {/* Dancing character from 舞.png - main focus */}
+            <div
+              className={`absolute top-1/3 right-1/2 w-24 h-24 bg-cover bg-center rounded-full opacity-80 blur-sm ${
+                isPlaying
+                  ? "animate-rave-mode-image-dance"
+                  : "animate-responsive-image-scale"
+              }`}
+              style={{
+                backgroundImage: "url('/舞.png')",
+                filter:
+                  "sepia(25%) hue-rotate(280deg) brightness(1.4) contrast(1.3)",
+                mixBlendMode: "screen",
+                transform: `translateX(-50%) rotate(${scrollY * 0.06}deg)`,
+                animationDuration: isPlaying ? "1.5s" : "6s",
+              }}
+            />
+
+            {/* L'amour Toujours floating element */}
+            <div
+              className={`absolute bottom-1/4 left-1/6 w-32 h-24 bg-cover bg-center rounded-lg opacity-70 blur-sm ${
+                isPlaying ? "animate-image-pulse-glow" : "animate-image-drift"
+              }`}
+              style={{
+                backgroundImage: "url('/L'amour_toujours.JPG')",
+                filter:
+                  "sepia(40%) hue-rotate(320deg) brightness(1.2) contrast(1.1)",
+                mixBlendMode: "overlay",
+                transform: `translateY(${scrollY * 0.25}px) rotate(${
+                  -scrollY * 0.03
+                }deg)`,
+                animationDelay: "1.5s",
+              }}
+            />
+
+            {/* MaxRes music video thumbnail */}
+            <div
+              className={`absolute top-1/5 left-1/4 w-28 h-20 bg-cover bg-center rounded-md opacity-75 blur-sm ${
+                isPlaying
+                  ? "animate-rave-mode-image-dance"
+                  : "animate-image-drift"
+              }`}
+              style={{
+                backgroundImage: "url('/maxresdefault.jpg')",
+                filter:
+                  "sepia(35%) hue-rotate(200deg) brightness(1.3) contrast(1.2)",
+                mixBlendMode: "multiply",
+                transform: `translateX(${scrollY * 0.15}px)`,
+                animationDelay: "2.5s",
+              }}
+            />
+
+            {/* Untitled artistic piece */}
+            <div
+              className={`absolute top-3/5 right-1/5 w-26 h-20 bg-cover bg-center rounded-xl opacity-60 blur-md ${
+                isPlaying ? "animate-image-pulse-glow" : "animate-image-drift"
+              }`}
+              style={{
+                backgroundImage: "url('/Untitled.jpg')",
+                filter:
+                  "sepia(50%) hue-rotate(250deg) brightness(1.1) contrast(1.4)",
+                mixBlendMode: "color-dodge",
+                transform: `translateY(${-scrollY * 0.12}px) scale(${
+                  1 + Math.cos(scrollY * 0.01) * 0.1
+                })`,
+                animationDelay: "3.5s",
+              }}
+            />
+          </div>
+
+          {/* Layer 7 - Additional dynamic background when rave mode is active */}
+          {isPlaying && (
+            <div
+              className="absolute inset-0 opacity-20 parallax-layer"
+              style={{
+                transform: `translateY(${scrollY * 0.8}px)`,
+              }}
+            >
+              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-purple-600/10 via-pink-600/5 to-blue-600/10 animate-parallax-shimmer" />
+
+              {/* Image Rain Effect - Only during rave mode */}
+              <div className="absolute inset-0 overflow-hidden">
+                {Array.from({ length: 12 }, (_, i) => (
+                  <div
+                    key={i}
+                    className="absolute w-3 h-3 bg-cover bg-center rounded-full opacity-40 blur-sm animate-float-up"
+                    style={{
+                      left: `${5 + i * 7.5 + Math.sin(i * 0.8) * 5}%`,
+                      backgroundImage: `url('/${
+                        [
+                          "gigi1.png",
+                          "gigi2.jpg",
+                          "gigi3.jpg",
+                          "舞.png",
+                          "beautiful.jpg",
+                          "live.jpg",
+                          "maxresdefault.jpg",
+                          "wave.jpg",
+                          "totaleclipse.jpg",
+                          "L'amour_toujours.JPG",
+                          "Untitled.jpg",
+                          "2410soundoflove(1).jpg",
+                        ][i]
+                      }')`,
+                      filter: `sepia(${30 + i * 5}%) hue-rotate(${
+                        200 + i * 15
+                      }deg) brightness(${1.5 + i * 0.1}) contrast(${
+                        1.8 + i * 0.05
+                      })`,
+                      mixBlendMode:
+                        i % 3 === 0
+                          ? "screen"
+                          : i % 3 === 1
+                          ? "overlay"
+                          : "color-dodge",
+                      animationDelay: `${i * 0.3}s`,
+                      animationDuration: `${15 + i * 2}s`,
+                      transform: `scale(${
+                        0.8 + Math.sin(i * 0.5) * 0.3
+                      }) rotate(${i * 30}deg)`,
+                    }}
+                  />
+                ))}
+              </div>
+
+              {/* Enhanced image showcase during rave mode */}
+              <div
+                className="absolute top-1/4 left-1/2 w-20 h-20 bg-cover bg-center rounded-lg opacity-70 blur-sm animate-rave-mode-image-dance transform -translate-x-1/2"
+                style={{
+                  backgroundImage: "url('/gigi1.png')",
+                  filter:
+                    "sepia(20%) hue-rotate(240deg) brightness(1.3) contrast(1.4)",
+                  mixBlendMode: "screen",
+                  animationDuration: "2s",
+                  transform: `translateX(-50%) translateY(${
+                    scrollY * 0.3
+                  }px) rotate(${scrollY * 0.08}deg)`,
+                }}
+              />
+
+              <div
+                className="absolute bottom-1/3 right-1/4 w-24 h-24 bg-cover bg-center rounded-full opacity-60 blur-sm animate-image-pulse-glow"
+                style={{
+                  backgroundImage: "url('/beautiful.jpg')",
+                  filter:
+                    "sepia(40%) hue-rotate(280deg) brightness(1.5) contrast(1.2)",
+                  mixBlendMode: "color-dodge",
+                  animationDuration: "3s",
+                  transform: `translateY(${-scrollY * 0.2}px) scale(${
+                    1 + Math.sin(scrollY * 0.01) * 0.1
+                  })`,
+                }}
+              />
+
+              <div
+                className="absolute top-2/3 left-1/6 w-18 h-18 bg-cover bg-center rounded-xl opacity-50 blur-sm animate-rave-mode-image-dance"
+                style={{
+                  backgroundImage: "url('/2410soundoflove(1).jpg')",
+                  filter:
+                    "sepia(50%) hue-rotate(320deg) brightness(1.6) contrast(1.1)",
+                  mixBlendMode: "hard-light",
+                  animationDuration: "2.5s",
+                  transform: `translateX(${scrollY * 0.1}px) translateY(${
+                    scrollY * 0.4
+                  }px)`,
+                }}
+              />
+            </div>
+          )}
+
+          {/* Layer 8 - Subtle image reflections (visible only on larger screens) */}
+          <div
+            className="hidden lg:block absolute inset-0 opacity-8 parallax-layer"
+            style={{
+              transform: `translateY(${scrollY * 0.25}px) scaleY(-1)`,
+            }}
+          >
+            {/* Reflected versions of images for depth */}
+            <div
+              className="absolute bottom-1/4 left-1/4 w-20 h-30 bg-cover bg-center rounded-lg opacity-30 blur-lg"
+              style={{
+                backgroundImage: "url('/gigi2.jpg')",
+                filter:
+                  "sepia(70%) hue-rotate(250deg) brightness(0.3) contrast(1.8)",
+                mixBlendMode: "multiply",
+                transform: `translateY(100px)`,
+              }}
+            />
+
+            <div
+              className="absolute bottom-1/3 right-1/3 w-16 h-16 bg-cover bg-center rounded-full opacity-25 blur-xl"
+              style={{
+                backgroundImage: "url('/totaleclipse.jpg')",
+                filter:
+                  "sepia(80%) hue-rotate(200deg) brightness(0.2) contrast(2)",
+                mixBlendMode: "overlay",
+                transform: `translateY(80px)`,
+              }}
+            />
+          </div>
+
+          {/* Layer 9 - Dynamic scroll-responsive image morphing */}
+          <div
+            className="absolute inset-0 opacity-12 parallax-layer"
+            style={{
+              transform: `translateY(${scrollY * 0.9}px) scale(${
+                1 + Math.sin(scrollY * 0.005) * 0.1
+              })`,
+            }}
+          >
+            {/* Images that morph based on scroll position */}
+            <div
+              className={`absolute top-1/6 left-1/3 w-32 h-24 bg-cover bg-center rounded-2xl opacity-60 blur-sm ${
+                isPlaying
+                  ? "animate-rave-mode-image-dance"
+                  : "animate-scroll-fade-in"
+              }`}
+              style={{
+                backgroundImage: `url('/${
+                  scrollY % 500 < 100
+                    ? "gigi1.png"
+                    : scrollY % 500 < 200
+                    ? "gigi2.jpg"
+                    : scrollY % 500 < 300
+                    ? "gigi3.jpg"
+                    : scrollY % 500 < 400
+                    ? "live.jpg"
+                    : "beautiful.jpg"
+                }')`,
+                filter: `sepia(${
+                  30 + Math.sin(scrollY * 0.01) * 20
+                }%) hue-rotate(${
+                  240 + Math.cos(scrollY * 0.008) * 60
+                }deg) brightness(${
+                  1.2 + Math.sin(scrollY * 0.006) * 0.3
+                }) contrast(${1.3 + Math.cos(scrollY * 0.009) * 0.2})`,
+                mixBlendMode: "screen",
+                transform: `rotate(${Math.sin(scrollY * 0.01) * 15}deg) scale(${
+                  1 + Math.cos(scrollY * 0.007) * 0.2
+                })`,
+                animationDelay: `${Math.sin(scrollY * 0.002) * 2}s`,
+              }}
+            />
+
+            <div
+              className={`absolute bottom-1/4 right-1/5 w-28 h-28 bg-cover bg-center rounded-full opacity-50 blur-md ${
+                isPlaying
+                  ? "animate-image-pulse-glow"
+                  : "animate-responsive-image-scale"
+              }`}
+              style={{
+                backgroundImage: `url('/${
+                  scrollY % 400 < 80
+                    ? "maxresdefault.jpg"
+                    : scrollY % 400 < 160
+                    ? "totaleclipse.jpg"
+                    : scrollY % 400 < 240
+                    ? "2410soundoflove(1).jpg"
+                    : scrollY % 400 < 320
+                    ? "wave.jpg"
+                    : "Untitled.jpg"
+                }')`,
+                filter: `sepia(${
+                  40 + Math.cos(scrollY * 0.012) * 30
+                }%) hue-rotate(${
+                  200 + Math.sin(scrollY * 0.01) * 120
+                }deg) brightness(${
+                  0.8 + Math.cos(scrollY * 0.008) * 0.4
+                }) contrast(${1.5 + Math.sin(scrollY * 0.011) * 0.3})`,
+                mixBlendMode: "color-dodge",
+                transform: `translateX(${
+                  Math.sin(scrollY * 0.006) * 30
+                }px) translateY(${Math.cos(scrollY * 0.008) * 20}px) rotate(${
+                  Math.sin(scrollY * 0.004) * 20
+                }deg)`,
+                animationDuration: `${
+                  3 + Math.abs(Math.sin(scrollY * 0.005)) * 5
+                }s`,
+              }}
+            />
+
+            {/* Scroll-triggered constellation of tiny images */}
+            {Array.from({ length: 6 }, (_, i) => (
+              <div
+                key={i}
+                className={`absolute w-4 h-4 bg-cover bg-center rounded-full opacity-30 blur-sm ${
+                  isPlaying
+                    ? "animate-rave-mode-image-dance"
+                    : "animate-image-drift"
+                }`}
+                style={{
+                  left: `${15 + i * 12 + Math.sin(scrollY * 0.01 + i) * 10}%`,
+                  top: `${20 + Math.cos(scrollY * 0.008 + i * 0.5) * 30}%`,
+                  backgroundImage: `url('/${
+                    [
+                      "gigi1.png",
+                      "舞.png",
+                      "beautiful.jpg",
+                      "wave.jpg",
+                      "totaleclipse.jpg",
+                      "L'amour_toujours.JPG",
+                    ][i]
+                  }')`,
+                  filter: `sepia(${50 + i * 10}%) hue-rotate(${
+                    180 + i * 30 + scrollY * 0.2
+                  }deg) brightness(${0.6 + i * 0.1}) contrast(${
+                    2.0 + i * 0.1
+                  })`,
+                  mixBlendMode: i % 2 === 0 ? "screen" : "overlay",
+                  transform: `scale(${
+                    0.5 + Math.sin(scrollY * 0.005 + i) * 0.3
+                  }) rotate(${scrollY * 0.1 + i * 60}deg)`,
+                  animationDelay: `${i * 0.5}s`,
+                  animationDuration: `${8 + i * 2}s`,
+                }}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Main Background Image - Behind title */}
+        <div className="absolute inset-0 z-5">
+          <div className="hero-background-container">
+            <img
+              src="/maxresdefault.jpg"
+              alt="GiGi D'Agostino Background"
+              className="hero-background-image"
+            />
+            <div className="hero-background-overlay"></div>
+          </div>
+        </div>
+
+        {/* Main Content - Above parallax layers */}
+        <div className="relative z-10 text-center space-y-8 max-w-4xl mx-auto">
           {/* Main Artist Name */}
           <div className="space-y-6 relative">
             {/* Desktop-only: Background text effect */}
@@ -389,17 +1230,17 @@ export default function Home() {
                 isPlaying
                   ? "text-transparent bg-clip-text bg-gradient-to-r from-gold-300 via-gold-400 to-gold-600"
                   : "text-white hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-gold-300 hover:via-gold-400 hover:to-gold-600"
-              }`}
+              } gigi-hero-text`}
             >
               <span className="relative z-10">GiGi D&apos;Agostino</span>
               {/* Desktop-only: Shimmer effect on hover - RAVE MODE ACTIVE */}
-              <div
+              {/* <div
                 className={`hidden lg:block absolute inset-0 bg-gradient-to-r from-transparent via-gold-300/30 to-transparent -skew-x-12 transition-opacity duration-500 ${
                   isPlaying
                     ? "opacity-100 animate-shimmer"
                     : "opacity-0 hover:opacity-100 hover:animate-shimmer"
                 }`}
-              ></div>
+              ></div> */}
             </h1>
 
             <h2
@@ -425,13 +1266,14 @@ export default function Home() {
             </h3>
 
             {/* Tour Dates Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left max-w-3xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left max-w-3xl mx-auto gigi-tour-grid">
+              {/* Card 1 */}
               <div
                 className={`bg-gray-800/50 backdrop-blur p-6 rounded-lg border transition-all duration-300 hover-trail group relative ${
                   isPlaying
                     ? "border-purple-500 transform scale-105 shadow-purple-500/20 shadow-lg"
                     : "border-gray-700 hover:border-purple-500 hover:transform hover:scale-105 hover:shadow-purple-500/20 hover:shadow-lg"
-                }`}
+                } gigi-tour-card`}
               >
                 {/* Desktop-only: Hover particle effect - RAVE MODE ACTIVE */}
                 <div
@@ -448,7 +1290,7 @@ export default function Home() {
                         isPlaying
                           ? "text-purple-200"
                           : "text-white group-hover:text-purple-200"
-                      }`}
+                      } gigi-tour-title`}
                     >
                       TOKYO
                     </p>
@@ -468,7 +1310,7 @@ export default function Home() {
                         isPlaying
                           ? "text-purple-300"
                           : "text-purple-400 group-hover:text-purple-300"
-                      }`}
+                      } gigi-tour-date`}
                     >
                       JUN 15
                     </p>
@@ -477,20 +1319,20 @@ export default function Home() {
                         isPlaying
                           ? "text-gray-300"
                           : "text-gray-400 group-hover:text-gray-300"
-                      }`}
+                      } gigi-tour-year`}
                     >
                       2025
                     </p>
                   </div>
                 </div>
               </div>
-
+              {/* Card 2 */}
               <div
                 className={`bg-gray-800/50 backdrop-blur p-6 rounded-lg border transition-all duration-300 hover-trail group relative ${
                   isPlaying
                     ? "border-purple-500 transform scale-105 shadow-purple-500/20 shadow-lg"
                     : "border-gray-700 hover:border-purple-500 hover:transform hover:scale-105 hover:shadow-purple-500/20 hover:shadow-lg"
-                }`}
+                } gigi-tour-card`}
               >
                 <div
                   className={`hidden lg:block absolute -top-2 -right-2 w-4 h-4 rounded-full blur-sm transition-all duration-500 ${
@@ -542,13 +1384,13 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-
+              {/* Card 3 */}
               <div
                 className={`bg-gray-800/50 backdrop-blur p-6 rounded-lg border transition-all duration-300 hover-trail group relative ${
                   isPlaying
                     ? "border-purple-500 transform scale-105 shadow-purple-500/20 shadow-lg"
                     : "border-gray-700 hover:border-purple-500 hover:transform hover:scale-105 hover:shadow-purple-500/20 hover:shadow-lg"
-                }`}
+                } gigi-tour-card`}
               >
                 <div
                   className={`hidden lg:block absolute -top-2 -right-2 w-4 h-4 rounded-full blur-sm transition-all duration-500 ${
@@ -600,13 +1442,13 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-
+              {/* Card 4 */}
               <div
                 className={`bg-gray-800/50 backdrop-blur p-6 rounded-lg border transition-all duration-300 hover-trail group relative ${
                   isPlaying
                     ? "border-purple-500 transform scale-105 shadow-purple-500/20 shadow-lg"
                     : "border-gray-700 hover:border-purple-500 hover:transform hover:scale-105 hover:shadow-purple-500/20 hover:shadow-lg"
-                }`}
+                } gigi-tour-card`}
               >
                 <div
                   className={`hidden lg:block absolute -top-2 -right-2 w-4 h-4 rounded-full blur-sm transition-all duration-500 ${
@@ -658,13 +1500,13 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-
+              {/* Card 5 */}
               <div
                 className={`bg-gray-800/50 backdrop-blur p-6 rounded-lg border transition-all duration-300 hover-trail group relative ${
                   isPlaying
                     ? "border-purple-500 transform scale-105 shadow-purple-500/20 shadow-lg"
                     : "border-gray-700 hover:border-purple-500 hover:transform hover:scale-105 hover:shadow-purple-500/20 hover:shadow-lg"
-                }`}
+                } gigi-tour-card`}
               >
                 <div
                   className={`hidden lg:block absolute -top-2 -right-2 w-4 h-4 rounded-full blur-sm transition-all duration-500 ${
@@ -716,13 +1558,13 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-
+              {/* Card 6 */}
               <div
                 className={`bg-gray-800/50 backdrop-blur p-6 rounded-lg border transition-all duration-300 hover-trail group relative ${
                   isPlaying
                     ? "border-purple-500 transform scale-105 shadow-purple-500/20 shadow-lg"
                     : "border-gray-700 hover:border-purple-500 hover:transform hover:scale-105 hover:shadow-purple-500/20 hover:shadow-lg"
-                }`}
+                } gigi-tour-card`}
               >
                 <div
                   className={`hidden lg:block absolute -top-2 -right-2 w-4 h-4 rounded-full blur-sm transition-all duration-500 ${

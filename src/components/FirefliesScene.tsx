@@ -9,6 +9,9 @@ interface FirefliesSceneProps {
   isExpanded?: boolean;
 }
 
+const MAX_FIREFLIES_FULLSCREEN = 400;
+const MAX_FIREFLIES_NORMAL = 200;
+
 const FirefliesScene: React.FC<FirefliesSceneProps> = ({
   isPlaying,
   isFullscreen = false,
@@ -31,6 +34,9 @@ const FirefliesScene: React.FC<FirefliesSceneProps> = ({
   const sourceRef = useRef<MediaElementAudioSourceNode | null>(null);
   const audioLevelsRef = useRef({ bass: 0, mid: 0, high: 0, overall: 0 });
   const materialRef = useRef<THREE.ShaderMaterial | null>(null);
+  const currentFireflyCountRef = useRef(0);
+  const lastSpawnTimeRef = useRef(performance.now());
+  const SPAWN_INTERVAL = 800; // ms between each doubling (increased from 200)
 
   // Setup audio analysis
   const setupAudioAnalysis = useCallback(() => {
@@ -176,14 +182,16 @@ const FirefliesScene: React.FC<FirefliesSceneProps> = ({
     mount.appendChild(renderer.domElement);
 
     // Fireflies geometry and material - enhanced for fullscreen
-    const firefliesCount = isFullscreen ? 200 : 100;
+    const maxFireflies = isFullscreen
+      ? MAX_FIREFLIES_FULLSCREEN
+      : MAX_FIREFLIES_NORMAL;
     const spreadMultiplier = isFullscreen ? 2.0 : 1.0;
-    const positions = new Float32Array(firefliesCount * 3);
-    const colors = new Float32Array(firefliesCount * 3);
-    const scales = new Float32Array(firefliesCount);
+    const positions = new Float32Array(maxFireflies * 3);
+    const colors = new Float32Array(maxFireflies * 3);
+    const scales = new Float32Array(maxFireflies);
 
     // Create firefly positions and colors
-    for (let i = 0; i < firefliesCount; i++) {
+    for (let i = 0; i < maxFireflies; i++) {
       const i3 = i * 3;
 
       // Random positions in a cube - larger spread for fullscreen
@@ -218,6 +226,8 @@ const FirefliesScene: React.FC<FirefliesSceneProps> = ({
     geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
     geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
     geometry.setAttribute("aScale", new THREE.BufferAttribute(scales, 1));
+    geometry.setDrawRange(0, 0); // Start with 0 fireflies
+    currentFireflyCountRef.current = 0;
 
     // Firefly material with custom shader - enhanced with audio reactivity
     const material = new THREE.ShaderMaterial({
@@ -336,6 +346,28 @@ const FirefliesScene: React.FC<FirefliesSceneProps> = ({
     // Animation loop
     const animate = () => {
       animationIdRef.current = requestAnimationFrame(animate);
+      // Exponential firefly spawn: 1, 2, 4, 8, ... but with a delay between doublings
+      if (isPlaying && currentFireflyCountRef.current < maxFireflies) {
+        const now = performance.now();
+        if (
+          currentFireflyCountRef.current === 0 ||
+          now - lastSpawnTimeRef.current > SPAWN_INTERVAL
+        ) {
+          if (currentFireflyCountRef.current === 0) {
+            currentFireflyCountRef.current = 1;
+          } else {
+            currentFireflyCountRef.current = Math.min(
+              maxFireflies,
+              currentFireflyCountRef.current * 2
+            );
+          }
+          geometry.setDrawRange(0, currentFireflyCountRef.current);
+          geometry.attributes.position.needsUpdate = true;
+          geometry.attributes.color.needsUpdate = true;
+          geometry.attributes.aScale.needsUpdate = true;
+          lastSpawnTimeRef.current = now;
+        }
+      }
 
       if (material.uniforms) {
         material.uniforms.uTime.value += 0.01;
