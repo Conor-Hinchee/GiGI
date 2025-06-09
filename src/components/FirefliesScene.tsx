@@ -7,15 +7,18 @@ interface FirefliesSceneProps {
   isPlaying: boolean;
   isFullscreen?: boolean;
   isExpanded?: boolean;
+  isMobile?: boolean;
 }
 
 const MAX_FIREFLIES_FULLSCREEN = 400;
 const MAX_FIREFLIES_NORMAL = 200;
+const MAX_FIREFLIES_MOBILE = 50; // Reduced for mobile performance
 
 const FirefliesScene: React.FC<FirefliesSceneProps> = ({
   isPlaying,
   isFullscreen = false,
   isExpanded = false,
+  isMobile = false,
 }) => {
   const mountRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
@@ -181,8 +184,10 @@ const FirefliesScene: React.FC<FirefliesSceneProps> = ({
     rendererRef.current = renderer;
     mount.appendChild(renderer.domElement);
 
-    // Fireflies geometry and material - enhanced for fullscreen
-    const maxFireflies = isFullscreen
+    // Fireflies geometry and material - enhanced for fullscreen, reduced for mobile
+    const maxFireflies = isMobile
+      ? MAX_FIREFLIES_MOBILE
+      : isFullscreen
       ? MAX_FIREFLIES_FULLSCREEN
       : MAX_FIREFLIES_NORMAL;
     const spreadMultiplier = isFullscreen ? 2.0 : 1.0;
@@ -199,23 +204,23 @@ const FirefliesScene: React.FC<FirefliesSceneProps> = ({
       positions[i3 + 1] = (Math.random() - 0.5) * 6 * spreadMultiplier;
       positions[i3 + 2] = (Math.random() - 0.5) * 8 * spreadMultiplier;
 
-      // Random colors (yellow/orange tones)
+      // Random colors (purple-dominant palette)
       const colorChoice = Math.random();
-      if (colorChoice < 0.3) {
-        // Purple fireflies
-        colors[i3] = 0.8;
+      if (colorChoice < 0.5) {
+        // Deep purple fireflies
+        colors[i3] = 0.7;
+        colors[i3 + 1] = 0.3;
+        colors[i3 + 2] = 1.0;
+      } else if (colorChoice < 0.8) {
+        // Violet/magenta fireflies
+        colors[i3] = 0.9;
         colors[i3 + 1] = 0.4;
         colors[i3 + 2] = 1.0;
-      } else if (colorChoice < 0.6) {
-        // Pink fireflies
-        colors[i3] = 1.0;
-        colors[i3 + 1] = 0.4;
-        colors[i3 + 2] = 0.8;
       } else {
-        // Yellow/warm fireflies
-        colors[i3] = 1.0;
-        colors[i3 + 1] = 0.9;
-        colors[i3 + 2] = 0.3;
+        // Light purple/lavender fireflies
+        colors[i3] = 0.8;
+        colors[i3 + 1] = 0.6;
+        colors[i3 + 2] = 1.0;
       }
 
       // Random scales
@@ -308,10 +313,10 @@ const FirefliesScene: React.FC<FirefliesSceneProps> = ({
           float strength = 1.0 - smoothstep(0.0, 0.5, distanceToCenter);
           strength = pow(strength, 3.0);
           
-          // Audio-reactive color mixing based on frequency ranges
-          vec3 bassColor = vec3(1.0, 0.3, 0.1);    // Red/Orange for bass
-          vec3 midColor = vec3(0.8, 0.4, 1.0);     // Purple/Pink for mids
-          vec3 highColor = vec3(0.2, 0.7, 1.0);    // Blue/Cyan for highs
+          // Audio-reactive color mixing based on frequency ranges (purple theme)
+          vec3 bassColor = vec3(0.8, 0.2, 1.0);    // Deep purple for bass
+          vec3 midColor = vec3(0.9, 0.4, 1.0);     // Bright purple/magenta for mids
+          vec3 highColor = vec3(0.6, 0.3, 1.0);    // Dark purple/violet for highs
           
           // Mix colors based on frequency intensity
           vec3 audioColor = bassColor * uBass + midColor * uMid + highColor * uHigh;
@@ -451,7 +456,14 @@ const FirefliesScene: React.FC<FirefliesSceneProps> = ({
       geometry.dispose();
       material.dispose();
     };
-  }, [isPlaying, isFullscreen, isExpanded, setupAudioAnalysis, analyzeAudio]); // Include isExpanded
+  }, [
+    isPlaying,
+    isFullscreen,
+    isExpanded,
+    isMobile,
+    setupAudioAnalysis,
+    analyzeAudio,
+  ]); // Include isExpanded and isMobile
 
   // Handle container size changes when expanding/contracting
   useEffect(() => {

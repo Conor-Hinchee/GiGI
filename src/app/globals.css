@@ -411,19 +411,66 @@ body, html {
 @media (max-width: 768px) {
   .parallax-layer {
     transform: none !important;
+    animation: none !important;
+    display: none; /* Completely hide parallax layers on mobile */
+  }
+  
+  /* Disable all parallax transforms on mobile */
+  .parallax-layer * {
+    transform: none !important;
+    animation-duration: 0s !important;
   }
   
   /* Reduce animation intensity on mobile for better performance */
   .animate-image-drift,
   .animate-image-pulse-glow,
-  .animate-rave-mode-image-dance {
-    animation-duration: 6s !important;
-    animation-timing-function: ease-out !important;
+  .animate-rave-mode-image-dance,
+  .animate-float-up,
+  .animate-music-note,
+  .animate-parallax-shimmer {
+    animation: none !important;
   }
   
-  /* Simplify image filters on mobile */
-  .parallax-layer div[style*="sepia"] {
-    filter: sepia(20%) brightness(0.8) contrast(1.1) !important;
+  /* Simplify backgrounds on mobile */
+  [style*="translateY"],[style*="rotate"],[style*="scale"] {
+    transform: none !important;
+  }
+  
+  /* Disable border tracing animations on mobile for performance */
+  .border-trace-rave,
+  .border-trace-purple,
+  .border-trace-pink,
+  .border-trace-blue,
+  .border-trace-green,
+  .border-trace-yellow,
+  .border-trace-red {
+    animation: none !important;
+    border: 2px solid rgba(147, 51, 234, 0.3) !important;
+  }
+}
+
+/* Force disable parallax on touch devices */
+@media (hover: none) and (pointer: coarse) {
+  .parallax-layer {
+    transform: none !important;
+    display: none !important;
+  }
+  
+  .parallax-layer * {
+    transform: none !important;
+    animation: none !important;
+  }
+  
+  /* Disable intensive animations on touch devices */
+  .border-trace-rave,
+  .border-trace-purple,
+  .border-trace-pink,
+  .border-trace-blue,
+  .border-trace-green,
+  .border-trace-yellow,
+  .border-trace-red {
+    animation: none !important;
+    border: 2px solid rgba(147, 51, 234, 0.3) !important;
   }
 }
 
@@ -476,4 +523,257 @@ body, html {
     transform: scale(1.05);
     filter: brightness(0.7) contrast(1.4) saturate(2.0) hue-rotate(15deg);
   }
+}
+
+/* Border tracing animations for tour cards */
+@keyframes border-trace-rave {
+  0% {
+    border-image: linear-gradient(0deg, 
+      rgba(147, 51, 234, 0.8), 
+      rgba(236, 72, 153, 0.6), 
+      rgba(59, 130, 246, 0.4), 
+      rgba(16, 185, 129, 0.6), 
+      rgba(147, 51, 234, 0.8)
+    ) 1;
+    box-shadow: 
+      0 0 20px rgba(147, 51, 234, 0.4),
+      inset 0 0 20px rgba(147, 51, 234, 0.1);
+  }
+  25% {
+    border-image: linear-gradient(90deg, 
+      rgba(236, 72, 153, 0.8), 
+      rgba(59, 130, 246, 0.6), 
+      rgba(16, 185, 129, 0.4), 
+      rgba(147, 51, 234, 0.6), 
+      rgba(236, 72, 153, 0.8)
+    ) 1;
+    box-shadow: 
+      0 0 25px rgba(236, 72, 153, 0.5),
+      inset 0 0 25px rgba(236, 72, 153, 0.15);
+  }
+  50% {
+    border-image: linear-gradient(180deg, 
+      rgba(59, 130, 246, 0.8), 
+      rgba(16, 185, 129, 0.6), 
+      rgba(147, 51, 234, 0.4), 
+      rgba(236, 72, 153, 0.6), 
+      rgba(59, 130, 246, 0.8)
+    ) 1;
+    box-shadow: 
+      0 0 30px rgba(59, 130, 246, 0.6),
+      inset 0 0 30px rgba(59, 130, 246, 0.2);
+  }
+  75% {
+    border-image: linear-gradient(270deg, 
+      rgba(16, 185, 129, 0.8), 
+      rgba(147, 51, 234, 0.6), 
+      rgba(236, 72, 153, 0.4), 
+      rgba(59, 130, 246, 0.6), 
+      rgba(16, 185, 129, 0.8)
+    ) 1;
+    box-shadow: 
+      0 0 25px rgba(16, 185, 129, 0.5),
+      inset 0 0 25px rgba(16, 185, 129, 0.15);
+  }
+  100% {
+    border-image: linear-gradient(360deg, 
+      rgba(147, 51, 234, 0.8), 
+      rgba(236, 72, 153, 0.6), 
+      rgba(59, 130, 246, 0.4), 
+      rgba(16, 185, 129, 0.6), 
+      rgba(147, 51, 234, 0.8)
+    ) 1;
+    box-shadow: 
+      0 0 20px rgba(147, 51, 234, 0.4),
+      inset 0 0 20px rgba(147, 51, 234, 0.1);
+  }
+}
+
+@keyframes border-trace-hover {
+  0% {
+    border-image: linear-gradient(45deg, 
+      rgba(147, 51, 234, 0.6), 
+      rgba(236, 72, 153, 0.4), 
+      rgba(147, 51, 234, 0.6)
+    ) 1;
+    box-shadow: 
+      0 0 15px rgba(147, 51, 234, 0.3),
+      inset 0 0 15px rgba(147, 51, 234, 0.05);
+  }
+  50% {
+    border-image: linear-gradient(225deg, 
+      rgba(236, 72, 153, 0.6), 
+      rgba(147, 51, 234, 0.4), 
+      rgba(236, 72, 153, 0.6)
+    ) 1;
+    box-shadow: 
+      0 0 20px rgba(236, 72, 153, 0.4),
+      inset 0 0 20px rgba(236, 72, 153, 0.1);
+  }
+  100% {
+    border-image: linear-gradient(45deg, 
+      rgba(147, 51, 234, 0.6), 
+      rgba(236, 72, 153, 0.4), 
+      rgba(147, 51, 234, 0.6)
+    ) 1;
+    box-shadow: 
+      0 0 15px rgba(147, 51, 234, 0.3),
+      inset 0 0 15px rgba(147, 51, 234, 0.05);
+  }
+}
+
+/* Individual color variants for each card */
+@keyframes border-trace-purple {
+  0%, 100% {
+    border-image: linear-gradient(0deg, 
+      rgba(147, 51, 234, 0.8), 
+      rgba(168, 85, 247, 0.6), 
+      rgba(147, 51, 234, 0.8)
+    ) 1;
+    box-shadow: 0 0 20px rgba(147, 51, 234, 0.4);
+  }
+  50% {
+    border-image: linear-gradient(180deg, 
+      rgba(168, 85, 247, 0.8), 
+      rgba(147, 51, 234, 0.6), 
+      rgba(168, 85, 247, 0.8)
+    ) 1;
+    box-shadow: 0 0 30px rgba(168, 85, 247, 0.6);
+  }
+}
+
+@keyframes border-trace-pink {
+  0%, 100% {
+    border-image: linear-gradient(0deg, 
+      rgba(236, 72, 153, 0.8), 
+      rgba(244, 114, 182, 0.6), 
+      rgba(236, 72, 153, 0.8)
+    ) 1;
+    box-shadow: 0 0 20px rgba(236, 72, 153, 0.4);
+  }
+  50% {
+    border-image: linear-gradient(180deg, 
+      rgba(244, 114, 182, 0.8), 
+      rgba(236, 72, 153, 0.6), 
+      rgba(244, 114, 182, 0.8)
+    ) 1;
+    box-shadow: 0 0 30px rgba(244, 114, 182, 0.6);
+  }
+}
+
+@keyframes border-trace-blue {
+  0%, 100% {
+    border-image: linear-gradient(0deg, 
+      rgba(59, 130, 246, 0.8), 
+      rgba(96, 165, 250, 0.6), 
+      rgba(59, 130, 246, 0.8)
+    ) 1;
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+  }
+  50% {
+    border-image: linear-gradient(180deg, 
+      rgba(96, 165, 250, 0.8), 
+      rgba(59, 130, 246, 0.6), 
+      rgba(96, 165, 250, 0.8)
+    ) 1;
+    box-shadow: 0 0 30px rgba(96, 165, 250, 0.6);
+  }
+}
+
+@keyframes border-trace-green {
+  0%, 100% {
+    border-image: linear-gradient(0deg, 
+      rgba(16, 185, 129, 0.8), 
+      rgba(52, 211, 153, 0.6), 
+      rgba(16, 185, 129, 0.8)
+    ) 1;
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+  }
+  50% {
+    border-image: linear-gradient(180deg, 
+      rgba(52, 211, 153, 0.8), 
+      rgba(16, 185, 129, 0.6), 
+      rgba(52, 211, 153, 0.8)
+    ) 1;
+    box-shadow: 0 0 30px rgba(52, 211, 153, 0.6);
+  }
+}
+
+@keyframes border-trace-yellow {
+  0%, 100% {
+    border-image: linear-gradient(0deg, 
+      rgba(245, 158, 11, 0.8), 
+      rgba(251, 191, 36, 0.6), 
+      rgba(245, 158, 11, 0.8)
+    ) 1;
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+  }
+  50% {
+    border-image: linear-gradient(180deg, 
+      rgba(251, 191, 36, 0.8), 
+      rgba(245, 158, 11, 0.6), 
+      rgba(251, 191, 36, 0.8)
+    ) 1;
+    box-shadow: 0 0 30px rgba(251, 191, 36, 0.6);
+  }
+}
+
+@keyframes border-trace-red {
+  0%, 100% {
+    border-image: linear-gradient(0deg, 
+      rgba(239, 68, 68, 0.8), 
+      rgba(248, 113, 113, 0.6), 
+      rgba(239, 68, 68, 0.8)
+    ) 1;
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+  }
+  50% {
+    border-image: linear-gradient(180deg, 
+      rgba(248, 113, 113, 0.8), 
+      rgba(239, 68, 68, 0.6), 
+      rgba(248, 113, 113, 0.8)
+    ) 1;
+    box-shadow: 0 0 30px rgba(248, 113, 113, 0.6);
+  }
+}
+
+/* Utility classes for border tracing */
+.border-trace-rave {
+  border: 3px solid transparent;
+  animation: border-trace-rave 3s ease-in-out infinite;
+}
+
+.border-trace-hover {
+  border: 2px solid transparent;
+  animation: border-trace-hover 2s ease-in-out infinite;
+}
+
+.border-trace-purple {
+  border: 2px solid transparent;
+  animation: border-trace-purple 2.5s ease-in-out infinite;
+}
+
+.border-trace-pink {
+  border: 2px solid transparent;
+  animation: border-trace-pink 2.5s ease-in-out infinite;
+}
+
+.border-trace-blue {
+  border: 2px solid transparent;
+  animation: border-trace-blue 2.5s ease-in-out infinite;
+}
+
+.border-trace-green {
+  border: 2px solid transparent;
+  animation: border-trace-green 2.5s ease-in-out infinite;
+}
+
+.border-trace-yellow {
+  border: 2px solid transparent;
+  animation: border-trace-yellow 2.5s ease-in-out infinite;
+}
+
+.border-trace-red {
+  border: 2px solid transparent;
+  animation: border-trace-red 2.5s ease-in-out infinite;
 }
