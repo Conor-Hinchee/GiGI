@@ -1260,14 +1260,14 @@ export default function Home() {
         {/* Main Background Image - Behind title */}
         <div className="absolute inset-0 z-5">
           <div className="hero-background-container">
-            <img
+            {/* <img
               src="/maxresdefault.jpg"
               alt="GiGi D'Agostino Background"
               className="hero-background-image"
               style={
                 isMobile ? { transform: "none", willChange: "auto" } : undefined
               }
-            />
+            /> */}
             <div className="hero-background-overlay"></div>
           </div>
         </div>
