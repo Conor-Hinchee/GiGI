@@ -91,6 +91,12 @@ export default function Home() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isMobile]);
 
+  // Calculate if user has scrolled past the dance area
+  const danceAreaHeight = typeof window !== 'undefined' 
+    ? (isPlaying ? window.innerHeight * 0.75 : window.innerHeight * 0.5)
+    : 0;
+  const isScrolledPastDanceArea = scrollY > danceAreaHeight;
+
   return (
     <div className="min-h-screen bg-gray-900">
       {/* Dance Area - Responsive Height */}
@@ -1253,7 +1259,7 @@ export default function Home() {
 
             <h1
               className={`text-7xl md:text-8xl lg:text-9xl font-black tracking-wider uppercase transition-all duration-700 cursor-default relative ${
-                isPlaying
+                isScrolledPastDanceArea || isPlaying
                   ? "text-transparent bg-clip-text bg-gradient-to-r from-gold-300 via-gold-400 to-gold-600"
                   : "text-white hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-gold-300 hover:via-gold-400 hover:to-gold-600"
               } gigi-hero-text`}
@@ -1298,7 +1304,7 @@ export default function Home() {
                 className={`bg-gray-800/50 backdrop-blur p-6 rounded-lg transition-all duration-300 hover-trail group relative ${
                   isPlaying
                     ? "border-trace-rave transform scale-105"
-                    : "border border-gray-700 hover:border-trace-purple hover:transform hover:scale-105"
+                    : "border border-gray-700 hover:border-trace-rave hover:transform hover:scale-105"
                 } gigi-tour-card`}
               >
                 {/* Desktop-only: Hover particle effect - RAVE MODE ACTIVE */}
@@ -1357,7 +1363,7 @@ export default function Home() {
                 className={`bg-gray-800/50 backdrop-blur p-6 rounded-lg transition-all duration-300 hover-trail group relative ${
                   isPlaying
                     ? "border-trace-rave transform scale-105"
-                    : "border border-gray-700 hover:border-trace-pink hover:transform hover:scale-105"
+                    : "border border-gray-700 hover:border-trace-rave hover:transform hover:scale-105"
                 } gigi-tour-card`}
               >
                 <div
@@ -1415,7 +1421,7 @@ export default function Home() {
                 className={`bg-gray-800/50 backdrop-blur p-6 rounded-lg transition-all duration-300 hover-trail group relative ${
                   isPlaying
                     ? "border-trace-rave transform scale-105"
-                    : "border border-gray-700 hover:border-trace-blue hover:transform hover:scale-105"
+                    : "border border-gray-700 hover:border-trace-rave hover:transform hover:scale-105"
                 } gigi-tour-card`}
               >
                 <div
@@ -1473,7 +1479,7 @@ export default function Home() {
                 className={`bg-gray-800/50 backdrop-blur p-6 rounded-lg transition-all duration-300 hover-trail group relative ${
                   isPlaying
                     ? "border-trace-rave transform scale-105"
-                    : "border border-gray-700 hover:border-trace-green hover:transform hover:scale-105"
+                    : "border border-gray-700 hover:border-trace-rave hover:transform hover:scale-105"
                 } gigi-tour-card`}
               >
                 <div
@@ -1531,7 +1537,7 @@ export default function Home() {
                 className={`bg-gray-800/50 backdrop-blur p-6 rounded-lg transition-all duration-300 hover-trail group relative ${
                   isPlaying
                     ? "border-trace-rave transform scale-105"
-                    : "border border-gray-700 hover:border-trace-yellow hover:transform hover:scale-105"
+                    : "border border-gray-700 hover:border-trace-rave hover:transform hover:scale-105"
                 } gigi-tour-card`}
               >
                 <div
@@ -1589,7 +1595,7 @@ export default function Home() {
                 className={`bg-gray-800/50 backdrop-blur p-6 rounded-lg transition-all duration-300 hover-trail group relative ${
                   isPlaying
                     ? "border-trace-rave transform scale-105"
-                    : "border border-gray-700 hover:border-trace-red hover:transform hover:scale-105"
+                    : "border border-gray-700 hover:border-trace-rave hover:transform hover:scale-105"
                 } gigi-tour-card`}
               >
                 <div
@@ -1648,7 +1654,7 @@ export default function Home() {
                 className={`bg-gray-800/50 backdrop-blur p-6 rounded-lg transition-all duration-300 hover-trail group relative ${
                   isPlaying
                     ? "border-trace-rave transform scale-105"
-                    : "border border-gray-700 hover:border-trace-purple hover:transform hover:scale-105"
+                    : "border border-gray-700 hover:border-trace-rave hover:transform hover:scale-105"
                 } gigi-tour-card`}
               >
                 <div
@@ -1707,7 +1713,7 @@ export default function Home() {
                 className={`bg-gray-800/50 backdrop-blur p-6 rounded-lg transition-all duration-300 hover-trail group relative ${
                   isPlaying
                     ? "border-trace-rave transform scale-105"
-                    : "border border-gray-700 hover:border-trace-pink hover:transform hover:scale-105"
+                    : "border border-gray-700 hover:border-trace-rave hover:transform hover:scale-105"
                 } gigi-tour-card`}
               >
                 <div
@@ -1766,7 +1772,7 @@ export default function Home() {
                 className={`bg-gray-800/50 backdrop-blur p-6 rounded-lg transition-all duration-300 hover-trail group relative ${
                   isPlaying
                     ? "border-trace-rave transform scale-105"
-                    : "border border-gray-700 hover:border-trace-blue hover:transform hover:scale-105"
+                    : "border border-gray-700 hover:border-trace-rave hover:transform hover:scale-105"
                 } gigi-tour-card`}
               >
                 <div
@@ -1825,7 +1831,7 @@ export default function Home() {
                 className={`bg-gray-800/50 backdrop-blur p-6 rounded-lg transition-all duration-300 hover-trail group relative ${
                   isPlaying
                     ? "border-trace-rave transform scale-105"
-                    : "border border-gray-700 hover:border-trace-green hover:transform hover:scale-105"
+                    : "border border-gray-700 hover:border-trace-rave hover:transform hover:scale-105"
                 } gigi-tour-card`}
               >
                 <div
@@ -1884,7 +1890,7 @@ export default function Home() {
                 className={`bg-gray-800/50 backdrop-blur p-6 rounded-lg transition-all duration-300 hover-trail group relative ${
                   isPlaying
                     ? "border-trace-rave transform scale-105"
-                    : "border border-gray-700 hover:border-trace-yellow hover:transform hover:scale-105"
+                    : "border border-gray-700 hover:border-trace-rave hover:transform hover:scale-105"
                 } gigi-tour-card`}
               >
                 <div
@@ -1943,7 +1949,7 @@ export default function Home() {
                 className={`bg-gray-800/50 backdrop-blur p-6 rounded-lg transition-all duration-300 hover-trail group relative ${
                   isPlaying
                     ? "border-trace-rave transform scale-105"
-                    : "border border-gray-700 hover:border-trace-red hover:transform hover:scale-105"
+                    : "border border-gray-700 hover:border-trace-rave hover:transform hover:scale-105"
                 } gigi-tour-card`}
               >
                 <div
@@ -2015,178 +2021,6 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
-              {/* Left Column - Biography & Style */}
-              <div className="space-y-8">
-                {/* Origins */}
-                <div
-                  className={`bg-gray-800/60 backdrop-blur p-6 rounded-xl border transition-all duration-300 ${
-                    isPlaying
-                      ? "border-purple-500/50 bg-purple-900/20"
-                      : "border-gray-700 hover:border-purple-500/50 hover:bg-purple-900/10"
-                  }`}
-                >
-                  <h4 className="text-xl font-bold text-gold-400 mb-3 flex items-center">
-                    <span className="mr-2">🏗️</span>
-                    Humble Beginnings
-                  </h4>
-                  <p className="text-gray-300 leading-relaxed">
-                    From working as a mason by day to spinning records at
-                    legendary clubs like
-                    <span className="text-purple-300 font-semibold">
-                      {" "}
-                      Woodstock
-                    </span>{" "}
-                    and
-                    <span className="text-purple-300 font-semibold">
-                      {" "}
-                      Ultimo Impero
-                    </span>{" "}
-                    by night, Gigi&apos;s early passion for disco in Turin and
-                    Brescia shaped his unique musical identity.
-                  </p>
-                </div>
-
-                {/* Signature Style */}
-                <div
-                  className={`bg-gray-800/60 backdrop-blur p-6 rounded-xl border transition-all duration-300 ${
-                    isPlaying
-                      ? "border-blue-500/50 bg-blue-900/20"
-                      : "border-gray-700 hover:border-blue-500/50 hover:bg-blue-900/10"
-                  }`}
-                >
-                  <h4 className="text-xl font-bold text-gold-400 mb-3 flex items-center">
-                    <span className="mr-2">🔊</span>
-                    Signature Innovations
-                  </h4>
-                  <div className="space-y-3">
-                    <div>
-                      <p className="text-sm text-gray-400 uppercase tracking-wide">
-                        Genres
-                      </p>
-                      <p className="text-gray-300">
-                        Italo-Dance • Euro-Dance • Progressive House • Techno •
-                        Trance
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-400 uppercase tracking-wide">
-                        Innovation
-                      </p>
-                      <p className="text-gray-300">
-                        Pioneer of{" "}
-                        <span className="text-blue-300 font-semibold">
-                          Lento Violento
-                        </span>{" "}
-                        - his signature slow-tempo style
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-400 uppercase tracking-wide">
-                        Iconic Symbol
-                      </p>
-                      <p className="text-gray-300 flex items-center">
-                        Dancing Kanji{" "}
-                        <span className="text-2xl text-purple-300 mx-2">
-                          舞
-                        </span>
-                        (meaning &quot;dance&quot;)
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Right Column - Achievements & Legacy */}
-              <div className="space-y-8">
-                {/* Career Milestones */}
-                <div
-                  className={`bg-gray-800/60 backdrop-blur p-6 rounded-xl border transition-all duration-300 ${
-                    isPlaying
-                      ? "border-gold-500/50 bg-gold-900/20"
-                      : "border-gray-700 hover:border-gold-500/50 hover:bg-gold-900/10"
-                  }`}
-                >
-                  <h4 className="text-xl font-bold text-gold-400 mb-3 flex items-center">
-                    <span className="mr-2">📀</span>
-                    Legendary Hits
-                  </h4>
-                  <div className="space-y-4">
-                    <div>
-                      <p className="text-sm text-gray-400 uppercase tracking-wide">
-                        Breakthrough Album
-                      </p>
-                      <p className="text-lg font-semibold text-purple-300">
-                        L&apos;Amour Toujours (1999)
-                      </p>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2 text-sm">
-                      <div className="text-gray-300">
-                        • &quot;Bla Bla Bla&quot;
-                      </div>
-                      <div className="text-gray-300">
-                        • &quot;Another Way&quot;
-                      </div>
-                      <div className="text-gray-300">
-                        • &quot;The Riddle&quot;
-                      </div>
-                      <div className="text-gray-300">
-                        • &quot;La Passion&quot;
-                      </div>
-                      <div className="col-span-2 text-gray-300">
-                        • &quot;L&apos;Amour Toujours (I&apos;ll Fly with
-                        You)&quot;
-                      </div>
-                    </div>
-                    <div className="pt-2 border-t border-gray-600">
-                      <p className="text-xs text-gray-400">
-                        #78 US Billboard Hot 100 • #9 Billboard Dance/Electronic
-                        Chart
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Global Impact */}
-                <div
-                  className={`bg-gray-800/60 backdrop-blur p-6 rounded-xl border transition-all duration-300 ${
-                    isPlaying
-                      ? "border-green-500/50 bg-green-900/20"
-                      : "border-gray-700 hover:border-green-500/50 hover:bg-green-900/10"
-                  }`}
-                >
-                  <h4 className="text-xl font-bold text-gold-400 mb-3 flex items-center">
-                    <span className="mr-2">🌍</span>
-                    Global Legacy
-                  </h4>
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-300">Worldwide Sales</span>
-                      <span className="text-green-300 font-bold">
-                        10M+ Records
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-300">Germany Sales</span>
-                      <span className="text-green-300 font-bold">
-                        3M Records
-                      </span>
-                    </div>
-                    <div className="pt-3 border-t border-gray-600">
-                      <p className="text-sm text-gray-300">
-                        <span className="text-purple-300 font-semibold">
-                          Cultural Impact:
-                        </span>
-                        Hits like &quot;In My Mind&quot; remain international
-                        club staples, testament to his enduring influence on
-                        global dance culture.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
             {/* Recent Work Banner */}
             <div
               className={`mt-8 p-6 bg-gradient-to-r rounded-xl border transition-all duration-500 ${
@@ -2218,102 +2052,315 @@ export default function Home() {
               Follow GiGi
             </h3>
 
-            <div className="flex justify-center space-x-6 md:space-x-8">
-              {/* Facebook - RAVE MODE ACTIVE */}
+            {/* Main Social Platforms */}
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 max-w-4xl mx-auto mb-8">
+              {/* Official Website */}
               <a
-                href="#"
-                className={`group bg-gray-800/50 backdrop-blur p-4 rounded-full border transition-all duration-300 transform ${
+                href="https://www.gigidagostino.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`group bg-gray-800/50 backdrop-blur p-4 rounded-lg border transition-all duration-300 transform ${
                   isPlaying
-                    ? "border-blue-500 bg-blue-500/20 scale-110"
-                    : "border-gray-700 hover:border-blue-500 hover:bg-blue-500/20 hover:scale-110"
+                    ? "border-gold-500 bg-gold-500/20 scale-105"
+                    : "border-gray-700 hover:border-gold-500 hover:bg-gold-500/20 hover:scale-105"
                 }`}
               >
-                <svg
-                  className={`w-8 h-8 transition-colors ${
-                    isPlaying
-                      ? "text-blue-400"
-                      : "text-gray-300 group-hover:text-blue-400"
-                  }`}
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                </svg>
+                <div className="flex flex-col items-center space-y-2">
+                  <svg
+                    className={`w-8 h-8 transition-colors ${
+                      isPlaying
+                        ? "text-gold-400"
+                        : "text-gray-300 group-hover:text-gold-400"
+                    }`}
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                  </svg>
+                  <span className="text-xs text-center font-medium text-gray-300">
+                    Official Site
+                  </span>
+                </div>
               </a>
 
-              {/* Twitter - RAVE MODE ACTIVE */}
+              {/* Facebook - Gigi */}
               <a
-                href="#"
-                className={`group bg-gray-800/50 backdrop-blur p-4 rounded-full border transition-all duration-300 transform ${
+                href="https://www.facebook.com/gigidagostino"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`group bg-gray-800/50 backdrop-blur p-4 rounded-lg border transition-all duration-300 transform ${
                   isPlaying
-                    ? "border-sky-500 bg-sky-500/20 scale-110"
-                    : "border-gray-700 hover:border-sky-500 hover:bg-sky-500/20 hover:scale-110"
+                    ? "border-blue-500 bg-blue-500/20 scale-105"
+                    : "border-gray-700 hover:border-blue-500 hover:bg-blue-500/20 hover:scale-105"
                 }`}
               >
-                <svg
-                  className={`w-8 h-8 transition-colors ${
-                    isPlaying
-                      ? "text-sky-400"
-                      : "text-gray-300 group-hover:text-sky-400"
-                  }`}
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
-                </svg>
+                <div className="flex flex-col items-center space-y-2">
+                  <svg
+                    className={`w-8 h-8 transition-colors ${
+                      isPlaying
+                        ? "text-blue-400"
+                        : "text-gray-300 group-hover:text-blue-400"
+                    }`}
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                  </svg>
+                  <span className="text-xs text-center font-medium text-gray-300">
+                    Facebook
+                  </span>
+                </div>
               </a>
 
-              {/* Instagram - RAVE MODE ACTIVE */}
+              {/* Instagram */}
               <a
-                href="#"
-                className={`group bg-gray-800/50 backdrop-blur p-4 rounded-full border transition-all duration-300 transform ${
+                href="https://www.instagram.com/gigidag/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`group bg-gray-800/50 backdrop-blur p-4 rounded-lg border transition-all duration-300 transform ${
                   isPlaying
-                    ? "border-pink-500 bg-pink-500/20 scale-110"
-                    : "border-gray-700 hover:border-pink-500 hover:bg-pink-500/20 hover:scale-110"
+                    ? "border-pink-500 bg-pink-500/20 scale-105"
+                    : "border-gray-700 hover:border-pink-500 hover:bg-pink-500/20 hover:scale-105"
                 }`}
               >
-                <svg
-                  className={`w-8 h-8 transition-colors ${
-                    isPlaying
-                      ? "text-pink-400"
-                      : "text-gray-300 group-hover:text-pink-400"
-                  }`}
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 6.62 5.367 11.987 11.988 11.987 6.62 0 11.987-5.367 11.987-11.987C24.014 5.367 18.637.001 12.017.001zM8.449 16.988c-1.297 0-2.448-.596-3.205-1.535-.757-.939-1.173-2.145-1.173-3.402 0-1.258.416-2.464 1.173-3.403.757-.939 1.908-1.535 3.205-1.535s2.448.596 3.205 1.535c.757.939 1.173 2.145 1.173 3.403 0 1.257-.416 2.463-1.173 3.402-.757.939-1.908 1.535-3.205 1.535zm7.718 0c-1.297 0-2.448-.596-3.205-1.535-.757-.939-1.173-2.145-1.173-3.402 0-1.258.416-2.464 1.173-3.403.757-.939 1.908-1.535 3.205-1.535s2.448.596 3.205 1.535c.757.939 1.173 2.145 1.173 3.403 0 1.257-.416 2.463-1.173 3.402-.757.939-1.908 1.535-3.205 1.535z" />
-                </svg>
+                <div className="flex flex-col items-center space-y-2">
+                  <svg
+                    className={`w-8 h-8 transition-colors ${
+                      isPlaying
+                        ? "text-pink-400"
+                        : "text-gray-300 group-hover:text-pink-400"
+                    }`}
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                  </svg>
+                  <span className="text-xs text-center font-medium text-gray-300">
+                    Instagram
+                  </span>
+                </div>
               </a>
 
-              {/* Snapchat - RAVE MODE ACTIVE */}
+              {/* Twitter */}
               <a
-                href="#"
-                className={`group bg-gray-800/50 backdrop-blur p-4 rounded-full border transition-all duration-300 transform ${
+                href="https://twitter.com/GIGIDAGOSTINO_1"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`group bg-gray-800/50 backdrop-blur p-4 rounded-lg border transition-all duration-300 transform ${
                   isPlaying
-                    ? "border-yellow-500 bg-yellow-500/20 scale-110"
-                    : "border-gray-700 hover:border-yellow-500 hover:bg-yellow-500/20 hover:scale-110"
+                    ? "border-sky-500 bg-sky-500/20 scale-105"
+                    : "border-gray-700 hover:border-sky-500 hover:bg-sky-500/20 hover:scale-105"
                 }`}
               >
-                <svg
-                  className={`w-8 h-8 transition-colors ${
-                    isPlaying
-                      ? "text-yellow-400"
-                      : "text-gray-300 group-hover:text-yellow-400"
-                  }`}
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 6.62 5.367 11.987 11.988 11.987 6.62 0 11.987-5.367 11.987-11.987C24.014 5.367 18.637.001 12.017.001zM8.449 16.988c-1.297 0-2.448-.596-3.205-1.535-.757-.939-1.173-2.145-1.173-3.402 0-1.258.416-2.464 1.173-3.403.757-.939 1.908-1.535 3.205-1.535s2.448.596 3.205 1.535c.757.939 1.173 2.145 1.173 3.403 0 1.257-.416 2.463-1.173 3.402-.757.939-1.908 1.535-3.205 1.535zm7.718 0c-1.297 0-2.448-.596-3.205-1.535-.757-.939-1.173-2.145-1.173-3.402 0-1.258.416-2.464 1.173-3.403.757-.939 1.908-1.535 3.205-1.535s2.448.596 3.205 1.535c.757.939 1.173 2.145 1.173 3.403 0 1.257-.416 2.463-1.173 3.402-.757.939-1.908 1.535-3.205 1.535z" />
-                </svg>
+                <div className="flex flex-col items-center space-y-2">
+                  <svg
+                    className={`w-8 h-8 transition-colors ${
+                      isPlaying
+                        ? "text-sky-400"
+                        : "text-gray-300 group-hover:text-sky-400"
+                    }`}
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
+                  </svg>
+                  <span className="text-xs text-center font-medium text-gray-300">
+                    Twitter
+                  </span>
+                </div>
+              </a>
+
+              {/* Spotify */}
+              <a
+                href="https://open.spotify.com/artist/1OAjDaKgg00KCUYqDe68un"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`group bg-gray-800/50 backdrop-blur p-4 rounded-lg border transition-all duration-300 transform ${
+                  isPlaying
+                    ? "border-green-500 bg-green-500/20 scale-105"
+                    : "border-gray-700 hover:border-green-500 hover:bg-green-500/20 hover:scale-105"
+                }`}
+              >
+                <div className="flex flex-col items-center space-y-2">
+                  <svg
+                    className={`w-8 h-8 transition-colors ${
+                      isPlaying
+                        ? "text-green-400"
+                        : "text-gray-300 group-hover:text-green-400"
+                    }`}
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.859-.179-.982-.599-.122-.421.18-.861.599-.982 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02l.024.142zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" />
+                  </svg>
+                  <span className="text-xs text-center font-medium text-gray-300">
+                    Spotify
+                  </span>
+                </div>
+              </a>
+
+              {/* Apple Music */}
+              <a
+                href="https://music.apple.com/it/artist/gigi-dagostino/90049828"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`group bg-gray-800/50 backdrop-blur p-4 rounded-lg border transition-all duration-300 transform ${
+                  isPlaying
+                    ? "border-gray-400 bg-gray-400/20 scale-105"
+                    : "border-gray-700 hover:border-gray-400 hover:bg-gray-400/20 hover:scale-105"
+                }`}
+              >
+                <div className="flex flex-col items-center space-y-2">
+                  <svg
+                    className={`w-8 h-8 transition-colors ${
+                      isPlaying
+                        ? "text-gray-300"
+                        : "text-gray-300 group-hover:text-white"
+                    }`}
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
+                  </svg>
+                  <span className="text-xs text-center font-medium text-gray-300">
+                    Apple Music
+                  </span>
+                </div>
               </a>
             </div>
 
-            <p className="text-gray-400 mt-6 text-sm">
-              Stay connected for exclusive content and behind-the-scenes updates
+            {/* YouTube Channels */}
+            <div className="mb-8">
+              <h4 className="text-lg font-semibold text-purple-300 mb-4 text-center">
+                YouTube Channels
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
+                {/* YouTube - Gigi Dag */}
+                <a
+                  href="https://www.youtube.com/channel/UCExjoFjxg4Yzj6erY_xx_Dw"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`group bg-gray-800/50 backdrop-blur p-4 rounded-lg border transition-all duration-300 transform ${
+                    isPlaying
+                      ? "border-red-500 bg-red-500/20 scale-105"
+                      : "border-gray-700 hover:border-red-500 hover:bg-red-500/20 hover:scale-105"
+                  }`}
+                >
+                  <div className="flex flex-col items-center space-y-2">
+                    <svg
+                      className={`w-8 h-8 transition-colors ${
+                        isPlaying
+                          ? "text-red-400"
+                          : "text-gray-300 group-hover:text-red-400"
+                      }`}
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                    </svg>
+                    <span className="text-xs text-center font-medium text-gray-300">
+                      Gigi Dag
+                    </span>
+                  </div>
+                </a>
+
+                {/* YouTube - Gigi D'Agostino */}
+                <a
+                  href="https://www.youtube.com/channel/UC7Sqfp5sOFUI4436LBoB_JQ"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`group bg-gray-800/50 backdrop-blur p-4 rounded-lg border transition-all duration-300 transform ${
+                    isPlaying
+                      ? "border-red-500 bg-red-500/20 scale-105"
+                      : "border-gray-700 hover:border-red-500 hover:bg-red-500/20 hover:scale-105"
+                  }`}
+                >
+                  <div className="flex flex-col items-center space-y-2">
+                    <svg
+                      className={`w-8 h-8 transition-colors ${
+                        isPlaying
+                          ? "text-red-400"
+                          : "text-gray-300 group-hover:text-red-400"
+                      }`}
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                    </svg>
+                    <span className="text-xs text-center font-medium text-gray-300">
+                      Gigi D&apos;Agostino
+                    </span>
+                  </div>
+                </a>
+
+                {/* YouTube - Lento Violento */}
+                <a
+                  href="https://www.youtube.com/c/lentoviolento"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`group bg-gray-800/50 backdrop-blur p-4 rounded-lg border transition-all duration-300 transform ${
+                    isPlaying
+                      ? "border-red-500 bg-red-500/20 scale-105"
+                      : "border-gray-700 hover:border-red-500 hover:bg-red-500/20 hover:scale-105"
+                  }`}
+                >
+                  <div className="flex flex-col items-center space-y-2">
+                    <svg
+                      className={`w-8 h-8 transition-colors ${
+                        isPlaying
+                          ? "text-red-400"
+                          : "text-gray-300 group-hover:text-red-400"
+                      }`}
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                    </svg>
+                    <span className="text-xs text-center font-medium text-gray-300">
+                      Lento Violento
+                    </span>
+                  </div>
+                </a>
+              </div>
+            </div>
+
+            {/* Casa DAG Forum */}
+            <div className="text-center">
+              <a
+                href="http://www.casadag.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`inline-flex items-center space-x-3 bg-gray-800/50 backdrop-blur px-6 py-4 rounded-lg border transition-all duration-300 transform ${
+                  isPlaying
+                    ? "border-purple-500 bg-purple-500/20 scale-105"
+                    : "border-gray-700 hover:border-purple-500 hover:bg-purple-500/20 hover:scale-105"
+                }`}
+              >
+                <svg
+                  className={`w-8 h-8 transition-colors ${
+                    isPlaying
+                      ? "text-purple-400"
+                      : "text-gray-300 hover:text-purple-400"
+                  }`}
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
+                </svg>
+                <div className="text-left">
+                  <p className="font-semibold text-white">Casa DAG</p>
+                  <p className="text-sm text-gray-300">Official Forum</p>
+                </div>
+              </a>
+            </div>
+
+            <p className="text-gray-400 mt-8 text-sm text-center">
+              Stay connected for exclusive content, behind-the-scenes updates,
+              and the latest Lento Violento releases
             </p>
           </div>
 
-          {/* Tech stack indicator */}
+          {/* Tech stack indicator
           <div className="mt-12 p-6 bg-gray-800 rounded-2xl border border-gray-700 shadow-2xl">
             <div className="flex items-center justify-center space-x-2 text-gray-400">
               <span className="text-sm font-mono">Powered by</span>
@@ -2323,7 +2370,7 @@ export default function Home() {
               <span className="text-gray-500">•</span>
               <span className="text-white font-semibold">Dark Mode</span>
             </div>
-          </div>
+          </div> */}
 
           {/* Subtle glow effect */}
           <div className="absolute inset-0 -z-10">
