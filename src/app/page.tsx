@@ -92,9 +92,12 @@ export default function Home() {
   }, [isMobile]);
 
   // Calculate if user has scrolled past the dance area
-  const danceAreaHeight = typeof window !== 'undefined' 
-    ? (isPlaying ? window.innerHeight * 0.75 : window.innerHeight * 0.5)
-    : 0;
+  const danceAreaHeight =
+    typeof window !== "undefined"
+      ? isPlaying
+        ? window.innerHeight * 0.75
+        : window.innerHeight * 0.5
+      : 0;
   const isScrolledPastDanceArea = scrollY > danceAreaHeight;
 
   return (
@@ -679,7 +682,9 @@ export default function Home() {
                   filter:
                     "sepia(50%) hue-rotate(180deg) brightness(1.2) contrast(1.1)",
                   mixBlendMode: "multiply",
-                  transform: `rotate(${scrollY * 0.04}deg)`,
+                  ...(isMobile
+                    ? {}
+                    : { transform: `rotate(${scrollY * 0.04}deg)` }),
                   animationDelay: "3.5s",
                 }}
               />
