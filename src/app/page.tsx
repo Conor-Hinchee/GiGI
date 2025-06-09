@@ -142,12 +142,12 @@ export default function Home() {
           ></div>
         </div>
         {/* Three.js Fireflies Background */}
-        <FirefliesScene
+        {/* <FirefliesScene
           isPlaying={isPlaying}
           isFullscreen={isFullscreen}
           isExpanded={isPlaying && !isFullscreen}
           isMobile={isMobile}
-        />
+        /> */}
 
         {/* Expansion Indicator - appears when expanding */}
         {isPlaying && !isFullscreen && (
