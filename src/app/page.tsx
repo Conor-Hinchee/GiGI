@@ -430,9 +430,13 @@ export default function Home() {
             <div
               className="absolute inset-0 opacity-8 parallax-layer"
               style={{
-                transform: `translateY(${scrollY * 0.05}px) rotate(${
-                  scrollY * 0.002
-                }deg)`,
+                ...(isMobile
+                  ? {}
+                  : {
+                      transform: `translateY(${scrollY * 0.05}px) rotate(${
+                        scrollY * 0.002
+                      }deg)`,
+                    }),
               }}
             >
               {/* Tiny floating GiGi portraits */}
@@ -546,12 +550,12 @@ export default function Home() {
                   filter:
                     "sepia(40%) hue-rotate(280deg) brightness(0.6) contrast(1.3)",
                   mixBlendMode: "soft-light",
-                  transform: `rotate(${scrollY * 0.02}deg)`,
+                  ...(isMobile
+                    ? {}
+                    : { transform: `rotate(${scrollY * 0.02}deg)` }),
                   animationDelay: "1s",
                 }}
               />
-
-              {/* GiGi Portrait 3 - New addition */}
               <div
                 className={`absolute top-1/6 left-1/2 w-28 h-42 bg-cover bg-center rounded-lg opacity-55 blur-sm ${
                   isPlaying ? "animate-image-pulse-glow" : "animate-image-drift"
@@ -561,7 +565,13 @@ export default function Home() {
                   filter:
                     "sepia(35%) hue-rotate(320deg) brightness(0.8) contrast(1.4)",
                   mixBlendMode: "color-burn",
-                  transform: `translateX(-50%) rotate(${scrollY * -0.015}deg)`,
+                  ...(isMobile
+                    ? {}
+                    : {
+                        transform: `translateX(-50%) rotate(${
+                          scrollY * -0.015
+                        }deg)`,
+                      }),
                   animationDelay: "3s",
                 }}
               />
@@ -592,7 +602,9 @@ export default function Home() {
                   filter:
                     "sepia(40%) hue-rotate(350deg) brightness(1.1) contrast(1.2)",
                   mixBlendMode: "screen",
-                  transform: `translateY(${scrollY * 0.05}px)`,
+                  ...(isMobile
+                    ? {}
+                    : { transform: `translateY(${scrollY * 0.05}px)` }),
                   animationDelay: "5s",
                 }}
               />
@@ -639,7 +651,9 @@ export default function Home() {
                   filter:
                     "sepia(30%) hue-rotate(260deg) brightness(0.9) contrast(1.2)",
                   mixBlendMode: "multiply",
-                  transform: `rotate(${-scrollY * 0.03}deg)`,
+                  ...(isMobile
+                    ? {}
+                    : { transform: `rotate(${-scrollY * 0.03}deg)` }),
                   animationDelay: "0.5s",
                 }}
               />
@@ -669,12 +683,12 @@ export default function Home() {
                   filter:
                     "sepia(60%) hue-rotate(240deg) brightness(0.7) contrast(1.4)",
                   mixBlendMode: "overlay",
-                  transform: `translateX(${scrollY * 0.1}px)`,
+                  ...(isMobile
+                    ? {}
+                    : { transform: `translateX(${scrollY * 0.1}px)` }),
                   animationDelay: "2.5s",
                 }}
               />
-
-              {/* MaxRes Default - Music video thumbnail */}
               <div
                 className={`absolute top-1/8 right-1/8 w-20 h-15 bg-cover bg-center rounded-md opacity-65 blur-sm ${
                   isPlaying ? "animate-image-pulse-glow" : "animate-image-drift"
@@ -703,7 +717,9 @@ export default function Home() {
                   filter:
                     "sepia(30%) hue-rotate(220deg) brightness(0.8) contrast(1.5)",
                   mixBlendMode: "color-dodge",
-                  transform: `translateX(${scrollY * -0.08}px)`,
+                  ...(isMobile
+                    ? {}
+                    : { transform: `translateX(${scrollY * -0.08}px)` }),
                   animationDelay: "4.5s",
                 }}
               />
