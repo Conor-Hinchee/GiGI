@@ -113,7 +113,7 @@ export default function Home() {
             : "h-[50vh] border-b-4 border-gray-800"
         }`}
       >
-        {/* Desktop-only: Advanced background effects */}
+        {/* Advanced background effects */}
         <div className="hidden xl:block absolute inset-0 opacity-30">
           <div
             className="absolute top-0 left-0 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl animate-float-up"
@@ -129,7 +129,7 @@ export default function Home() {
           ></div>
         </div>
 
-        {/* Desktop-only: Sophisticated grid overlay with shimmer */}
+        {/* Sophisticated grid overlay with shimmer */}
         <div className="hidden lg:block absolute inset-0 opacity-20">
           <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5"></div>
           <div
@@ -256,7 +256,7 @@ export default function Home() {
                 : "shadow-purple-400/20"
             } gigi-hero-btn`}
           >
-            {/* Desktop-only: Advanced hover trails that mobile won't see - RAVE MODE ACTIVE */}
+            {/* Advanced hover trails that mobile won't see - RAVE MODE ACTIVE */}
             <div
               className={`hidden lg:block absolute -inset-8 transition-all duration-700 ${
                 isPlaying ? "opacity-100" : "opacity-0 group-hover:opacity-100"
@@ -266,7 +266,7 @@ export default function Home() {
               <div className="absolute inset-2 bg-gradient-to-l from-blue-500/15 via-purple-500/15 to-red-500/15 rounded-full blur-lg animate-ping"></div>
             </div>
 
-            {/* Desktop-only: Hover particle effects - RAVE MODE ACTIVE */}
+            {/* Hover particle effects - RAVE MODE ACTIVE */}
             <div
               className={`hidden xl:block absolute -inset-12 transition-all duration-1000 ${
                 isPlaying ? "opacity-100" : "opacity-0 group-hover:opacity-100"
@@ -299,7 +299,7 @@ export default function Home() {
               }`}
             ></div>
 
-            {/* Desktop-only: Sophisticated hover ring that rotates opposite direction - RAVE MODE ACTIVE */}
+            {/* Sophisticated hover ring that rotates opposite direction - RAVE MODE ACTIVE */}
             <div
               className={`hidden md:block absolute -inset-3 transition-all duration-700 ${
                 isPlaying ? "opacity-70" : "opacity-0 group-hover:opacity-70"
@@ -347,7 +347,7 @@ export default function Home() {
               }`}
             ></div>
 
-            {/* Desktop-only: Additional highlight that appears on hover - RAVE MODE ACTIVE */}
+            {/* Additional highlight that appears on hover - RAVE MODE ACTIVE */}
             <div
               className={`hidden lg:block absolute top-2 right-2 w-2 h-2 rounded-full blur-sm transition-all duration-500 ${
                 isPlaying
@@ -367,7 +367,7 @@ export default function Home() {
               ></div>
             </div>
 
-            {/* Desktop-only: Hover tooltip that mobile won't see */}
+            {/* Hover tooltip that mobile won't see */}
             <div className="hidden lg:block absolute -top-12 left-1/2 transform -translate-x-1/2 transition-all duration-300 pointer-events-none opacity-0 group-hover:opacity-100">
               <div className="bg-black/80 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-full border border-purple-400/50">
                 {isPlaying ? "🎉 RAVE MODE ACTIVE! 🎉" : "Start the party"}
@@ -1256,7 +1256,7 @@ export default function Home() {
         <div className="relative z-10 text-center space-y-8 max-w-4xl mx-auto">
           {/* Main Artist Name */}
           <div className="space-y-6 relative">
-            {/* Desktop-only: Background text effect */}
+            {/* Background text effect */}
             <div className="hidden xl:block absolute inset-0 -z-10">
               <h1 className="text-7xl md:text-8xl lg:text-9xl font-black text-white/5 tracking-wider uppercase blur-sm transform scale-110">
                 GiGi D&apos;Agostino
@@ -1271,7 +1271,7 @@ export default function Home() {
               } gigi-hero-text`}
             >
               <span className="relative z-10">GiGi D&apos;Agostino</span>
-              {/* Desktop-only: Shimmer effect on hover - RAVE MODE ACTIVE */}
+              {/* Shimmer effect on hover - RAVE MODE ACTIVE */}
               {/* <div
                 className={`hidden lg:block absolute inset-0 bg-gradient-to-r from-transparent via-gold-300/30 to-transparent -skew-x-12 transition-opacity duration-500 ${
                   isPlaying
@@ -1313,7 +1313,7 @@ export default function Home() {
                     : "border border-gray-700 hover:border-trace-rave hover:transform hover:scale-105"
                 } gigi-tour-card`}
               >
-                {/* Desktop-only: Hover particle effect - RAVE MODE ACTIVE */}
+                {/* Hover particle effect - RAVE MODE ACTIVE */}
                 <div
                   className={`hidden lg:block absolute -top-2 -right-2 w-4 h-4 rounded-full blur-sm transition-all duration-500 ${
                     isPlaying
