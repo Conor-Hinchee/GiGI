@@ -382,6 +382,9 @@ export default function Home() {
                   filter:
                     "sepia(50%) hue-rotate(180deg) brightness(1.2) contrast(1.1)",
                   mixBlendMode: "multiply",
+                  ...(isMobile
+                    ? {}
+                    : { transform: `rotate(${scrollY * 0.04}deg)` }),
                   animationDelay: "3.5s",
                 }}
               />
