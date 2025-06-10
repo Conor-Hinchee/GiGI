@@ -169,7 +169,8 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
         onPlay={() => setIsPlaying(true)}
       >
         <source
-          src="Gigi D'Agostino & Luca Noise - Smoke A Beat [ From the album SMODERANZA ] [w3KP8UhTdys].mp3"
+          // src="/Gigi D'Agostino - Cuba Libre ( L'Amour Toujours ) [UWMYjD16qFc].mp3"
+          src="Gigi D’Agostino & Luca Noise - Smoke A Beat [ From the album SMODERANZA ] [w3KP8UhTdys].mp3"
           type="audio/mpeg"
         />
         Your browser does not support the audio element.
