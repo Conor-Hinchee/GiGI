@@ -16,14 +16,8 @@ export default function Home() {
   const { isMobile } = useMobileDetection();
   const { scrollY } = useScrollPosition(isMobile);
 
-  // Calculate if user has scrolled past the dance area
-  const danceAreaHeight =
-    typeof window !== "undefined"
-      ? isPlaying
-        ? window.innerHeight * 0.75
-        : window.innerHeight * 0.5
-      : 0;
-  const isScrolledPastDanceArea = scrollY > danceAreaHeight;
+  // Calculate if user has started scrolling (simple threshold)
+  const isScrolledPastDanceArea = scrollY > 100;
 
   return (
     <div className="min-h-screen bg-gray-900">
