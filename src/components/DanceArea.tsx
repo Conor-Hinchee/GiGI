@@ -20,7 +20,7 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
         isFullscreen
           ? "fixed inset-0 z-50 h-screen w-screen border-0"
           : isPlaying
-          ? "h-[75vh] border-b-4 border-purple-500/60 shadow-purple-500/20 shadow-lg"
+          ? "h-[100vh] border-b-8 border-purple-400/80 shadow-purple-400/40 shadow-2xl"
           : "h-[50vh] border-b-4 border-gray-800"
       }`}
     >
@@ -63,14 +63,14 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
 
       {/* Expansion Indicator - appears when expanding */}
       {isPlaying && !isFullscreen && (
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-30 opacity-0 animate-fade-in-out">
-          <div className="flex items-center space-x-2 bg-black/60 backdrop-blur-md rounded-full px-4 py-2 border border-purple-500/40 shadow-lg">
-            <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
-            <span className="text-purple-200 text-sm font-medium">
-              Dance area expanding...
+        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-30 opacity-0 animate-rave-fade-in-out">
+          <div className="flex items-center space-x-3 bg-black/70 backdrop-blur-md rounded-full px-6 py-3 border border-purple-400/60 shadow-2xl">
+            <div className="w-3 h-3 bg-purple-400 rounded-full animate-rave-particle-glow shadow-purple-400/80 shadow-lg"></div>
+            <span className="text-purple-200 text-base font-semibold">
+              🎵 Full Rave Mode • Complete Immersion
             </span>
             <svg
-              className="w-4 h-4 text-purple-400 animate-bounce"
+              className="w-5 h-5 text-purple-400 animate-bounce"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -177,13 +177,21 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
       </audio>
 
       {/* Ambient particles */}
-      <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-purple-400/30 rounded-full animate-pulse z-15"></div>
       <div
-        className="absolute top-3/4 right-1/4 w-1 h-1 bg-pink-400/40 rounded-full animate-pulse z-15"
+        className={`absolute top-1/4 left-1/4 w-2 h-2 bg-purple-400/30 rounded-full z-15 ${
+          isPlaying ? "animate-rave-particle-glow" : "animate-pulse"
+        }`}
+      ></div>
+      <div
+        className={`absolute top-3/4 right-1/4 w-1 h-1 bg-pink-400/40 rounded-full z-15 ${
+          isPlaying ? "animate-rave-particle-glow" : "animate-pulse"
+        }`}
         style={{ animationDelay: "1s" }}
       ></div>
       <div
-        className="absolute bottom-1/4 left-1/3 w-1.5 h-1.5 bg-blue-400/20 rounded-full animate-pulse z-15"
+        className={`absolute bottom-1/4 left-1/3 w-1.5 h-1.5 bg-blue-400/20 rounded-full z-15 ${
+          isPlaying ? "animate-rave-particle-glow" : "animate-pulse"
+        }`}
         style={{ animationDelay: "2s" }}
       ></div>
     </div>

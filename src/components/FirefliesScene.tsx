@@ -189,8 +189,10 @@ const FirefliesScene: React.FC<FirefliesSceneProps> = ({
       ? MAX_FIREFLIES_MOBILE
       : isFullscreen
       ? MAX_FIREFLIES_FULLSCREEN
+      : isExpanded // When expanded to 100vh in rave mode, use more fireflies
+      ? MAX_FIREFLIES_FULLSCREEN * 0.75 // 75% of fullscreen count for expanded mode
       : MAX_FIREFLIES_NORMAL;
-    const spreadMultiplier = isFullscreen ? 2.0 : 1.0;
+    const spreadMultiplier = isFullscreen ? 2.0 : isExpanded ? 1.5 : 1.0;
     const positions = new Float32Array(maxFireflies * 3);
     const colors = new Float32Array(maxFireflies * 3);
     const scales = new Float32Array(maxFireflies);
