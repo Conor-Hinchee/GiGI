@@ -10,8 +10,8 @@ interface FirefliesSceneProps {
   isMobile?: boolean;
 }
 
-const MAX_FIREFLIES_FULLSCREEN = 400;
-const MAX_FIREFLIES_NORMAL = 200;
+const MAX_FIREFLIES_FULLSCREEN = 800;
+const MAX_FIREFLIES_NORMAL = 400;
 const MAX_FIREFLIES_MOBILE = 50; // Reduced for mobile performance
 
 const FirefliesScene: React.FC<FirefliesSceneProps> = ({
