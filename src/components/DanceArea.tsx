@@ -67,7 +67,7 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
           <div className="flex items-center space-x-3 bg-black/70 backdrop-blur-md rounded-full px-6 py-3 border border-purple-400/60 shadow-2xl">
             <div className="w-3 h-3 bg-purple-400 rounded-full animate-rave-particle-glow shadow-purple-400/80 shadow-lg"></div>
             <span className="text-purple-200 text-base font-semibold">
-              🎵 Full Rave Mode • Complete Immersion
+              🎵 Dance Mode Active 🎵
             </span>
             <svg
               className="w-5 h-5 text-purple-400 animate-bounce"
@@ -130,7 +130,7 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
         <div className="absolute top-4 right-4 z-30 flex items-center space-x-2 bg-black/40 backdrop-blur-md rounded-full px-4 py-2 border border-purple-500/40 shadow-lg">
           <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse shadow-purple-400/50 shadow-sm"></div>
           <span className="text-purple-200 text-sm font-medium">
-            Rave Mode Active
+            Dance Mode Active
           </span>
         </div>
       )}

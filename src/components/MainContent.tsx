@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import { MainContentProps } from "../types";
 import { TourCard } from "./TourCard";
 import { SocialLinks } from "./SocialLinks";
@@ -31,13 +32,16 @@ export const MainContent: React.FC<MainContentProps> = ({
       {/* Main Background Image - Behind title */}
       <div className="absolute inset-0 z-5">
         <div className="hero-background-container">
-          <img
+          <Image
             src="/maxresdefault.jpg"
             alt="GiGi D'Agostino Background"
             className="hero-background-image"
             style={
               isMobile ? { transform: "none", willChange: "auto" } : undefined
             }
+            fill
+            priority
+            sizes="100vw"
           />
           <div className="hero-background-overlay"></div>
         </div>
@@ -88,7 +92,15 @@ export const MainContent: React.FC<MainContentProps> = ({
           <div className="text-center mt-8 mb-4">
             <div className="flex items-center justify-center space-x-4 mb-4">
               <div className="text-4xl">🎧</div>
-              <div className="text-2xl font-bold text-purple-300">舞</div>
+              <div className="relative">
+                {/* Particle indicator - always visible for dance symbol */}
+                <div className="hidden lg:block absolute -top-2 -right-2 w-3 h-3 rounded-full blur-sm">
+                  <div className="bg-purple-400/60 animate-ping w-full h-full rounded-full"></div>
+                </div>
+                <div className="text-2xl font-bold text-purple-300 bg-clip-text bg-gradient-to-r from-purple-200 via-purple-300 to-purple-500 animate-pulse scale-105">
+                  舞
+                </div>
+              </div>
             </div>
             <h3 className="text-2xl md:text-3xl font-bold text-white uppercase tracking-widest">
               The Maestro of Italo-Dance
