@@ -8,17 +8,10 @@ interface ParallaxLayerProps {
 
 export const ParallaxLayer: React.FC<ParallaxLayerProps> = ({
   scrollY,
-  isMobile,
+  isMobile, // Kept for future use
 }) => {
-  if (isMobile) {
-    return (
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute inset-0 opacity-30">
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/15 via-pink-500/10 to-blue-500/15"></div>
-        </div>
-      </div>
-    );
-  }
+  // Reference isMobile to avoid TypeScript error while keeping for future use
+  void isMobile;
 
   return (
     <div className="absolute inset-0 overflow-hidden">

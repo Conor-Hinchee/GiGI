@@ -10,13 +10,11 @@ import {
 } from "../hooks";
 
 export default function Home() {
-  // Custom hooks
   const { isPlaying, setIsPlaying, audioRef, toggleAudio } = useAudioPlayer();
   const { isFullscreen, danceAreaRef, toggleFullscreen } = useFullscreen();
   const { isMobile } = useMobileDetection();
   const { scrollY } = useScrollPosition(isMobile);
 
-  // Calculate if user has started scrolling (simple threshold)
   const isScrolledPastDanceArea = scrollY > 100;
 
   return (

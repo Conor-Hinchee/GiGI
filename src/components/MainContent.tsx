@@ -18,16 +18,14 @@ export const MainContent: React.FC<MainContentProps> = ({
         isPlaying ? "min-h-[150vh]" : "min-h-[200vh]"
       } gigi-main-content`}
       style={{
-        background: isMobile
-          ? `linear-gradient(135deg, rgb(17, 24, 39) 0%, rgb(31, 41, 59) 50%, rgb(17, 24, 39) 100%)`
-          : `linear-gradient(
-            ${135 + Math.sin(scrollY * 0.002) * 45}deg,
-            rgb(17, 24, 39) 0%,
-            rgb(${31 + Math.sin(scrollY * 0.003) * 20}, ${
-              41 + Math.cos(scrollY * 0.004) * 30
-            }, ${59 + Math.sin(scrollY * 0.005) * 40}) 50%,
-            rgb(17, 24, 39) 100%
-          )`,
+        background: `linear-gradient(
+          ${135 + Math.sin(scrollY * 0.002) * 45}deg,
+          rgb(17, 24, 39) 0%,
+          rgb(${31 + Math.sin(scrollY * 0.003) * 20}, ${
+          41 + Math.cos(scrollY * 0.004) * 30
+        }, ${59 + Math.sin(scrollY * 0.005) * 40}) 50%,
+          rgb(17, 24, 39) 100%
+        )`,
       }}
     >
       {/* Main Background Image - Behind title */}
@@ -37,9 +35,6 @@ export const MainContent: React.FC<MainContentProps> = ({
             src="/maxresdefault.jpg"
             alt="GiGi D'Agostino Background"
             className="hero-background-image"
-            style={
-              isMobile ? { transform: "none", willChange: "auto" } : undefined
-            }
             fill
             priority
             sizes="100vw"

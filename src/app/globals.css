@@ -487,21 +487,20 @@ body, html {
   }
 }
 
-/* Mobile optimizations for parallax effects */
+/* Mobile optimizations for parallax effects - DISABLED FOR FULL EXPERIENCE */
+/*
 @media (max-width: 768px) {
   .parallax-layer {
     transform: none !important;
     animation: none !important;
-    display: none; /* Completely hide parallax layers on mobile */
+    display: none;
   }
   
-  /* Disable all parallax transforms on mobile */
   .parallax-layer * {
     transform: none !important;
     animation-duration: 0s !important;
   }
   
-  /* Reduce animation intensity on mobile for better performance */
   .animate-image-drift,
   .animate-image-pulse-glow,
   .animate-rave-mode-image-dance,
@@ -511,12 +510,10 @@ body, html {
     animation: none !important;
   }
   
-  /* Simplify backgrounds on mobile */
   [style*="translateY"],[style*="rotate"],[style*="scale"] {
     transform: none !important;
   }
   
-  /* Disable border tracing animations on mobile for performance */
   .border-trace-rave,
   .border-trace-purple,
   .border-trace-pink,
@@ -528,8 +525,10 @@ body, html {
     border: 2px solid rgba(147, 51, 234, 0.3) !important;
   }
 }
+*/
 
-/* Force disable parallax on touch devices */
+/* Force disable parallax on touch devices - DISABLED FOR FULL EXPERIENCE */
+/*
 @media (hover: none) and (pointer: coarse) {
   .parallax-layer {
     transform: none !important;
@@ -541,7 +540,6 @@ body, html {
     animation: none !important;
   }
   
-  /* Disable intensive animations on touch devices */
   .border-trace-rave,
   .border-trace-purple,
   .border-trace-pink,
@@ -553,6 +551,7 @@ body, html {
     border: 2px solid rgba(147, 51, 234, 0.3) !important;
   }
 }
+*/
 
 /* Hero Background Image Styles */
 .hero-background-container {

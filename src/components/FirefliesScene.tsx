@@ -12,7 +12,7 @@ interface FirefliesSceneProps {
 
 const MAX_FIREFLIES_FULLSCREEN = 800;
 const MAX_FIREFLIES_NORMAL = 400;
-const MAX_FIREFLIES_MOBILE = 50; // Reduced for mobile performance
+// const MAX_FIREFLIES_MOBILE = 50; // Kept for future use
 
 const FirefliesScene: React.FC<FirefliesSceneProps> = ({
   isPlaying,
@@ -184,10 +184,8 @@ const FirefliesScene: React.FC<FirefliesSceneProps> = ({
     rendererRef.current = renderer;
     mount.appendChild(renderer.domElement);
 
-    // Fireflies geometry and material - enhanced for fullscreen, reduced for mobile
-    const maxFireflies = isMobile
-      ? MAX_FIREFLIES_MOBILE
-      : isFullscreen
+    // Fireflies geometry and material - enhanced for fullscreen and expanded modes
+    const maxFireflies = isFullscreen
       ? MAX_FIREFLIES_FULLSCREEN
       : isExpanded // When expanded to 100vh in rave mode, use more fireflies
       ? MAX_FIREFLIES_FULLSCREEN * 0.75 // 75% of fullscreen count for expanded mode
@@ -532,19 +530,7 @@ const FirefliesScene: React.FC<FirefliesSceneProps> = ({
     <div
       ref={mountRef}
       className="absolute inset-0 w-full h-full"
-      style={
-        isMobile
-          ? {
-              position: "fixed",
-              top: 0,
-              left: 0,
-              width: "100vw",
-              height: "100vh",
-              pointerEvents: "none",
-              zIndex: 1,
-            }
-          : { zIndex: 1 }
-      }
+      style={{ zIndex: 1 }}
     />
   );
 };
