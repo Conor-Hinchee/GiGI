@@ -3,6 +3,7 @@ import Image from "next/image";
 import { MainContentProps } from "../types";
 import { TourCard } from "./TourCard";
 import { SocialLinks } from "./SocialLinks";
+import { ParallaxLayer } from "./ParallaxLayer";
 import { tourDates } from "../data/tourDates";
 
 export const MainContent: React.FC<MainContentProps> = ({
@@ -47,12 +48,14 @@ export const MainContent: React.FC<MainContentProps> = ({
         </div>
       </div>
 
-      {/* Parallax Background Layers - Only render on desktop
-      <ParallaxLayer
-        scrollY={scrollY}
-        isMobile={isMobile}
-        isPlaying={isPlaying}
-      /> */}
+      {/* Parallax Background Layers - Only render on desktop for tour section */}
+      <div className="absolute inset-0 z-0">
+        <ParallaxLayer
+          scrollY={scrollY}
+          isMobile={isMobile}
+          isPlaying={isPlaying}
+        />
+      </div>
 
       {/* Main Content - Above parallax layers */}
       <div className="relative z-10 text-center space-y-8 max-w-4xl mx-auto">
