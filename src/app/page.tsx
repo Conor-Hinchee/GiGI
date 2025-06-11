@@ -1,19 +1,18 @@
 "use client";
 
 import React from "react";
-// import { DanceArea, MainContent } from "../components";
-import { MainContent } from "../components";
+import { DanceArea, MainContent } from "../components";
 import {
-  // useAudioPlayer,
-  // useFullscreen,
+  useAudioPlayer,
+  useFullscreen,
   useMobileDetection,
   useScrollPosition,
 } from "../hooks";
 
 export default function Home() {
   // Custom hooks
-  // const { isPlaying, setIsPlaying, audioRef, toggleAudio } = useAudioPlayer();
-  // const { isFullscreen, danceAreaRef, toggleFullscreen } = useFullscreen();
+  const { isPlaying, setIsPlaying, audioRef, toggleAudio } = useAudioPlayer();
+  const { isFullscreen, danceAreaRef, toggleFullscreen } = useFullscreen();
   const { isMobile } = useMobileDetection();
   const { scrollY } = useScrollPosition(isMobile);
 
@@ -22,7 +21,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-900">
-      {/* <DanceArea
+      <DanceArea
         isPlaying={isPlaying}
         setIsPlaying={setIsPlaying}
         isFullscreen={isFullscreen}
@@ -32,9 +31,8 @@ export default function Home() {
         toggleFullscreen={toggleFullscreen}
         audioRef={audioRef}
       />
-       */}
       <MainContent
-        isPlaying={false}
+        isPlaying={isPlaying}
         scrollY={scrollY}
         isMobile={isMobile}
         isScrolledPastDanceArea={isScrolledPastDanceArea}
