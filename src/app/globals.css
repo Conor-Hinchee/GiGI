@@ -360,6 +360,22 @@ html {
   }
 }
 
+/* Single-use expansion indicator animation */
+@keyframes rave-fade-in-out-once {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.8);
+  }
+  15%, 85% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.9);
+  }
+}
+
 .animate-rave-mode-expand {
   animation: rave-mode-expand 1s ease-in-out forwards;
 }
@@ -370,6 +386,10 @@ html {
 
 .animate-rave-fade-in-out {
   animation: rave-fade-in-out 4s ease-in-out infinite;
+}
+
+.animate-rave-fade-in-out-once {
+  animation: rave-fade-in-out-once 3s ease-in-out;
 }
 
 /* Desktop-only utility classes */

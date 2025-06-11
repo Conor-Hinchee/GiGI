@@ -63,7 +63,7 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
 
       {/* Expansion Indicator - appears when expanding */}
       {isPlaying && !isFullscreen && (
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-30 opacity-0 animate-rave-fade-in-out">
+        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-30 opacity-0 animate-rave-fade-in-out-once">
           <div className="flex items-center space-x-3 bg-black/70 backdrop-blur-md rounded-full px-6 py-3 border border-purple-400/60 shadow-2xl">
             <div className="w-3 h-3 bg-purple-400 rounded-full animate-rave-particle-glow shadow-purple-400/80 shadow-lg"></div>
             <span className="text-purple-200 text-base font-semibold">

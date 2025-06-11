@@ -85,7 +85,7 @@ const SocialLinkCard: React.FC<SocialLinkCardProps> = ({
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className={`group relative bg-gray-800/50 backdrop-blur p-4 rounded-lg border transition-all duration-150 transform ${
+      className={`group relative inline-block bg-gray-800/50 backdrop-blur p-4 rounded-lg border transition-all duration-150 transform ${
         showRaveEffect
           ? `${colors.border} ${colors.bg} scale-105 border-trace-rave`
           : `border-gray-700 hover:${colors.border} hover:${colors.bg} hover:scale-105`
@@ -252,7 +252,7 @@ export const SocialLinks: React.FC<SocialLinksProps> = ({ isPlaying }) => {
       </div>
 
       {/* Casa DAG Forum */}
-      <div className="text-center">
+      <div className="text-center inline-block">
         <SocialLinkCard
           href="http://www.casadag.com"
           icon={
