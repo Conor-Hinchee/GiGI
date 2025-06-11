@@ -3,6 +3,13 @@ import { DanceAreaProps } from "../types";
 import FirefliesScene from "./FirefliesScene";
 import { DanceButton } from "./DanceButton";
 
+// Available songs array
+const AVAILABLE_SONGS = [
+  "GIGI D'AGOSTINO & LUCA NOISE - LIKE A FLOW FLOAT (GIGI DAG & LUC ON ROCKING MIX) [17bJ-XXxbu0].mp3",
+  "Gigi D'Agostino - Cuba Libre ( L'Amour Toujours ) [UWMYjD16qFc].mp3",
+  "Gigi D'Agostino & Luca Noise - Smoke A Beat [ From the album SMODERANZA ] [w3KP8UhTdys].mp3",
+];
+
 export const DanceArea: React.FC<DanceAreaProps> = ({
   isPlaying,
   setIsPlaying,
@@ -13,6 +20,14 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
   toggleFullscreen,
   audioRef,
 }) => {
+  const [currentSong, setCurrentSong] = React.useState<string>("");
+
+  // Select random song on component mount
+  React.useEffect(() => {
+    const randomIndex = Math.floor(Math.random() * AVAILABLE_SONGS.length);
+    setCurrentSong(AVAILABLE_SONGS[randomIndex]);
+  }, []);
+
   return (
     <div
       ref={danceAreaRef}
@@ -168,11 +183,7 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
         onPause={() => setIsPlaying(false)}
         onPlay={() => setIsPlaying(true)}
       >
-        <source
-          src="/Gigi D'Agostino - Cuba Libre ( L'Amour Toujours ) [UWMYjD16qFc].mp3"
-          // src="Gigi D’Agostino & Luca Noise - Smoke A Beat [ From the album SMODERANZA ] [w3KP8UhTdys].mp3"
-          type="audio/mpeg"
-        />
+        {currentSong && <source src={currentSong} type="audio/mpeg" />}
         Your browser does not support the audio element.
       </audio>
 
