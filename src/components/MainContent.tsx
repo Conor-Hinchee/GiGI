@@ -55,7 +55,7 @@ export const MainContent: React.FC<MainContentProps> = ({
       {/* Main Content - Above parallax layers */}
       <div className="relative z-10 text-center space-y-8 max-w-4xl mx-auto">
         {/* Main Artist Name */}
-        <div className="space-y-6 relative">
+        <div className="space-y-6 relative pt-16 md:pt-20 lg:pt-24">
           {/* Background text effect */}
           <div className="hidden xl:block absolute inset-0 -z-10">
             <h1 className="text-7xl md:text-8xl lg:text-9xl font-black text-white/5 tracking-wider uppercase blur-sm transform scale-110">
@@ -66,8 +66,8 @@ export const MainContent: React.FC<MainContentProps> = ({
           <h1
             className={`text-7xl md:text-8xl lg:text-9xl font-black tracking-wider uppercase transition-all duration-700 cursor-default relative ${
               isScrolledPastDanceArea || isPlaying
-                ? "text-transparent bg-clip-text bg-gradient-to-r from-gold-300 via-gold-400 to-gold-600"
-                : "text-white hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-gold-300 hover:via-gold-400 hover:to-gold-600"
+                ? "text-gold-400 md:text-transparent md:bg-clip-text md:bg-gradient-to-r md:from-gold-300 md:via-gold-400 md:to-gold-600"
+                : "text-white hover:text-gold-400 md:hover:text-transparent md:hover:bg-clip-text md:hover:bg-gradient-to-r md:hover:from-gold-300 md:hover:via-gold-400 md:hover:to-gold-600"
             } gigi-hero-text`}
           >
             <span className="relative z-10">GiGi D&apos;Agostino</span>
