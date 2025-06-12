@@ -5,9 +5,9 @@ import { DanceButton } from "./DanceButton";
 
 // Available songs array
 const AVAILABLE_SONGS = [
-  "GIGI D'AGOSTINO & LUCA NOISE - LIKE A FLOW FLOAT (GIGI DAG & LUC ON ROCKING MIX) [17bJ-XXxbu0].mp3",
   "Gigi D'Agostino - Cuba Libre ( L'Amour Toujours ) [UWMYjD16qFc].mp3",
-  "Gigi D'Agostino & Luca Noise - Smoke A Beat [ From the album SMODERANZA ] [w3KP8UhTdys].mp3",
+  "GIGI D’AGOSTINO & LUCA NOISE - LIKE A FLOW FLOAT (GIGI DAG & LUC ON ROCKING MIX) [17bJ-XXxbu0].mp3",
+  "Gigi D’Agostino & Luca Noise - Smoke A Beat [ From the album SMODERANZA ] [w3KP8UhTdys].mp3",
 ];
 
 export const DanceArea: React.FC<DanceAreaProps> = ({
@@ -78,14 +78,14 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
 
       {/* Expansion Indicator - appears when expanding */}
       {isPlaying && !isFullscreen && (
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-30 opacity-0 animate-rave-fade-in-out-once">
-          <div className="flex items-center space-x-3 bg-black/70 backdrop-blur-md rounded-full px-6 py-3 border border-purple-400/60 shadow-2xl">
-            <div className="w-3 h-3 bg-purple-400 rounded-full animate-rave-particle-glow shadow-purple-400/80 shadow-lg"></div>
-            <span className="text-purple-200 text-base font-semibold">
+        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-30 opacity-0 animate-rave-fade-in-out-once px-4 max-w-[90vw]">
+          <div className="flex items-center space-x-2 sm:space-x-3 bg-black/70 backdrop-blur-md rounded-full px-4 sm:px-6 py-3 border border-purple-400/60 shadow-2xl min-w-max">
+            <div className="w-3 h-3 bg-purple-400 rounded-full animate-rave-particle-glow shadow-purple-400/80 shadow-lg flex-shrink-0"></div>
+            <span className="text-purple-200 text-sm sm:text-base font-semibold whitespace-nowrap">
               🎵 Dance Mode Active 🎵
             </span>
             <svg
-              className="w-5 h-5 text-purple-400 animate-bounce"
+              className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400 animate-bounce flex-shrink-0"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -142,21 +142,29 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
 
       {/* Audio Status Indicator */}
       {isPlaying && (
-        <div className="absolute top-4 right-4 z-30 flex items-center space-x-2 bg-black/40 backdrop-blur-md rounded-full px-4 py-2 border border-purple-500/40 shadow-lg">
-          <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse shadow-purple-400/50 shadow-sm"></div>
-          <span className="text-purple-200 text-sm font-medium">
+        <button
+          onClick={toggleAudio}
+          className="fixed top-4 right-4 z-50 flex items-center space-x-2 bg-black/40 backdrop-blur-md rounded-full px-4 py-2 shadow-lg hover:bg-black/60 transition-all duration-300 cursor-pointer group border-trace-rave-rounded"
+          title="Click to stop dancing"
+        >
+          <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse shadow-purple-400/50 shadow-sm group-hover:bg-red-400 transition-colors duration-300"></div>
+          <span className="text-purple-200 text-sm font-medium group-hover:text-red-200 transition-colors duration-300">
             Dance Mode Active
           </span>
-        </div>
+        </button>
       )}
 
       {!isPlaying && (
-        <div className="absolute top-4 right-4 z-30 flex items-center space-x-2 bg-black/40 backdrop-blur-md rounded-full px-4 py-2 border border-gray-600/40 shadow-lg">
-          <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
-          <span className="text-gray-300 text-sm font-medium">
+        <button
+          onClick={toggleAudio}
+          className="fixed top-4 right-4 z-50 flex items-center space-x-2 bg-black/40 backdrop-blur-md rounded-full px-4 py-2 border border-gray-600/40 shadow-lg hover:border-purple-500/40 hover:bg-black/60 transition-all duration-300 cursor-pointer group"
+          title="Click to start dancing"
+        >
+          <div className="w-2 h-2 bg-gray-400 rounded-full group-hover:bg-purple-400 transition-colors duration-300"></div>
+          <span className="text-gray-300 text-sm font-medium group-hover:text-purple-200 transition-colors duration-300">
             Press 舞 to awaken
           </span>
-        </div>
+        </button>
       )}
 
       {/* Inset shadow effects */}
