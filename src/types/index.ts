@@ -20,6 +20,10 @@ export interface DanceAreaProps {
     scrollResistance: number;
     shouldSnap: boolean;
     accumulatedScroll: number;
+    currentSection: number;
+    totalSections: number;
+    sectionProgress: number;
+    isScrollingUp: boolean;
   };
 }
 

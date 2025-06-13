@@ -5,6 +5,7 @@ import {
   DanceArea,
   MainContent,
   ScrollResistanceIndicator,
+  ViewportBorderIndicator,
 } from "../components";
 import {
   useAudioPlayer,
@@ -39,6 +40,10 @@ export default function Home() {
           scrollResistance: scrollState.scrollResistance,
           shouldSnap: scrollState.shouldSnap,
           accumulatedScroll: scrollState.accumulatedScroll,
+          currentSection: scrollState.currentSection,
+          totalSections: scrollState.totalSections,
+          sectionProgress: scrollState.sectionProgress,
+          isScrollingUp: scrollState.isScrollingUp,
         }}
       />
       <MainContent
@@ -50,7 +55,18 @@ export default function Home() {
       <ScrollResistanceIndicator
         scrollResistance={scrollState.scrollResistance}
         isVisible={
-          scrollState.isScrollHijacked && scrollState.accumulatedScroll > 0
+          scrollState.isScrollHijacked &&
+          scrollState.accumulatedScroll > 0 &&
+          !scrollState.isScrollingUp
+        }
+      />
+      <ViewportBorderIndicator
+        scrollResistance={scrollState.sectionProgress}
+        isVisible={
+          scrollState.isScrollHijacked &&
+          isPlaying &&
+          !isFullscreen &&
+          !scrollState.isScrollingUp
         }
       />
     </div>
