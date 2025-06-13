@@ -16,13 +16,14 @@ export const DanceButton: React.FC<DanceButtonProps> = ({
         className={`group relative w-20 h-20 bg-gradient-to-br from-purple-500 via-pink-500 to-red-500 rounded-full shadow-2xl transition-all duration-500 hover:scale-110 active:scale-95 hover:rotate-12 hover:shadow-purple-500/60 ${
           isPlaying
             ? "animate-bounce shadow-purple-500/60"
-            : "shadow-purple-400/20"
+            : "animate-[pulse_5s_ease-in-out_infinite] shadow-purple-400/40"
         } gigi-hero-btn`}
+        style={!isPlaying ? { animationDelay: "0.5s" } : {}}
       >
         {/* Desktop-only: Advanced hover trails that mobile won't see - RAVE MODE ACTIVE */}
         <div
           className={`hidden lg:block absolute -inset-8 transition-all duration-700 ${
-            isPlaying ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+            isPlaying ? "opacity-100" : "opacity-60 group-hover:opacity-100"
           }`}
         >
           <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-yellow-500/20 rounded-full blur-xl animate-pulse"></div>
@@ -32,7 +33,7 @@ export const DanceButton: React.FC<DanceButtonProps> = ({
         {/* Desktop-only: Hover particle effects - RAVE MODE ACTIVE */}
         <div
           className={`hidden xl:block absolute -inset-12 transition-all duration-1000 ${
-            isPlaying ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+            isPlaying ? "opacity-100" : "opacity-50 group-hover:opacity-100"
           }`}
         >
           <div
@@ -58,29 +59,36 @@ export const DanceButton: React.FC<DanceButtonProps> = ({
           className={`absolute -inset-2 bg-gradient-to-br from-purple-600 via-pink-600 to-red-600 rounded-full blur opacity-75 transition-all duration-500 ${
             isPlaying
               ? "animate-spin opacity-100"
-              : "group-hover:opacity-100 group-hover:scale-110"
+              : "animate-[pulse_6s_ease-in-out_infinite] opacity-90 group-hover:opacity-100 group-hover:scale-110"
           }`}
+          style={!isPlaying ? { animationDelay: "1s" } : {}}
         ></div>
 
         {/* Desktop-only: Sophisticated hover ring that rotates opposite direction - RAVE MODE ACTIVE */}
         <div
           className={`hidden md:block absolute -inset-3 transition-all duration-700 ${
-            isPlaying ? "opacity-70" : "opacity-0 group-hover:opacity-70"
+            isPlaying ? "opacity-70" : "opacity-40 group-hover:opacity-70"
           }`}
         >
           <div
             className={`absolute inset-0 bg-gradient-to-tr from-cyan-400/30 via-purple-400/30 to-pink-400/30 rounded-full blur ${
               isPlaying
                 ? "animate-reverse-spin"
-                : "group-hover:animate-reverse-spin"
+                : "animate-[pulse_8s_ease-in-out_infinite] group-hover:animate-reverse-spin"
             }`}
+            style={!isPlaying ? { animationDelay: "2s" } : {}}
           ></div>
         </div>
 
-        {/* Firefly sync glow - only visible when playing */}
-        {isPlaying && (
-          <div className="absolute -inset-4 bg-gradient-to-br from-purple-400/20 via-pink-400/20 to-yellow-400/20 rounded-full blur-lg animate-pulse group-hover:scale-125 transition-transform duration-500"></div>
-        )}
+        {/* Firefly sync glow - visible when playing, subtle when not */}
+        <div
+          className={`absolute -inset-4 bg-gradient-to-br from-purple-400/20 via-pink-400/20 to-yellow-400/20 rounded-full blur-lg transition-all duration-500 ${
+            isPlaying
+              ? "animate-pulse opacity-100 group-hover:scale-125"
+              : "animate-[pulse_7s_ease-in-out_infinite] opacity-80 group-hover:opacity-100 group-hover:scale-110"
+          }`}
+          style={!isPlaying ? { animationDelay: "3s" } : {}}
+        ></div>
 
         {/* Inner button with enhanced hover effects - RAVE MODE ACTIVE */}
         <div
@@ -130,12 +138,15 @@ export const DanceButton: React.FC<DanceButtonProps> = ({
           ></div>
         </div>
 
-        <div className="hidden lg:block absolute -top-12 left-1/2 transform -translate-x-1/2 transition-all duration-300 pointer-events-none opacity-0 group-hover:opacity-100">
-          <div className="bg-black/80 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-full border border-purple-400/50">
-            {isPlaying ? "Stop the music" : "Start the party"}
+        {/* Tooltip - only show when playing */}
+        {isPlaying && (
+          <div className="hidden lg:block absolute -top-12 left-1/2 transform -translate-x-1/2 transition-all duration-300 pointer-events-none opacity-0 group-hover:opacity-100">
+            <div className="bg-black/80 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-full border border-purple-400/50">
+              Stop the music
+            </div>
+            <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-2 border-r-2 border-t-2 border-transparent border-t-black/80"></div>
           </div>
-          <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-2 border-r-2 border-t-2 border-transparent border-t-black/80"></div>
-        </div>
+        )}
       </button>
     </div>
   );
