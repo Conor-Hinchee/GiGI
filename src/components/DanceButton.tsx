@@ -3,16 +3,64 @@ import React from "react";
 interface DanceButtonProps {
   isPlaying: boolean;
   toggleAudio: () => void;
+  onTouchFireflies?: (x: number, y: number, burst?: boolean) => void;
+  isMobile?: boolean;
 }
 
 export const DanceButton: React.FC<DanceButtonProps> = ({
   isPlaying,
   toggleAudio,
+  onTouchFireflies,
+  isMobile = false,
 }) => {
+  // Handle touch events for mobile firefly spawning
+  const handleTouchStart = React.useCallback(
+    (e: React.TouchEvent) => {
+      if (!isMobile || !onTouchFireflies) return;
+
+      e.stopPropagation(); // Prevent parent touch handlers
+
+      const touch = e.touches[0];
+      if (touch) {
+        onTouchFireflies(touch.clientX, touch.clientY, false);
+      }
+    },
+    [isMobile, onTouchFireflies]
+  );
+
+  const handleTouchEnd = React.useCallback(
+    (e: React.TouchEvent) => {
+      if (!isMobile || !onTouchFireflies) return;
+
+      e.stopPropagation(); // Prevent parent touch handlers
+
+      const touch = e.changedTouches[0];
+      if (touch) {
+        // Spawn a bigger burst from the dance button
+        onTouchFireflies(touch.clientX, touch.clientY, true);
+      }
+    },
+    [isMobile, onTouchFireflies]
+  );
+
+  const handleClick = React.useCallback(
+    (e: React.MouseEvent) => {
+      toggleAudio();
+
+      // Also spawn fireflies on click for desktop
+      if (!isMobile && onTouchFireflies) {
+        onTouchFireflies(e.clientX, e.clientY, true);
+      }
+    },
+    [toggleAudio, isMobile, onTouchFireflies]
+  );
+
   return (
     <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20">
       <button
-        onClick={toggleAudio}
+        onClick={handleClick}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
         className={`group relative w-20 h-20 bg-gradient-to-br from-purple-500 via-pink-500 to-red-500 rounded-full shadow-2xl transition-all duration-500 hover:scale-110 active:scale-95 hover:rotate-12 hover:shadow-purple-500/60 ${
           isPlaying
             ? "animate-bounce shadow-purple-500/60"
