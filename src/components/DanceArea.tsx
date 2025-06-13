@@ -32,148 +32,57 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
     setCurrentSong(AVAILABLE_SONGS[randomIndex]);
   }, []);
 
-  // Handle touch events for firefly spawning - works on all devices
-  const handleTouchStart = React.useCallback((e: React.TouchEvent) => {
-    if (!firefliesSceneRef.current) return;
+  // Handle touch events for mobile firefly spawning
+  const handleTouchStart = React.useCallback(
+    (e: React.TouchEvent) => {
+      if (!isMobile || !firefliesSceneRef.current) return;
 
-    e.preventDefault(); // Prevent scrolling during dance interactions
+      e.preventDefault(); // Prevent scrolling during dance interactions
 
-    const touch = e.touches[0];
-    if (touch) {
-      // Spawn fireflies at touch location
-      firefliesSceneRef.current.spawnFirefliesAtTouch(
-        touch.clientX,
-        touch.clientY,
-        false // Single firefly on touch start
-      );
-    }
-  }, []);
+      const touch = e.touches[0];
+      if (touch) {
+        // Spawn fireflies at touch location
+        firefliesSceneRef.current.spawnFirefliesAtTouch(
+          touch.clientX,
+          touch.clientY,
+          false // Single firefly on touch start
+        );
+      }
+    },
+    [isMobile]
+  );
 
-  const handleTouchEnd = React.useCallback((e: React.TouchEvent) => {
-    if (!firefliesSceneRef.current) return;
+  const handleTouchEnd = React.useCallback(
+    (e: React.TouchEvent) => {
+      if (!isMobile || !firefliesSceneRef.current) return;
 
-    const touch = e.changedTouches[0];
-    if (touch) {
-      // Spawn a burst of fireflies on touch end
-      firefliesSceneRef.current.spawnFirefliesAtTouch(
-        touch.clientX,
-        touch.clientY,
-        true // Burst of fireflies on release
-      );
-    }
-  }, []);
+      const touch = e.changedTouches[0];
+      if (touch) {
+        // Spawn a burst of fireflies on touch end
+        firefliesSceneRef.current.spawnFirefliesAtTouch(
+          touch.clientX,
+          touch.clientY,
+          true // Burst of fireflies on release
+        );
+      }
+    },
+    [isMobile]
+  );
 
-  // Handle touch move for continuous firefly spawning
-  const handleTouchMove = React.useCallback((e: React.TouchEvent) => {
-    if (!firefliesSceneRef.current) return;
+  // Handle clicks on desktop (fallback behavior)
+  const handleClick = React.useCallback(
+    (e: React.MouseEvent) => {
+      if (isMobile || !firefliesSceneRef.current) return;
 
-    e.preventDefault(); // Prevent scrolling during dance interactions
-
-    Array.from(e.touches).forEach((touch) => {
-      // Spawn fireflies at touch location while moving
-      firefliesSceneRef.current?.spawnFirefliesAtTouch(
-        touch.clientX,
-        touch.clientY,
-        false // Single firefly on touch move
-      );
-    });
-  }, []);
-
-  // Handle clicks on desktop - enhanced behavior
-  const handleClick = React.useCallback((e: React.MouseEvent) => {
-    if (!firefliesSceneRef.current) return;
-
-    // For desktop, spawn a burst for visual feedback
-    firefliesSceneRef.current.spawnFirefliesAtTouch(
-      e.clientX,
-      e.clientY,
-      true // Burst on click
-    );
-  }, []);
-
-  // Handle mouse move for drag effects on desktop
-  const handleMouseMove = React.useCallback((e: React.MouseEvent) => {
-    // Only spawn on mouse move if mouse is pressed
-    if (e.buttons === 1 && firefliesSceneRef.current) {
+      // For desktop, just spawn a small burst for visual feedback
       firefliesSceneRef.current.spawnFirefliesAtTouch(
         e.clientX,
         e.clientY,
-        false // Single firefly on drag
+        false
       );
-    }
-  }, []);
-
-  // Enhanced native event listeners for better cross-platform support
-  React.useEffect(() => {
-    const danceArea = danceAreaRef.current;
-    if (!danceArea) return;
-
-    const handleNativeTouchStart = (e: TouchEvent) => {
-      e.preventDefault();
-
-      Array.from(e.touches).forEach((touch) => {
-        if (firefliesSceneRef.current) {
-          firefliesSceneRef.current.spawnFirefliesAtTouch(
-            touch.clientX,
-            touch.clientY,
-            false // Single touch
-          );
-        }
-      });
-    };
-
-    const handleNativeTouchMove = (e: TouchEvent) => {
-      e.preventDefault();
-
-      Array.from(e.touches).forEach((touch) => {
-        if (firefliesSceneRef.current) {
-          firefliesSceneRef.current.spawnFirefliesAtTouch(
-            touch.clientX,
-            touch.clientY,
-            false // Single touch
-          );
-        }
-      });
-    };
-
-    const handleNativeMouseClick = (e: MouseEvent) => {
-      if (firefliesSceneRef.current) {
-        firefliesSceneRef.current.spawnFirefliesAtTouch(
-          e.clientX,
-          e.clientY,
-          true // Burst on click
-        );
-      }
-    };
-
-    const handleNativeMouseMove = (e: MouseEvent) => {
-      // Only spawn on mouse move if mouse is pressed
-      if (e.buttons === 1 && firefliesSceneRef.current) {
-        firefliesSceneRef.current.spawnFirefliesAtTouch(
-          e.clientX,
-          e.clientY,
-          false // Single on drag
-        );
-      }
-    };
-
-    // Add native event listeners for better compatibility
-    danceArea.addEventListener("touchstart", handleNativeTouchStart, {
-      passive: false,
-    });
-    danceArea.addEventListener("touchmove", handleNativeTouchMove, {
-      passive: false,
-    });
-    danceArea.addEventListener("click", handleNativeMouseClick);
-    danceArea.addEventListener("mousemove", handleNativeMouseMove);
-
-    return () => {
-      danceArea.removeEventListener("touchstart", handleNativeTouchStart);
-      danceArea.removeEventListener("touchmove", handleNativeTouchMove);
-      danceArea.removeEventListener("click", handleNativeMouseClick);
-      danceArea.removeEventListener("mousemove", handleNativeMouseMove);
-    };
-  }, [danceAreaRef]);
+    },
+    [isMobile]
+  );
 
   // Determine scroll hijack classes
   const getScrollHijackClasses = () => {
@@ -186,7 +95,7 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
   return (
     <div
       ref={danceAreaRef}
-      className={`bg-gradient-to-br from-gray-950 via-purple-950/20 to-gray-950 relative overflow-hidden shadow-inner hover-trail ${
+      className={`bg-gray-950 relative overflow-hidden shadow-inner hover-trail ${
         isMobile ? "" : "transition-all duration-1000 ease-in-out"
       } ${
         isFullscreen
@@ -194,39 +103,37 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
           : isPlaying
           ? "h-[100vh] border-b-8 border-purple-400/80 shadow-purple-400/40 shadow-2xl"
           : isMobile
-          ? "h-[100vh] border-b-4 border-purple-800/60"
-          : "h-[50vh] border-b-4 border-purple-800/60"
+          ? "h-[100vh] border-b-4 border-gray-800"
+          : "h-[50vh] border-b-4 border-gray-800"
       } ${getScrollHijackClasses()}`}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
-      onTouchMove={handleTouchMove}
       onClick={handleClick}
-      onMouseMove={handleMouseMove}
     >
       {/* Desktop-only: Advanced background effects */}
-      <div className="hidden xl:block absolute inset-0 opacity-40">
+      <div className="hidden xl:block absolute inset-0 opacity-30">
         <div
-          className="absolute top-0 left-0 w-32 h-32 bg-purple-500/20 rounded-full blur-2xl animate-float-up"
+          className="absolute top-0 left-0 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl animate-float-up"
           style={{ animationDelay: "0s" }}
         ></div>
         <div
-          className="absolute top-1/4 right-0 w-24 h-24 bg-purple-400/15 rounded-full blur-xl animate-float-up"
+          className="absolute top-1/4 right-0 w-24 h-24 bg-pink-500/10 rounded-full blur-xl animate-float-up"
           style={{ animationDelay: "2s" }}
         ></div>
         <div
-          className="absolute bottom-0 left-1/3 w-40 h-40 bg-purple-600/10 rounded-full blur-3xl animate-float-up"
+          className="absolute bottom-0 left-1/3 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl animate-float-up"
           style={{ animationDelay: "4s" }}
         ></div>
       </div>
 
       {/* Desktop-only: Sophisticated grid overlay with shimmer */}
-      <div className="hidden lg:block absolute inset-0 opacity-30">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-purple-900/5 to-purple-600/8"></div>
+      <div className="hidden lg:block absolute inset-0 opacity-20">
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5"></div>
         <div
           className="absolute inset-0 animate-shimmer"
           style={{
             backgroundImage:
-              "linear-gradient(90deg, transparent, rgba(147, 51, 234, 0.15), transparent)",
+              "linear-gradient(90deg, transparent, rgba(147, 51, 234, 0.1), transparent)",
             backgroundSize: "200% 100%",
           }}
         ></div>
@@ -300,15 +207,15 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
       />
 
       {/* Inset shadow effects */}
-      <div className="absolute inset-0 bg-gradient-to-b from-purple-900/20 via-transparent to-purple-900/30 z-10"></div>
-      <div className="absolute inset-0 shadow-[inset_0_10px_20px_rgba(0,0,0,0.5),inset_0_-10px_20px_rgba(75,0,130,0.2)] z-10"></div>
+      <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/50 z-10"></div>
+      <div className="absolute inset-0 shadow-[inset_0_10px_20px_rgba(0,0,0,0.5),inset_0_-10px_20px_rgba(0,0,0,0.3)] z-10"></div>
 
       {/* Subtle grid pattern */}
       <div
-        className="absolute inset-0 opacity-15 z-10"
+        className="absolute inset-0 opacity-10 z-10"
         style={{
           backgroundImage:
-            "radial-gradient(circle at 1px 1px, rgba(147,51,234,0.15) 1px, transparent 0)",
+            "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.1) 1px, transparent 0)",
           backgroundSize: "20px 20px",
         }}
       ></div>
