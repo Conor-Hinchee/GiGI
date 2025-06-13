@@ -59,6 +59,7 @@ export default function Home() {
           scrollState.accumulatedScroll > 0 &&
           !scrollState.isScrollingUp
         }
+        isMobile={isMobile}
       />
       <ViewportBorderIndicator
         scrollResistance={scrollState.sectionProgress}
