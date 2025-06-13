@@ -20,9 +20,7 @@ export default function Home() {
   const { isFullscreen, danceAreaRef, toggleFullscreen } = useFullscreen();
   const { isMobile } = useMobileDetection();
   const { scrollY } = useScrollPosition(isMobile);
-  const { scrollState } = useScrollHijack(
-    isMobile || (isPlaying && !isFullscreen)
-  );
+  const { scrollState } = useScrollHijack(isPlaying && !isFullscreen);
 
   const isScrolledPastDanceArea = scrollY > 100;
 
@@ -59,9 +57,7 @@ export default function Home() {
         isVisible={
           scrollState.isScrollHijacked &&
           scrollState.accumulatedScroll > 0 &&
-          !scrollState.isScrollingUp &&
-          isPlaying &&
-          !isFullscreen
+          !scrollState.isScrollingUp
         }
       />
       <ViewportBorderIndicator
