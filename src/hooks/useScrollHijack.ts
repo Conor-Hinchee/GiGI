@@ -155,22 +155,19 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
       
       // Mobile-specific scroll handling
       if (isMobile && currentSection === 0) {
-        // Only enable scroll resistance when user is at the very top (scrollY = 0)
-        const isAtTop = currentScrollY <= 5; // Small tolerance for touch precision
+        const isAtVeryTop = currentScrollY <= 5; // Very top of page
+        const isLeavingDanceArea = currentScrollY >= window.innerHeight - 100; // Bottom of dance area
         
-        // Track if user has scrolled away from the top
-        if (!isAtTop) {
-          hasScrolledUpPartway.current = true;
+        // Update the "locked at top" state
+        if (isAtVeryTop) {
+          hasScrolledUpPartway.current = false; // User is locked at top
+        } else if (currentScrollY > 50) { // Give some buffer before unlocking
+          hasScrolledUpPartway.current = true; // User has moved away from top lock
         }
         
-        // Reset flag only when user returns to the very top
-        if (isAtTop) {
-          hasScrolledUpPartway.current = false;
-        }
-        
-        // Handle downward scrolling - apply resistance throughout the dance area if starting from top
-        if (scrollDelta > 0 && !hasScrolledUpPartway.current) {
-          // Apply scroll resistance throughout the entire dance area (0 to 100vh)
+        // Handle downward scrolling - resist when leaving dance area to go to main content
+        if (scrollDelta > 0 && isLeavingDanceArea) {
+          // Apply resistance when transitioning from dance area (100vh) to main content (200vh)
           e.preventDefault();
           e.stopPropagation();
           preventingScroll.current = true;
@@ -180,8 +177,8 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
             const newResistance = Math.min(newAccumulated / SCROLL_RESISTANCE_THRESHOLD, 1);
             const newSectionProgress = Math.min(1, newResistance);
 
-            // Check if we should snap to next section (when trying to leave dance area)
-            if (currentScrollY >= window.innerHeight - 100 && newAccumulated >= SCROLL_RESISTANCE_THRESHOLD && !prev.shouldSnap) {
+            // Snap to next section when resistance threshold is met
+            if (newAccumulated >= SCROLL_RESISTANCE_THRESHOLD && !prev.shouldSnap) {
               if (snapTimeoutRef.current) {
                 clearTimeout(snapTimeoutRef.current);
               }
@@ -215,14 +212,19 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
           return;
         }
         
-        // Handle upward scrolling - zero resistance, allow smooth scrolling
+        // Handle upward scrolling - no resistance unless user reaches very top (lock engagement)
         if (scrollDelta < 0) {
-          // Allow smooth upward scrolling with no hijacking
+          // If user scrolls all the way to the top, engage the lock
+          if (isAtVeryTop && !hasScrolledUpPartway.current) {
+            // User is now locked at top - future downward scrolls will have different behavior
+            // But upward scrolling itself has no resistance
+          }
+          // Always allow smooth upward scrolling
           lastScrollY.current = currentScrollY;
           return;
         }
         
-        // Normal scroll behavior if user has scrolled away from top
+        // Normal scroll behavior within dance area (not at transition point)
         lastScrollY.current = currentScrollY;
         return;
       }
@@ -348,22 +350,19 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
       
       // Mobile-specific wheel handling for dance area
       if (isMobile && currentSection === 0) {
-        // Only enable scroll resistance when user is at the very top (scrollY = 0)
-        const isAtTop = currentScrollY <= 5; // Small tolerance for touch precision
+        const isAtVeryTop = currentScrollY <= 5; // Very top of page
+        const isLeavingDanceArea = currentScrollY >= window.innerHeight - 100; // Bottom of dance area
         
-        // Track if user has scrolled away from the top
-        if (!isAtTop) {
-          hasScrolledUpPartway.current = true;
+        // Update the "locked at top" state
+        if (isAtVeryTop) {
+          hasScrolledUpPartway.current = false; // User is locked at top
+        } else if (currentScrollY > 50) { // Give some buffer before unlocking
+          hasScrolledUpPartway.current = true; // User has moved away from top lock
         }
         
-        // Reset flag only when user returns to the very top
-        if (isAtTop) {
-          hasScrolledUpPartway.current = false;
-        }
-        
-        // Handle downward wheel scrolling - apply resistance throughout dance area if starting from top
-        if (e.deltaY > 0 && !hasScrolledUpPartway.current) {
-          // Apply scroll resistance throughout the entire dance area (0 to 100vh)
+        // Handle downward wheel scrolling - resist when leaving dance area to go to main content
+        if (e.deltaY > 0 && isLeavingDanceArea) {
+          // Apply resistance when transitioning from dance area (100vh) to main content (200vh)
           e.preventDefault();
           e.stopPropagation();
           
@@ -372,8 +371,8 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
             const newResistance = Math.min(newAccumulated / SCROLL_RESISTANCE_THRESHOLD, 1);
             const newSectionProgress = Math.min(1, newResistance);
 
-            // Check if we should snap to next section (when trying to leave dance area)
-            if (currentScrollY >= window.innerHeight - 100 && newAccumulated >= SCROLL_RESISTANCE_THRESHOLD && !prev.shouldSnap) {
+            // Snap to next section when resistance threshold is met
+            if (newAccumulated >= SCROLL_RESISTANCE_THRESHOLD && !prev.shouldSnap) {
               if (snapTimeoutRef.current) {
                 clearTimeout(snapTimeoutRef.current);
               }
@@ -401,9 +400,13 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
           return;
         }
         
-        // Handle upward wheel scrolling - zero resistance, allow smooth scrolling
+        // Handle upward wheel scrolling - no resistance, smooth scrolling
         if (e.deltaY < 0) {
-          // Allow smooth upward scrolling with no hijacking
+          // If user scrolls all the way to the top, engage the lock
+          if (isAtVeryTop && !hasScrolledUpPartway.current) {
+            // User is now locked at top - but upward scrolling itself has no resistance
+          }
+          // Always allow smooth upward scrolling
           return;
         }
         
@@ -503,22 +506,18 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
       
       // Mobile-specific touch handling for dance area
       if (isMobile && currentSection === 0) {
-        // Only enable scroll resistance when user is at the very top (scrollY = 0)
-        const isAtTop = currentScrollY <= 5; // Small tolerance for touch precision
+        const isAtVeryTop = currentScrollY <= 5; // Very top of page
+        const isLeavingDanceArea = currentScrollY >= window.innerHeight - 100; // Bottom of dance area
         
-        // Track if user has scrolled away from the top
-        if (!isAtTop) {
-          hasScrolledUpPartway.current = true;
+        // Update the "locked at top" state
+        if (isAtVeryTop) {
+          hasScrolledUpPartway.current = false; // User is locked at top
+        } else if (currentScrollY > 50) { // Give some buffer before unlocking
+          hasScrolledUpPartway.current = true; // User has moved away from top lock
         }
         
-        // Reset flag only when user returns to the very top
-        if (isAtTop) {
-          hasScrolledUpPartway.current = false;
-        }
-        
-        // Apply resistance throughout dance area if user started from top
-        // For touch, we apply resistance at any point in the dance area if starting from top
-        if (!hasScrolledUpPartway.current) {
+        // Apply resistance only when leaving dance area (transitioning to main content)
+        if (isLeavingDanceArea) {
           const touch = e.touches[0];
           if (touch) {
             setScrollState(prev => {
@@ -526,8 +525,8 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
               const newResistance = Math.min(newAccumulated / SCROLL_RESISTANCE_THRESHOLD, 1);
               const newSectionProgress = Math.min(1, newResistance);
 
-              // Check if we should snap to next section (when trying to leave dance area)
-              if (currentScrollY >= window.innerHeight - 100 && newAccumulated >= SCROLL_RESISTANCE_THRESHOLD && !prev.shouldSnap) {
+              // Snap to next section when resistance threshold is met
+              if (newAccumulated >= SCROLL_RESISTANCE_THRESHOLD && !prev.shouldSnap) {
                 if (snapTimeoutRef.current) {
                   clearTimeout(snapTimeoutRef.current);
                 }
