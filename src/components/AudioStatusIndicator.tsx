@@ -15,51 +15,63 @@ const AudioStatusIndicator: React.FC<AudioStatusIndicatorProps> = ({
   const { scrollY } = useScrollPosition(isMobile);
   const isScrolled = scrollY > 50;
 
-  // When scrolled, show just the 舞 character
-  if (isScrolled) {
-    return (
-      <button
-        onClick={toggleAudio}
-        className={`fixed top-4 right-4 z-50 flex items-center justify-center bg-black/40 backdrop-blur-md rounded-full w-12 h-12 shadow-lg transition-all duration-300 cursor-pointer group ${
-          isPlaying
+  return (
+    <button
+      onClick={toggleAudio}
+      className={`fixed top-4 right-4 z-50 flex items-center bg-black/40 backdrop-blur-md rounded-full shadow-lg transition-all duration-700 ease-in-out cursor-pointer group transform overflow-hidden ${
+        isScrolled
+          ? "w-12 h-12 px-0 py-0 justify-center scale-90"
+          : "w-auto h-auto px-4 py-2 justify-start scale-100"
+      } ${
+        isPlaying
+          ? isScrolled
             ? "border-2 border-purple-400/60 hover:bg-black/60"
-            : "border border-gray-600/40 hover:border-purple-500/40 hover:bg-black/60"
+            : "border-trace-rave-rounded hover:bg-black/60"
+          : "border border-gray-600/40 hover:border-purple-500/40 hover:bg-black/60"
+      }`}
+      title={isPlaying ? "Click to stop dancing" : "Click to start dancing"}
+    >
+      {/* Dot indicator - always rendered but scaled/positioned */}
+      <div
+        className={`rounded-full transition-all duration-700 ease-in-out ${
+          isScrolled
+            ? "w-0 h-0 opacity-0 scale-0 -translate-x-2"
+            : "w-2 h-2 opacity-100 scale-100 translate-x-0 mr-2"
+        } ${
+          isPlaying
+            ? "bg-purple-400 animate-pulse shadow-purple-400/50 shadow-sm group-hover:bg-red-400"
+            : "bg-gray-400 group-hover:bg-purple-400"
         }`}
-        title={isPlaying ? "Click to stop dancing" : "Click to start dancing"}
-      >
-        <span
-          className={`text-lg font-medium transition-colors duration-300 ${
-            isPlaying
-              ? "text-purple-400 group-hover:text-red-400"
-              : "text-gray-400 group-hover:text-purple-400"
-          }`}
-        >
-          舞
-        </span>
-      </button>
-    );
-  }
+      ></div>
 
-  return isPlaying ? (
-    <button
-      onClick={toggleAudio}
-      className="fixed top-4 right-4 z-50 flex items-center space-x-2 bg-black/40 backdrop-blur-md rounded-full px-4 py-2 shadow-lg hover:bg-black/60 transition-all duration-300 cursor-pointer group border-trace-rave-rounded"
-      title="Click to stop dancing"
-    >
-      <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse shadow-purple-400/50 shadow-sm group-hover:bg-red-400 transition-colors duration-300"></div>
-      <span className="text-purple-200 text-sm font-medium group-hover:text-red-200 transition-colors duration-300">
-        Dance Mode Active
+      {/* Dance character - always rendered but scaled/positioned */}
+      <span
+        className={`font-medium transition-all duration-700 ease-in-out absolute ${
+          isScrolled
+            ? "text-lg opacity-100 scale-100 translate-x-0"
+            : "text-lg opacity-0 scale-0 translate-x-8"
+        } ${
+          isPlaying
+            ? "text-purple-400 group-hover:text-red-400"
+            : "text-gray-400 group-hover:text-purple-400"
+        }`}
+      >
+        舞
       </span>
-    </button>
-  ) : (
-    <button
-      onClick={toggleAudio}
-      className="fixed top-4 right-4 z-50 flex items-center space-x-2 bg-black/40 backdrop-blur-md rounded-full px-4 py-2 border border-gray-600/40 shadow-lg hover:border-purple-500/40 hover:bg-black/60 transition-all duration-300 cursor-pointer group"
-      title="Click to start dancing"
-    >
-      <div className="w-2 h-2 bg-gray-400 rounded-full group-hover:bg-purple-400 transition-colors duration-300"></div>
-      <span className="text-gray-300 text-sm font-medium group-hover:text-purple-200 transition-colors duration-300">
-        Press 舞 to awaken
+
+      {/* Text - always rendered but with width/opacity animation */}
+      <span
+        className={`text-sm font-medium transition-all duration-700 ease-in-out whitespace-nowrap ${
+          isScrolled
+            ? "opacity-0 max-w-0 scale-0 translate-x-4"
+            : "opacity-100 max-w-xs scale-100 translate-x-0"
+        } ${
+          isPlaying
+            ? "text-purple-200 group-hover:text-red-200"
+            : "text-gray-300 group-hover:text-purple-200"
+        }`}
+      >
+        {isPlaying ? "Dance Mode Active" : "Press 舞 to awaken"}
       </span>
     </button>
   );
