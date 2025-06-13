@@ -155,24 +155,24 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
       
       // Mobile-specific scroll handling
       if (isMobile && currentSection === 0) {
-        // Track if user has scrolled up partway through the dance area
-        if (scrollDelta < 0 && currentScrollY > 0 && currentScrollY < window.innerHeight) {
+        // Only enable scroll resistance when user is at the very top (scrollY = 0)
+        const isAtTop = currentScrollY <= 5; // Small tolerance for touch precision
+        
+        // Track if user has scrolled away from the top
+        if (!isAtTop) {
           hasScrolledUpPartway.current = true;
-          // Allow smooth upward scrolling - no hijacking
-          lastScrollY.current = currentScrollY;
-          return;
+        }
+        
+        // Reset flag only when user returns to the very top
+        if (isAtTop) {
+          hasScrolledUpPartway.current = false;
         }
         
         // Handle downward scrolling from dance area
         if (scrollDelta > 0) {
-          // If user has scrolled up partway, allow smooth downward scrolling without resistance
-          if (hasScrolledUpPartway.current && currentScrollY < window.innerHeight) {
-            lastScrollY.current = currentScrollY;
-            return;
-          }
-          
-          // If at bottom of dance area and trying to scroll down, apply resistance
-          if (currentScrollY >= window.innerHeight - 100) {
+          // Only apply resistance if user is starting from the very top (scroll resistance enabled)
+          // AND trying to scroll past the dance area (100vh)
+          if (!hasScrolledUpPartway.current && currentScrollY >= window.innerHeight - 100) {
             e.preventDefault();
             e.stopPropagation();
             preventingScroll.current = true;
@@ -189,7 +189,6 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
                 
                 snapTimeoutRef.current = setTimeout(() => {
                   handleSnapToSection(1);
-                  hasScrolledUpPartway.current = false; // Reset flag after snap
                 }, 100);
 
                 return {
@@ -217,12 +216,7 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
           }
         }
         
-        // Reset the partway flag when user reaches top of dance area
-        if (currentScrollY <= 10) {
-          hasScrolledUpPartway.current = false;
-        }
-        
-        // Normal scroll behavior within dance area
+        // Normal scroll behavior within dance area or if user has scrolled away from top
         lastScrollY.current = currentScrollY;
         return;
       }
@@ -348,22 +342,24 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
       
       // Mobile-specific wheel handling for dance area
       if (isMobile && currentSection === 0) {
-        // Track if user has scrolled up partway through the dance area
-        if (e.deltaY < 0 && currentScrollY > 0 && currentScrollY < window.innerHeight) {
+        // Only enable scroll resistance when user is at the very top (scrollY = 0)
+        const isAtTop = currentScrollY <= 5; // Small tolerance for touch precision
+        
+        // Track if user has scrolled away from the top
+        if (!isAtTop) {
           hasScrolledUpPartway.current = true;
-          // Allow smooth upward scrolling - no hijacking
-          return;
+        }
+        
+        // Reset flag only when user returns to the very top
+        if (isAtTop) {
+          hasScrolledUpPartway.current = false;
         }
         
         // Handle downward scrolling from dance area
         if (e.deltaY > 0) {
-          // If user has scrolled up partway, allow smooth downward scrolling without resistance
-          if (hasScrolledUpPartway.current && currentScrollY < window.innerHeight) {
-            return;
-          }
-          
-          // If at bottom of dance area and trying to scroll down, apply resistance
-          if (currentScrollY >= window.innerHeight - 100) {
+          // Only apply resistance if user is starting from the very top (scroll resistance enabled)
+          // AND trying to scroll past the dance area (100vh)
+          if (!hasScrolledUpPartway.current && currentScrollY >= window.innerHeight - 100) {
             e.preventDefault();
             e.stopPropagation();
             
@@ -379,7 +375,6 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
                 
                 snapTimeoutRef.current = setTimeout(() => {
                   handleSnapToSection(1);
-                  hasScrolledUpPartway.current = false; // Reset flag after snap
                 }, 100);
 
                 return {
@@ -400,11 +395,6 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
             });
             return;
           }
-        }
-        
-        // Reset the partway flag when user reaches top of dance area
-        if (currentScrollY <= 10) {
-          hasScrolledUpPartway.current = false;
         }
         
         return;
@@ -503,51 +493,54 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
       
       // Mobile-specific touch handling for dance area
       if (isMobile && currentSection === 0) {
-        // For touch events, we can't easily detect scroll direction
-        // So we'll use a simpler approach - only apply resistance at the very bottom
-        if (currentScrollY >= window.innerHeight - 100) {
+        // Only enable scroll resistance when user is at the very top (scrollY = 0)
+        const isAtTop = currentScrollY <= 5; // Small tolerance for touch precision
+        
+        // Track if user has scrolled away from the top
+        if (!isAtTop) {
+          hasScrolledUpPartway.current = true;
+        }
+        
+        // Reset flag only when user returns to the very top
+        if (isAtTop) {
+          hasScrolledUpPartway.current = false;
+        }
+        
+        // Only apply resistance if at bottom of dance area AND user started from top
+        if (currentScrollY >= window.innerHeight - 100 && !hasScrolledUpPartway.current) {
           const touch = e.touches[0];
           if (touch) {
-            // Only apply resistance if we haven't scrolled up partway
-            if (!hasScrolledUpPartway.current) {
-              setScrollState(prev => {
-                const newAccumulated = prev.accumulatedScroll + 8; // Fixed increment for touch
-                const newResistance = Math.min(newAccumulated / SCROLL_RESISTANCE_THRESHOLD, 1);
-                const newSectionProgress = Math.min(1, newResistance);
+            setScrollState(prev => {
+              const newAccumulated = prev.accumulatedScroll + 8; // Fixed increment for touch
+              const newResistance = Math.min(newAccumulated / SCROLL_RESISTANCE_THRESHOLD, 1);
+              const newSectionProgress = Math.min(1, newResistance);
 
-                if (newAccumulated >= SCROLL_RESISTANCE_THRESHOLD && !prev.shouldSnap) {
-                  if (snapTimeoutRef.current) {
-                    clearTimeout(snapTimeoutRef.current);
-                  }
-                  
-                  snapTimeoutRef.current = setTimeout(() => {
-                    handleSnapToSection(1);
-                    hasScrolledUpPartway.current = false; // Reset flag after snap
-                  }, 100);
-
-                  return {
-                    ...prev,
-                    accumulatedScroll: newAccumulated,
-                    scrollResistance: newResistance,
-                    sectionProgress: newSectionProgress,
-                    shouldSnap: true,
-                  };
+              if (newAccumulated >= SCROLL_RESISTANCE_THRESHOLD && !prev.shouldSnap) {
+                if (snapTimeoutRef.current) {
+                  clearTimeout(snapTimeoutRef.current);
                 }
+                
+                snapTimeoutRef.current = setTimeout(() => {
+                  handleSnapToSection(1);
+                }, 100);
 
                 return {
                   ...prev,
                   accumulatedScroll: newAccumulated,
                   scrollResistance: newResistance,
                   sectionProgress: newSectionProgress,
+                  shouldSnap: true,
                 };
-              });
-            }
+              }
+
+              return {
+                ...prev,
+                accumulatedScroll: newAccumulated,
+                scrollResistance: newResistance,
+                sectionProgress: newSectionProgress,
+              };
+            });
           }
-        }
-        
-        // Reset the partway flag when user reaches top of dance area
-        if (currentScrollY <= 10) {
-          hasScrolledUpPartway.current = false;
         }
         
         return;
