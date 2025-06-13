@@ -32,9 +32,6 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
   const isSnapping = useRef(false);
   const upwardScrollAccumulator = useRef(0);
   const isProcessingUpwardScroll = useRef(false);
-  
-  // Mobile-specific: Track if user has scrolled up partway through dance area
-  const hasScrolledUpPartway = useRef(false);
 
   // Calculate total sections based on document height
   const calculateTotalSections = useCallback(() => {
@@ -89,7 +86,6 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
     isSnapping.current = false;
     upwardScrollAccumulator.current = 0;
     isProcessingUpwardScroll.current = false;
-    hasScrolledUpPartway.current = false; // Reset mobile flag
   }, []);
 
   const handleSnapToSection = useCallback((targetSection: number) => {
@@ -155,15 +151,7 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
       
       // Mobile-specific scroll handling
       if (isMobile && currentSection === 0) {
-        const isAtVeryTop = currentScrollY <= 5; // Very top of page
         const isLeavingDanceArea = currentScrollY >= window.innerHeight - 100; // Bottom of dance area
-        
-        // Update the "locked at top" state
-        if (isAtVeryTop) {
-          hasScrolledUpPartway.current = false; // User is locked at top
-        } else if (currentScrollY > 50) { // Give some buffer before unlocking
-          hasScrolledUpPartway.current = true; // User has moved away from top lock
-        }
         
         // Handle downward scrolling - resist when leaving dance area to go to main content
         if (scrollDelta > 0 && isLeavingDanceArea) {
@@ -212,13 +200,8 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
           return;
         }
         
-        // Handle upward scrolling - no resistance unless user reaches very top (lock engagement)
+        // Handle upward scrolling - no resistance, allow smooth scrolling
         if (scrollDelta < 0) {
-          // If user scrolls all the way to the top, engage the lock
-          if (isAtVeryTop && !hasScrolledUpPartway.current) {
-            // User is now locked at top - future downward scrolls will have different behavior
-            // But upward scrolling itself has no resistance
-          }
           // Always allow smooth upward scrolling
           lastScrollY.current = currentScrollY;
           return;
@@ -350,15 +333,7 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
       
       // Mobile-specific wheel handling for dance area
       if (isMobile && currentSection === 0) {
-        const isAtVeryTop = currentScrollY <= 5; // Very top of page
         const isLeavingDanceArea = currentScrollY >= window.innerHeight - 100; // Bottom of dance area
-        
-        // Update the "locked at top" state
-        if (isAtVeryTop) {
-          hasScrolledUpPartway.current = false; // User is locked at top
-        } else if (currentScrollY > 50) { // Give some buffer before unlocking
-          hasScrolledUpPartway.current = true; // User has moved away from top lock
-        }
         
         // Handle downward wheel scrolling - resist when leaving dance area to go to main content
         if (e.deltaY > 0 && isLeavingDanceArea) {
@@ -402,10 +377,6 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
         
         // Handle upward wheel scrolling - no resistance, smooth scrolling
         if (e.deltaY < 0) {
-          // If user scrolls all the way to the top, engage the lock
-          if (isAtVeryTop && !hasScrolledUpPartway.current) {
-            // User is now locked at top - but upward scrolling itself has no resistance
-          }
           // Always allow smooth upward scrolling
           return;
         }
@@ -506,15 +477,7 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
       
       // Mobile-specific touch handling for dance area
       if (isMobile && currentSection === 0) {
-        const isAtVeryTop = currentScrollY <= 5; // Very top of page
         const isLeavingDanceArea = currentScrollY >= window.innerHeight - 100; // Bottom of dance area
-        
-        // Update the "locked at top" state
-        if (isAtVeryTop) {
-          hasScrolledUpPartway.current = false; // User is locked at top
-        } else if (currentScrollY > 50) { // Give some buffer before unlocking
-          hasScrolledUpPartway.current = true; // User has moved away from top lock
-        }
         
         // Apply resistance only when leaving dance area (transitioning to main content)
         if (isLeavingDanceArea) {
