@@ -127,9 +127,22 @@ const SocialLinkCard: React.FC<SocialLinkCardProps> = ({
 export const SocialLinks: React.FC<SocialLinksProps> = ({ isPlaying }) => {
   return (
     <div className="mt-16">
-      <h3 className="text-2xl md:text-3xl font-bold text-white uppercase tracking-widest mb-8">
-        Follow GiGi
-      </h3>
+      <div className="relative">
+        {isPlaying && (
+          <div className="hidden lg:block absolute -top-2 -right-2 w-3 h-3 rounded-full blur-sm">
+            <div className="bg-purple-400/60 animate-ping w-full h-full rounded-full"></div>
+          </div>
+        )}
+        <h3
+          className={`text-2xl md:text-3xl font-bold uppercase tracking-widest mb-8 ${
+            isPlaying
+              ? "text-purple-300 bg-clip-text bg-gradient-to-r from-purple-200 via-purple-300 to-purple-500 animate-pulse scale-105"
+              : "text-white"
+          }`}
+        >
+          Follow GiGi
+        </h3>
+      </div>
 
       {/* Main Social Platforms */}
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 max-w-4xl mx-auto mb-8">

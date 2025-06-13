@@ -100,21 +100,54 @@ export const MainContent: React.FC<MainContentProps> = ({
                 </div>
               </div>
             </div>
-            <h3 className="text-2xl md:text-3xl font-bold text-white uppercase tracking-widest">
-              The Maestro of Italo-Dance
-            </h3>
-            <p className="text-lg text-gray-300 font-semibold mt-2">
-              Luigino Celestino Di Agostino • Born December 17, 1967 • Turin,
-              Italy
-            </p>
+            <div className="relative">
+              {isPlaying && (
+                <div className="hidden lg:block absolute -top-2 -right-2 w-3 h-3 rounded-full blur-sm">
+                  <div className="bg-purple-400/60 animate-ping w-full h-full rounded-full"></div>
+                </div>
+              )}
+              <h3 className={`text-2xl md:text-3xl font-bold uppercase tracking-widest ${
+                isPlaying 
+                  ? "text-purple-300 bg-clip-text bg-gradient-to-r from-purple-200 via-purple-300 to-purple-500 animate-pulse scale-105"
+                  : "text-white"
+              }`}>
+                The Maestro of Italo-Dance
+              </h3>
+            </div>
+            <div className="relative">
+              {isPlaying && (
+                <div className="hidden lg:block absolute -top-1 -right-1 w-2 h-2 rounded-full blur-sm">
+                  <div className="bg-purple-400/60 animate-ping w-full h-full rounded-full"></div>
+                </div>
+              )}
+              <p className={`text-lg font-semibold mt-2 ${
+                isPlaying
+                  ? "text-purple-300 bg-clip-text bg-gradient-to-r from-purple-200 via-purple-300 to-purple-500 animate-pulse scale-105"
+                  : "text-gray-300"
+              }`}>
+                Luigino Celestino Di Agostino • Born December 17, 1967 • Turin,
+                Italy
+              </p>
+            </div>
           </div>
         </div>
 
         {/* Tour Dates Header */}
         <div className="mt-16">
-          <h3 className="text-3xl md:text-4xl font-bold text-white uppercase tracking-widest mb-8">
-            World Tour 2025
-          </h3>
+          <div className="relative">
+            {isPlaying && (
+              <div className="hidden lg:block absolute -top-2 -right-2 w-3 h-3 rounded-full blur-sm">
+                <div className="bg-purple-400/60 animate-ping w-full h-full rounded-full"></div>
+              </div>
+            )}
+            <h3 className={`text-3xl md:text-4xl font-bold uppercase tracking-widest mb-8 ${
+              isPlaying
+                ? "text-purple-300 bg-clip-text bg-gradient-to-r from-purple-200 via-purple-300 to-purple-500 animate-pulse scale-105"
+                : "text-white"
+            }`}>
+              World Tour 2025
+            </h3>
+          </div>
 
           {/* Tour Dates Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left max-w-3xl mx-auto gigi-tour-grid">
@@ -135,18 +168,40 @@ export const MainContent: React.FC<MainContentProps> = ({
             }`}
           >
             <div className="text-center">
-              <p className="text-lg text-gray-300 mb-2">
-                <span className="text-gold-400 font-semibold">Latest:</span>
-                Continuing his Lento Violento explorations with
-                <span className="text-purple-300 font-semibold">
-                  {" "}
-                  Suono Libero (2021)
-                </span>
-              </p>
-              <p className="text-sm text-gray-400">
-                Released under his own Lento Violento and Gigi D&apos;Agostino
-                Planet labels
-              </p>
+              <div className="relative">
+                {isPlaying && (
+                  <div className="hidden lg:block absolute -top-1 -right-1 w-2 h-2 rounded-full blur-sm">
+                    <div className="bg-purple-400/60 animate-ping w-full h-full rounded-full"></div>
+                  </div>
+                )}
+                <p className={`text-lg mb-2 ${
+                  isPlaying
+                    ? "text-purple-300 bg-clip-text bg-gradient-to-r from-purple-200 via-purple-300 to-purple-500 animate-pulse scale-105"
+                    : "text-gray-300"
+                }`}>
+                  <span className="text-gold-400 font-semibold">Latest:</span>
+                  Continuing his Lento Violento explorations with
+                  <span className="text-purple-300 font-semibold">
+                    {" "}
+                    Suono Libero (2021)
+                  </span>
+                </p>
+              </div>
+              <div className="relative">
+                {isPlaying && (
+                  <div className="hidden lg:block absolute -top-1 -right-1 w-2 h-2 rounded-full blur-sm">
+                    <div className="bg-purple-400/60 animate-ping w-full h-full rounded-full"></div>
+                  </div>
+                )}
+                <p className={`text-sm ${
+                  isPlaying
+                    ? "text-purple-300 bg-clip-text bg-gradient-to-r from-purple-200 via-purple-300 to-purple-500 animate-pulse scale-105"
+                    : "text-gray-400"
+                }`}>
+                  Released under his own Lento Violento and Gigi D&apos;Agostino
+                  Planet labels
+                </p>
+              </div>
             </div>
           </div>
         </div>

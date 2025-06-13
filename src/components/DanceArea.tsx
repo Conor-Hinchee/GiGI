@@ -2,6 +2,8 @@ import React from "react";
 import { DanceAreaProps } from "../types";
 import FirefliesScene from "./FirefliesScene";
 import { DanceButton } from "./DanceButton";
+import { ExpansionIndicator } from "./ExpansionIndicator";
+import AudioStatusIndicator from "./AudioStatusIndicator";
 
 // Available songs array
 const AVAILABLE_SONGS = [
@@ -77,29 +79,7 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
       />
 
       {/* Expansion Indicator - appears when expanding */}
-      {isPlaying && !isFullscreen && (
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-30 opacity-0 animate-rave-fade-in-out-once px-4 max-w-[90vw]">
-          <div className="flex items-center space-x-2 sm:space-x-3 bg-black/70 backdrop-blur-md rounded-full px-4 sm:px-6 py-3 border border-purple-400/60 shadow-2xl min-w-max">
-            <div className="w-3 h-3 bg-purple-400 rounded-full animate-rave-particle-glow shadow-purple-400/80 shadow-lg flex-shrink-0"></div>
-            <span className="text-purple-200 text-sm sm:text-base font-semibold whitespace-nowrap">
-              🎵 Dance Mode Active 🎵
-            </span>
-            <svg
-              className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400 animate-bounce flex-shrink-0"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M8 7l4-4m0 0l4 4m-4-4v18"
-              />
-            </svg>
-          </div>
-        </div>
-      )}
+      <ExpansionIndicator isVisible={isPlaying && !isFullscreen} />
 
       {/* Fullscreen Button */}
       <button
@@ -141,31 +121,11 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
       </button>
 
       {/* Audio Status Indicator */}
-      {isPlaying && (
-        <button
-          onClick={toggleAudio}
-          className="fixed top-4 right-4 z-50 flex items-center space-x-2 bg-black/40 backdrop-blur-md rounded-full px-4 py-2 shadow-lg hover:bg-black/60 transition-all duration-300 cursor-pointer group border-trace-rave-rounded"
-          title="Click to stop dancing"
-        >
-          <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse shadow-purple-400/50 shadow-sm group-hover:bg-red-400 transition-colors duration-300"></div>
-          <span className="text-purple-200 text-sm font-medium group-hover:text-red-200 transition-colors duration-300">
-            Dance Mode Active
-          </span>
-        </button>
-      )}
-
-      {!isPlaying && (
-        <button
-          onClick={toggleAudio}
-          className="fixed top-4 right-4 z-50 flex items-center space-x-2 bg-black/40 backdrop-blur-md rounded-full px-4 py-2 border border-gray-600/40 shadow-lg hover:border-purple-500/40 hover:bg-black/60 transition-all duration-300 cursor-pointer group"
-          title="Click to start dancing"
-        >
-          <div className="w-2 h-2 bg-gray-400 rounded-full group-hover:bg-purple-400 transition-colors duration-300"></div>
-          <span className="text-gray-300 text-sm font-medium group-hover:text-purple-200 transition-colors duration-300">
-            Press 舞 to awaken
-          </span>
-        </button>
-      )}
+      <AudioStatusIndicator
+        isPlaying={isPlaying}
+        toggleAudio={toggleAudio}
+        isMobile={isMobile}
+      />
 
       {/* Inset shadow effects */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/50 z-10"></div>
