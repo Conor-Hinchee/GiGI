@@ -44,6 +44,7 @@ export default function Home() {
           totalSections: scrollState.totalSections,
           sectionProgress: scrollState.sectionProgress,
           isScrollingUp: scrollState.isScrollingUp,
+          isFirstTimeActivation: scrollState.isFirstTimeActivation,
         }}
       />
       <MainContent
@@ -57,7 +58,8 @@ export default function Home() {
         isVisible={
           scrollState.isScrollHijacked &&
           scrollState.accumulatedScroll > 0 &&
-          !scrollState.isScrollingUp
+          !scrollState.isScrollingUp &&
+          scrollState.isFirstTimeActivation
         }
         isMobile={isMobile}
       />

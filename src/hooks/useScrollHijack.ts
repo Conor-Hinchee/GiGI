@@ -9,6 +9,7 @@ interface ScrollHijackState {
   totalSections: number;
   sectionProgress: number;
   isScrollingUp: boolean;
+  isFirstTimeActivation: boolean;
 }
 
 const SCROLL_RESISTANCE_THRESHOLD = 150; // Reduced threshold for quicker snapping
@@ -24,6 +25,7 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
     totalSections: 1,
     sectionProgress: 0,
     isScrollingUp: false,
+    isFirstTimeActivation: true,
   });
 
   const lastScrollY = useRef(0);
@@ -32,6 +34,7 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
   const isSnapping = useRef(false);
   const upwardScrollAccumulator = useRef(0);
   const isProcessingUpwardScroll = useRef(false);
+  const hasEverSnappedFromDanceArea = useRef(false); // Track if user has ever snapped out of dance area
 
   // Calculate total sections based on document height
   const calculateTotalSections = useCallback(() => {
@@ -68,6 +71,7 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
       currentSection,
       totalSections,
       sectionProgress: 0,
+      isFirstTimeActivation: !hasEverSnappedFromDanceArea.current, // Only first time if never snapped before
     }));
     lastScrollY.current = window.scrollY;
   }, [calculateTotalSections, getCurrentSection]);
@@ -169,6 +173,9 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
                 clearTimeout(snapTimeoutRef.current);
               }
               
+              // Mark that user has completed first snap from dance area
+              hasEverSnappedFromDanceArea.current = true;
+              
               snapTimeoutRef.current = setTimeout(() => {
                 handleSnapToSection(1); // Snap to section 1 (after dance area)
               }, 100);
@@ -180,6 +187,7 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
                 sectionProgress: newSectionProgress,
                 shouldSnap: true,
                 isScrollingUp: false,
+                isFirstTimeActivation: false, // Disable indicator after first snap
               };
             }
 
@@ -363,6 +371,9 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
                 clearTimeout(snapTimeoutRef.current);
               }
               
+              // Mark that user has completed first snap from dance area
+              hasEverSnappedFromDanceArea.current = true;
+              
               snapTimeoutRef.current = setTimeout(() => {
                 handleSnapToSection(1); // Snap to section 1
               }, 100);
@@ -373,6 +384,7 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
                 scrollResistance: newResistance,
                 sectionProgress: newSectionProgress,
                 shouldSnap: true,
+                isFirstTimeActivation: false, // Disable indicator after first snap
               };
             }
 
@@ -518,6 +530,9 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
                   clearTimeout(snapTimeoutRef.current);
                 }
                 
+                // Mark that user has completed first snap from dance area
+                hasEverSnappedFromDanceArea.current = true;
+                
                 snapTimeoutRef.current = setTimeout(() => {
                   handleSnapToSection(1); // Snap to section 1
                 }, 100);
@@ -528,6 +543,7 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
                   scrollResistance: newResistance,
                   sectionProgress: newSectionProgress,
                   shouldSnap: true,
+                  isFirstTimeActivation: false, // Disable indicator after first snap
                 };
               }
 

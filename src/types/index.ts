@@ -24,6 +24,7 @@ export interface DanceAreaProps {
     totalSections: number;
     sectionProgress: number;
     isScrollingUp: boolean;
+    isFirstTimeActivation: boolean;
   };
 }
 
