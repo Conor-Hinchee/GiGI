@@ -168,55 +168,61 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
           hasScrolledUpPartway.current = false;
         }
         
-        // Handle downward scrolling from dance area
-        if (scrollDelta > 0) {
-          // Only apply resistance if user is starting from the very top (scroll resistance enabled)
-          // AND trying to scroll past the dance area (100vh)
-          if (!hasScrolledUpPartway.current && currentScrollY >= window.innerHeight - 100) {
-            e.preventDefault();
-            e.stopPropagation();
-            preventingScroll.current = true;
+        // Handle downward scrolling - apply resistance throughout the dance area if starting from top
+        if (scrollDelta > 0 && !hasScrolledUpPartway.current) {
+          // Apply scroll resistance throughout the entire dance area (0 to 100vh)
+          e.preventDefault();
+          e.stopPropagation();
+          preventingScroll.current = true;
 
-            setScrollState(prev => {
-              const newAccumulated = prev.accumulatedScroll + Math.abs(scrollDelta);
-              const newResistance = Math.min(newAccumulated / SCROLL_RESISTANCE_THRESHOLD, 1);
-              const newSectionProgress = Math.min(1, newResistance);
+          setScrollState(prev => {
+            const newAccumulated = prev.accumulatedScroll + Math.abs(scrollDelta);
+            const newResistance = Math.min(newAccumulated / SCROLL_RESISTANCE_THRESHOLD, 1);
+            const newSectionProgress = Math.min(1, newResistance);
 
-              if (newAccumulated >= SCROLL_RESISTANCE_THRESHOLD && !prev.shouldSnap) {
-                if (snapTimeoutRef.current) {
-                  clearTimeout(snapTimeoutRef.current);
-                }
-                
-                snapTimeoutRef.current = setTimeout(() => {
-                  handleSnapToSection(1);
-                }, 100);
-
-                return {
-                  ...prev,
-                  accumulatedScroll: newAccumulated,
-                  scrollResistance: newResistance,
-                  sectionProgress: newSectionProgress,
-                  shouldSnap: true,
-                };
+            // Check if we should snap to next section (when trying to leave dance area)
+            if (currentScrollY >= window.innerHeight - 100 && newAccumulated >= SCROLL_RESISTANCE_THRESHOLD && !prev.shouldSnap) {
+              if (snapTimeoutRef.current) {
+                clearTimeout(snapTimeoutRef.current);
               }
+              
+              snapTimeoutRef.current = setTimeout(() => {
+                handleSnapToSection(1);
+              }, 100);
 
               return {
                 ...prev,
                 accumulatedScroll: newAccumulated,
                 scrollResistance: newResistance,
                 sectionProgress: newSectionProgress,
+                shouldSnap: true,
               };
-            });
+            }
 
-            const allowedScroll = scrollDelta * SCROLL_RESISTANCE_FACTOR;
-            const newScrollY = Math.min(window.innerHeight - 1, lastScrollY.current + allowedScroll);
-            window.scrollTo(0, newScrollY);
-            lastScrollY.current = newScrollY;
-            return;
-          }
+            return {
+              ...prev,
+              accumulatedScroll: newAccumulated,
+              scrollResistance: newResistance,
+              sectionProgress: newSectionProgress,
+            };
+          });
+
+          // Allow a small amount of scroll for visual feedback
+          const allowedScroll = scrollDelta * SCROLL_RESISTANCE_FACTOR;
+          const newScrollY = Math.min(window.innerHeight - 1, lastScrollY.current + allowedScroll);
+          window.scrollTo(0, newScrollY);
+          lastScrollY.current = newScrollY;
+          return;
         }
         
-        // Normal scroll behavior within dance area or if user has scrolled away from top
+        // Handle upward scrolling - zero resistance, allow smooth scrolling
+        if (scrollDelta < 0) {
+          // Allow smooth upward scrolling with no hijacking
+          lastScrollY.current = currentScrollY;
+          return;
+        }
+        
+        // Normal scroll behavior if user has scrolled away from top
         lastScrollY.current = currentScrollY;
         return;
       }
@@ -355,46 +361,50 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
           hasScrolledUpPartway.current = false;
         }
         
-        // Handle downward scrolling from dance area
-        if (e.deltaY > 0) {
-          // Only apply resistance if user is starting from the very top (scroll resistance enabled)
-          // AND trying to scroll past the dance area (100vh)
-          if (!hasScrolledUpPartway.current && currentScrollY >= window.innerHeight - 100) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            setScrollState(prev => {
-              const newAccumulated = prev.accumulatedScroll + Math.abs(e.deltaY * 1.5);
-              const newResistance = Math.min(newAccumulated / SCROLL_RESISTANCE_THRESHOLD, 1);
-              const newSectionProgress = Math.min(1, newResistance);
+        // Handle downward wheel scrolling - apply resistance throughout dance area if starting from top
+        if (e.deltaY > 0 && !hasScrolledUpPartway.current) {
+          // Apply scroll resistance throughout the entire dance area (0 to 100vh)
+          e.preventDefault();
+          e.stopPropagation();
+          
+          setScrollState(prev => {
+            const newAccumulated = prev.accumulatedScroll + Math.abs(e.deltaY * 1.5);
+            const newResistance = Math.min(newAccumulated / SCROLL_RESISTANCE_THRESHOLD, 1);
+            const newSectionProgress = Math.min(1, newResistance);
 
-              if (newAccumulated >= SCROLL_RESISTANCE_THRESHOLD && !prev.shouldSnap) {
-                if (snapTimeoutRef.current) {
-                  clearTimeout(snapTimeoutRef.current);
-                }
-                
-                snapTimeoutRef.current = setTimeout(() => {
-                  handleSnapToSection(1);
-                }, 100);
-
-                return {
-                  ...prev,
-                  accumulatedScroll: newAccumulated,
-                  scrollResistance: newResistance,
-                  sectionProgress: newSectionProgress,
-                  shouldSnap: true,
-                };
+            // Check if we should snap to next section (when trying to leave dance area)
+            if (currentScrollY >= window.innerHeight - 100 && newAccumulated >= SCROLL_RESISTANCE_THRESHOLD && !prev.shouldSnap) {
+              if (snapTimeoutRef.current) {
+                clearTimeout(snapTimeoutRef.current);
               }
+              
+              snapTimeoutRef.current = setTimeout(() => {
+                handleSnapToSection(1);
+              }, 100);
 
               return {
                 ...prev,
                 accumulatedScroll: newAccumulated,
                 scrollResistance: newResistance,
                 sectionProgress: newSectionProgress,
+                shouldSnap: true,
               };
-            });
-            return;
-          }
+            }
+
+            return {
+              ...prev,
+              accumulatedScroll: newAccumulated,
+              scrollResistance: newResistance,
+              sectionProgress: newSectionProgress,
+            };
+          });
+          return;
+        }
+        
+        // Handle upward wheel scrolling - zero resistance, allow smooth scrolling
+        if (e.deltaY < 0) {
+          // Allow smooth upward scrolling with no hijacking
+          return;
         }
         
         return;
@@ -506,8 +516,9 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
           hasScrolledUpPartway.current = false;
         }
         
-        // Only apply resistance if at bottom of dance area AND user started from top
-        if (currentScrollY >= window.innerHeight - 100 && !hasScrolledUpPartway.current) {
+        // Apply resistance throughout dance area if user started from top
+        // For touch, we apply resistance at any point in the dance area if starting from top
+        if (!hasScrolledUpPartway.current) {
           const touch = e.touches[0];
           if (touch) {
             setScrollState(prev => {
@@ -515,7 +526,8 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
               const newResistance = Math.min(newAccumulated / SCROLL_RESISTANCE_THRESHOLD, 1);
               const newSectionProgress = Math.min(1, newResistance);
 
-              if (newAccumulated >= SCROLL_RESISTANCE_THRESHOLD && !prev.shouldSnap) {
+              // Check if we should snap to next section (when trying to leave dance area)
+              if (currentScrollY >= window.innerHeight - 100 && newAccumulated >= SCROLL_RESISTANCE_THRESHOLD && !prev.shouldSnap) {
                 if (snapTimeoutRef.current) {
                   clearTimeout(snapTimeoutRef.current);
                 }
