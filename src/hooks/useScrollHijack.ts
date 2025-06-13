@@ -14,7 +14,7 @@ interface ScrollHijackState {
 const SCROLL_RESISTANCE_THRESHOLD = 150; // Reduced threshold for quicker snapping
 const SCROLL_RESISTANCE_FACTOR = 0.2; // More resistance for dramatic effect
 
-export const useScrollHijack = (isDanceModeActive: boolean) => {
+export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = false) => {
   const [scrollState, setScrollState] = useState<ScrollHijackState>({
     isScrollHijacked: false,
     accumulatedScroll: 0,
@@ -151,54 +151,62 @@ export const useScrollHijack = (isDanceModeActive: boolean) => {
       
       // Handle upward scrolling - prevent all movement until snap
       if (scrollDelta < 0) {
-        e.preventDefault();
-        e.stopPropagation();
+        // On mobile, only hijack upward scrolling if we're in section 1 trying to go back to section 0
+        const shouldHijackUpwardScroll = isMobile ? currentSection === 1 : currentSection > 0;
         
-        // Set scrolling up state to disable visuals
-        setScrollState(prev => ({ ...prev, isScrollingUp: true }));
-        
-        if (!isProcessingUpwardScroll.current && currentSection > 0) {
-          upwardScrollAccumulator.current += Math.abs(scrollDelta);
+        if (shouldHijackUpwardScroll) {
+          e.preventDefault();
+          e.stopPropagation();
           
-          // Reduced threshold for easier upward snapping
-          const UPWARD_SNAP_THRESHOLD = 150;
-          if (upwardScrollAccumulator.current >= UPWARD_SNAP_THRESHOLD) {
-            isProcessingUpwardScroll.current = true;
+          // Set scrolling up state to disable visuals
+          setScrollState(prev => ({ ...prev, isScrollingUp: true }));
+          
+          if (!isProcessingUpwardScroll.current) {
+            upwardScrollAccumulator.current += Math.abs(scrollDelta);
             
-            // Snap to previous section immediately
-            const previousSection = currentSection - 1;
-            if (snapTimeoutRef.current) {
-              clearTimeout(snapTimeoutRef.current);
+            // Reduced threshold for easier upward snapping
+            const UPWARD_SNAP_THRESHOLD = 150;
+            if (upwardScrollAccumulator.current >= UPWARD_SNAP_THRESHOLD) {
+              isProcessingUpwardScroll.current = true;
+              
+              // Snap to previous section immediately
+              const previousSection = currentSection - 1;
+              if (snapTimeoutRef.current) {
+                clearTimeout(snapTimeoutRef.current);
+              }
+              
+              snapTimeoutRef.current = setTimeout(() => {
+                handleSnapToSection(previousSection);
+                upwardScrollAccumulator.current = 0;
+                isProcessingUpwardScroll.current = false;
+                // Reset scrolling up state after snap
+                setScrollState(prev => ({ ...prev, isScrollingUp: false }));
+              }, 100);
+              
+              return;
             }
-            
-            snapTimeoutRef.current = setTimeout(() => {
-              handleSnapToSection(previousSection);
-              upwardScrollAccumulator.current = 0;
-              isProcessingUpwardScroll.current = false;
-              // Reset scrolling up state after snap
-              setScrollState(prev => ({ ...prev, isScrollingUp: false }));
-            }, 100);
-            
-            return;
           }
+          
+          // Keep the page locked at current position
+          window.scrollTo(0, lastScrollY.current);
+          
+          // Reset scrolling up state after a delay if no snap occurred
+          setTimeout(() => {
+            setScrollState(prev => ({ ...prev, isScrollingUp: false }));
+          }, 200);
+          
+          return;
         }
-        
-        // Keep the page locked at current position
-        window.scrollTo(0, lastScrollY.current);
-        
-        // Reset scrolling up state after a delay if no snap occurred
-        setTimeout(() => {
-          setScrollState(prev => ({ ...prev, isScrollingUp: false }));
-        }, 200);
-        
-        return;
       }
 
       // Check if we're at the edge of a section and trying to scroll down
       const nextSectionStartY = getSectionScrollY(currentSection + 1);
       const distanceToNextSection = nextSectionStartY - currentScrollY;
 
-      if (scrollDelta > 0 && distanceToNextSection <= window.innerHeight) {
+      // On mobile, only hijack scrolling for the first section (dance area)
+      const shouldHijackThisSection = isMobile ? currentSection === 0 : true;
+
+      if (scrollDelta > 0 && distanceToNextSection <= window.innerHeight && shouldHijackThisSection) {
         e.preventDefault();
         e.stopPropagation();
         preventingScroll.current = true;
@@ -260,7 +268,9 @@ export const useScrollHijack = (isDanceModeActive: boolean) => {
       const currentSection = getCurrentSection(currentScrollY);
       
       // Handle upward wheel scrolling - prevent all movement until snap
-      if (scrollState.isScrollHijacked && e.deltaY < 0 && currentSection > 0) {
+      // On mobile, only hijack upward scrolling if we're in section 1 trying to go back to section 0
+      const shouldHijackUpwardWheel = isMobile ? currentSection === 1 : currentSection > 0;
+      if (scrollState.isScrollHijacked && e.deltaY < 0 && shouldHijackUpwardWheel) {
         e.preventDefault();
         e.stopPropagation();
         
@@ -293,7 +303,10 @@ export const useScrollHijack = (isDanceModeActive: boolean) => {
       const nextSectionStartY = getSectionScrollY(currentSection + 1);
       const distanceToNextSection = nextSectionStartY - currentScrollY;
 
-      if (scrollState.isScrollHijacked && e.deltaY > 0 && distanceToNextSection <= window.innerHeight) {
+      // On mobile, only hijack scrolling for the first section (dance area)
+      const shouldHijackThisSection = isMobile ? currentSection === 0 : true;
+
+      if (scrollState.isScrollHijacked && e.deltaY > 0 && distanceToNextSection <= window.innerHeight && shouldHijackThisSection) {
         e.preventDefault();
         e.stopPropagation();
         
@@ -346,7 +359,10 @@ export const useScrollHijack = (isDanceModeActive: boolean) => {
       const nextSectionStartY = getSectionScrollY(currentSection + 1);
       const distanceToNextSection = nextSectionStartY - currentScrollY;
 
-      if (scrollState.isScrollHijacked && distanceToNextSection <= window.innerHeight) {
+      // On mobile, only hijack scrolling for the first section (dance area)
+      const shouldHijackThisSection = isMobile ? currentSection === 0 : true;
+
+      if (scrollState.isScrollHijacked && distanceToNextSection <= window.innerHeight && shouldHijackThisSection) {
         const touch = e.touches[0];
         if (touch) {
           // Touch scrolling resistance
@@ -411,7 +427,7 @@ export const useScrollHijack = (isDanceModeActive: boolean) => {
         clearTimeout(snapTimeoutRef.current);
       }
     };
-  }, [scrollState.isScrollHijacked, handleSnapToSection, updateSectionProgress, getCurrentSection, getSectionScrollY, calculateTotalSections]);
+  }, [scrollState.isScrollHijacked, handleSnapToSection, updateSectionProgress, getCurrentSection, getSectionScrollY, calculateTotalSections, isMobile]);
 
   return {
     scrollState,

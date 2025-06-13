@@ -42,7 +42,9 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
   return (
     <div
       ref={danceAreaRef}
-      className={`bg-gray-950 relative overflow-hidden shadow-inner hover-trail transition-all duration-1000 ease-in-out ${
+      className={`bg-gray-950 relative overflow-hidden shadow-inner hover-trail ${
+        isMobile ? "" : "transition-all duration-1000 ease-in-out"
+      } ${
         isFullscreen
           ? "fixed inset-0 z-50 h-screen w-screen border-0"
           : isPlaying
