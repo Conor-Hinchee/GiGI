@@ -38,6 +38,7 @@ export default function Home() {
           isScrollHijacked: scrollState.isScrollHijacked,
           scrollResistance: scrollState.scrollResistance,
           shouldSnap: scrollState.shouldSnap,
+          accumulatedScroll: scrollState.accumulatedScroll,
         }}
       />
       <MainContent

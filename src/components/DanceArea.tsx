@@ -87,8 +87,15 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
         isMobile={isMobile}
       />
 
-      {/* Expansion Indicator - appears when expanding */}
-      <ExpansionIndicator isVisible={isPlaying && !isFullscreen} />
+      {/* Expansion Indicator - appears when expanding but hides when user starts scrolling */}
+      <ExpansionIndicator
+        isVisible={
+          isPlaying &&
+          !isFullscreen &&
+          (!scrollHijackState?.isScrollHijacked ||
+            scrollHijackState.accumulatedScroll === 0)
+        }
+      />
 
       {/* Fullscreen Button */}
       <button

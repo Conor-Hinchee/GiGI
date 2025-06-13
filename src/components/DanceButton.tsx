@@ -130,22 +130,12 @@ export const DanceButton: React.FC<DanceButtonProps> = ({
           ></div>
         </div>
 
-        {/* Desktop-only: Hover tooltip that mobile won't see */}
         <div className="hidden lg:block absolute -top-12 left-1/2 transform -translate-x-1/2 transition-all duration-300 pointer-events-none opacity-0 group-hover:opacity-100">
           <div className="bg-black/80 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-full border border-purple-400/50">
             {isPlaying ? "Stop the music" : "Start the party"}
           </div>
           <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-2 border-r-2 border-t-2 border-transparent border-t-black/80"></div>
         </div>
-
-        {/* Dance mode scroll hint - only visible when playing */}
-        {isPlaying && (
-          <div className="hidden md:block absolute -bottom-20 left-1/2 transform -translate-x-1/2 transition-all duration-500 opacity-80">
-            <div className="bg-black/60 backdrop-blur-sm text-white text-xs px-4 py-2 rounded-full border border-purple-400/30 animate-bounce">
-              🎵 Try scrolling while dancing!
-            </div>
-          </div>
-        )}
       </button>
     </div>
   );

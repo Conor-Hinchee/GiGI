@@ -19,6 +19,7 @@ export interface DanceAreaProps {
     isScrollHijacked: boolean;
     scrollResistance: number;
     shouldSnap: boolean;
+    accumulatedScroll: number;
   };
 }
 
