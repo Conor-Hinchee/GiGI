@@ -3,19 +3,24 @@ import React from "react";
 interface ViewportBorderIndicatorProps {
   scrollResistance: number;
   isVisible: boolean;
+  isScrollHijacked?: boolean;
 }
 
 const ViewportBorderIndicator: React.FC<ViewportBorderIndicatorProps> = ({
   scrollResistance,
   isVisible,
+  isScrollHijacked = false,
 }) => {
   if (!isVisible) return null;
+
+  // Reduce intensity by half when scroll hijacking is active
+  const intensityMultiplier = isScrollHijacked ? 0.5 : 1;
 
   // Calculate border color progression from purple to gold based on section progress
   const getBorderColor = () => {
     if (scrollResistance < 0.3) {
       // Purple phase (147, 51, 234) - Deep purple
-      const intensity = 0.4 + scrollResistance * 1.6;
+      const intensity = (0.4 + scrollResistance * 1.6) * intensityMultiplier;
       return `rgba(147, 51, 234, ${intensity})`;
     } else if (scrollResistance < 0.7) {
       // Purple to pink/magenta transition (147,51,234) -> (236,72,153)
@@ -23,7 +28,7 @@ const ViewportBorderIndicator: React.FC<ViewportBorderIndicatorProps> = ({
       const r = 147 + progress * 89;
       const g = 51 + progress * 21;
       const b = 234 - progress * 81;
-      const intensity = 0.6 + scrollResistance * 0.4;
+      const intensity = (0.6 + scrollResistance * 0.4) * intensityMultiplier;
       return `rgba(${r}, ${g}, ${b}, ${intensity})`;
     } else {
       // Pink to gold transition (236,72,153) -> (255,215,0)
@@ -31,17 +36,17 @@ const ViewportBorderIndicator: React.FC<ViewportBorderIndicatorProps> = ({
       const r = 236 + progress * 19;
       const g = 72 + progress * 143;
       const b = 153 - progress * 153;
-      const intensity = 0.8 + scrollResistance * 0.2;
+      const intensity = (0.8 + scrollResistance * 0.2) * intensityMultiplier;
       return `rgba(${r}, ${g}, ${b}, ${intensity})`;
     }
   };
 
   const getBorderWidth = () => {
-    return Math.max(2, scrollResistance * 8); // 2px to 8px for subtler effect
+    return Math.max(2, scrollResistance * 8 * intensityMultiplier); // Reduced width when hijacked
   };
 
   const getGlowIntensity = () => {
-    return scrollResistance * 80; // 0 to 80px glow
+    return scrollResistance * 80 * intensityMultiplier; // Reduced glow when hijacked
   };
 
   const getRaveClasses = () => {
@@ -110,7 +115,11 @@ const ViewportBorderIndicator: React.FC<ViewportBorderIndicatorProps> = ({
               width: `${getBorderWidth() * 6}px`,
               height: `${getBorderWidth() * 6}px`,
               background: `radial-gradient(circle, ${getBorderColor()}, transparent 70%)`,
-              filter: `blur(${Math.max(1, scrollResistance * 3)}px)`,
+              filter: `blur(${Math.max(
+                1,
+                scrollResistance * 3 * intensityMultiplier
+              )}px)`,
+              opacity: intensityMultiplier,
             }}
           />
 
@@ -121,7 +130,11 @@ const ViewportBorderIndicator: React.FC<ViewportBorderIndicatorProps> = ({
               width: `${getBorderWidth() * 6}px`,
               height: `${getBorderWidth() * 6}px`,
               background: `radial-gradient(circle, ${getBorderColor()}, transparent 70%)`,
-              filter: `blur(${Math.max(1, scrollResistance * 3)}px)`,
+              filter: `blur(${Math.max(
+                1,
+                scrollResistance * 3 * intensityMultiplier
+              )}px)`,
+              opacity: intensityMultiplier,
               animationDelay: "0.5s",
             }}
           />
@@ -133,7 +146,11 @@ const ViewportBorderIndicator: React.FC<ViewportBorderIndicatorProps> = ({
               width: `${getBorderWidth() * 6}px`,
               height: `${getBorderWidth() * 6}px`,
               background: `radial-gradient(circle, ${getBorderColor()}, transparent 70%)`,
-              filter: `blur(${Math.max(1, scrollResistance * 3)}px)`,
+              filter: `blur(${Math.max(
+                1,
+                scrollResistance * 3 * intensityMultiplier
+              )}px)`,
+              opacity: intensityMultiplier,
               animationDelay: "1s",
             }}
           />
@@ -145,7 +162,11 @@ const ViewportBorderIndicator: React.FC<ViewportBorderIndicatorProps> = ({
               width: `${getBorderWidth() * 6}px`,
               height: `${getBorderWidth() * 6}px`,
               background: `radial-gradient(circle, ${getBorderColor()}, transparent 70%)`,
-              filter: `blur(${Math.max(1, scrollResistance * 3)}px)`,
+              filter: `blur(${Math.max(
+                1,
+                scrollResistance * 3 * intensityMultiplier
+              )}px)`,
+              opacity: intensityMultiplier,
               animationDelay: "1.5s",
             }}
           />
@@ -158,7 +179,7 @@ const ViewportBorderIndicator: React.FC<ViewportBorderIndicatorProps> = ({
           className="fixed inset-0 z-[59] pointer-events-none animate-ping"
           style={{
             background: `radial-gradient(circle at center, transparent 30%, ${getBorderColor()} 50%, transparent 70%)`,
-            opacity: 0.2,
+            opacity: 0.2 * intensityMultiplier,
           }}
         />
       )}
@@ -169,7 +190,7 @@ const ViewportBorderIndicator: React.FC<ViewportBorderIndicatorProps> = ({
           className="fixed inset-0 z-[58] pointer-events-none animate-pulse"
           style={{
             background: `linear-gradient(45deg, ${getBorderColor()}, transparent, ${getBorderColor()})`,
-            opacity: 0.1,
+            opacity: 0.1 * intensityMultiplier,
           }}
         />
       )}

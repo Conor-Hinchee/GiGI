@@ -54,7 +54,7 @@ const AudioStatusIndicator: React.FC<AudioStatusIndicatorProps> = ({
           isPlaying
             ? "text-purple-400 group-hover:text-red-400"
             : "text-gray-400 group-hover:text-purple-400"
-        }`}
+        } ${isScrolled && isPlaying ? "animate-bounce" : ""}`}
       >
         舞
       </span>

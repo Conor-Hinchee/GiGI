@@ -20,7 +20,9 @@ export default function Home() {
   const { isFullscreen, danceAreaRef, toggleFullscreen } = useFullscreen();
   const { isMobile } = useMobileDetection();
   const { scrollY } = useScrollPosition(isMobile);
-  const { scrollState } = useScrollHijack(isPlaying && !isFullscreen);
+  const { scrollState } = useScrollHijack(
+    !isMobile && isPlaying && !isFullscreen
+  );
 
   const isScrolledPastDanceArea = scrollY > 100;
 
@@ -68,6 +70,7 @@ export default function Home() {
           !isFullscreen &&
           !scrollState.isScrollingUp
         }
+        isScrollHijacked={scrollState.isScrollHijacked}
       />
     </div>
   );
