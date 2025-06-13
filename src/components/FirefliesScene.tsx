@@ -98,27 +98,27 @@ const FirefliesScene = forwardRef<FirefliesSceneRef, FirefliesSceneProps>(
         positions[1] = worldPos.y;
         positions[2] = worldPos.z;
 
-        // Set random color (purple-dominant palette)
+        // Set random color (enhanced purple-dominant palette)
         const colorChoice = Math.random();
-        if (colorChoice < 0.4) {
-          // Bright purple-pink for touch fireflies
-          colors[0] = 1.0;
+        if (colorChoice < 0.5) {
+          // Deep purple fireflies - enhanced intensity
+          colors[0] = 0.9;
           colors[1] = 0.2;
           colors[2] = 1.0;
-        } else if (colorChoice < 0.7) {
-          // Golden yellow for contrast
+        } else if (colorChoice < 0.75) {
+          // Violet/magenta fireflies - enhanced saturation
           colors[0] = 1.0;
-          colors[1] = 0.8;
-          colors[2] = 0.2;
+          colors[1] = 0.3;
+          colors[2] = 1.0;
         } else {
-          // Cyan-blue for variety
-          colors[0] = 0.2;
-          colors[1] = 0.8;
+          // Light purple/lavender fireflies - enhanced warmth
+          colors[0] = 0.8;
+          colors[1] = 0.5;
           colors[2] = 1.0;
         }
 
-        // Set scale
-        scales[0] = Math.random() * 1.5 + 1.0;
+        // Set scale - make responsive to device type
+        scales[0] = Math.random() * 1.5 + (isMobile ? 1.5 : 1.0);
 
         geometry.setAttribute(
           "position",
@@ -131,8 +131,8 @@ const FirefliesScene = forwardRef<FirefliesSceneRef, FirefliesSceneProps>(
         const material = new THREE.ShaderMaterial({
           uniforms: {
             uTime: { value: 0 },
-            uSize: { value: isMobile ? 50 : 40 },
-            uIntensity: { value: 3.0 },
+            uSize: { value: isMobile ? 60 : 50 }, // Slightly larger for better visibility
+            uIntensity: { value: 4.0 }, // Increased intensity
             uOpacity: { value: 1.0 },
             uSpawnTime: { value: performance.now() / 1000 },
             uPulse: { value: 1.0 },
@@ -197,7 +197,7 @@ const FirefliesScene = forwardRef<FirefliesSceneRef, FirefliesSceneProps>(
         const points = new THREE.Points(geometry, material);
         sceneRef.current.add(points);
 
-        // Schedule removal after 3 seconds
+        // Schedule removal after 4 seconds (increased from 3)
         setTimeout(() => {
           if (sceneRef.current && points) {
             sceneRef.current.remove(points);
@@ -210,7 +210,7 @@ const FirefliesScene = forwardRef<FirefliesSceneRef, FirefliesSceneProps>(
               touchFirefliesRef.current.splice(index, 1);
             }
           }
-        }, 3000);
+        }, 4000); // Increased lifetime
 
         return points;
       },
@@ -220,7 +220,7 @@ const FirefliesScene = forwardRef<FirefliesSceneRef, FirefliesSceneProps>(
     // Spawn fireflies at touch location
     const spawnFirefliesAtTouch = useCallback(
       (screenX: number, screenY: number, burst = false) => {
-        if (!isMobile) return; // Only on mobile
+        // Remove mobile-only restriction - work on all devices
 
         const worldPos = screenToWorld(screenX, screenY);
         const count = burst ? Math.floor(Math.random() * 5) + 3 : 1; // 3-7 for burst, 1 for single
@@ -253,7 +253,7 @@ const FirefliesScene = forwardRef<FirefliesSceneRef, FirefliesSceneProps>(
           }
         }
       },
-      [isMobile, screenToWorld, createTouchFirefly]
+      [screenToWorld, createTouchFirefly]
     );
 
     // Expose the spawn function via ref
@@ -436,22 +436,22 @@ const FirefliesScene = forwardRef<FirefliesSceneRef, FirefliesSceneProps>(
         positions[i3 + 1] = (Math.random() - 0.5) * 6 * spreadMultiplier;
         positions[i3 + 2] = (Math.random() - 0.5) * 8 * spreadMultiplier;
 
-        // Random colors (purple-dominant palette)
+        // Random colors (enhanced purple-dominant palette with better baseline)
         const colorChoice = Math.random();
-        if (colorChoice < 0.5) {
-          // Deep purple fireflies
-          colors[i3] = 0.7;
-          colors[i3 + 1] = 0.3;
+        if (colorChoice < 0.6) {
+          // Deep purple fireflies - more dominant
+          colors[i3] = 0.8;
+          colors[i3 + 1] = 0.25;
           colors[i3 + 2] = 1.0;
-        } else if (colorChoice < 0.8) {
-          // Violet/magenta fireflies
-          colors[i3] = 0.9;
-          colors[i3 + 1] = 0.4;
+        } else if (colorChoice < 0.85) {
+          // Violet/magenta fireflies - enhanced saturation
+          colors[i3] = 0.95;
+          colors[i3 + 1] = 0.35;
           colors[i3 + 2] = 1.0;
         } else {
-          // Light purple/lavender fireflies
-          colors[i3] = 0.8;
-          colors[i3 + 1] = 0.6;
+          // Light purple/lavender fireflies - warmer undertones
+          colors[i3] = 0.85;
+          colors[i3 + 1] = 0.55;
           colors[i3 + 2] = 1.0;
         }
 
@@ -466,16 +466,18 @@ const FirefliesScene = forwardRef<FirefliesSceneRef, FirefliesSceneProps>(
       );
       geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
       geometry.setAttribute("aScale", new THREE.BufferAttribute(scales, 1));
-      geometry.setDrawRange(0, 0); // Start with 0 fireflies
-      currentFireflyCountRef.current = 0;
+      geometry.setDrawRange(0, isPlaying ? 0 : Math.floor(maxFireflies * 0.1)); // Show 10% of fireflies when not playing for purple undertones
+      currentFireflyCountRef.current = isPlaying
+        ? 0
+        : Math.floor(maxFireflies * 0.1);
 
       // Firefly material with custom shader - enhanced with audio reactivity
       const material = new THREE.ShaderMaterial({
         uniforms: {
           uTime: { value: 0 },
           uSize: { value: isFullscreen ? 40 : 30 },
-          uIntensity: { value: isPlaying ? (isFullscreen ? 3.0 : 2.0) : 0.0 },
-          uOpacity: { value: isPlaying ? 1.0 : 0.0 },
+          uIntensity: { value: isPlaying ? (isFullscreen ? 3.0 : 2.0) : 0.3 }, // Enhanced baseline intensity
+          uOpacity: { value: isPlaying ? 1.0 : 0.15 }, // Enhanced baseline opacity for purple undertones
           uSpawnTime: { value: 0.0 },
           uPulse: { value: 1.0 },
           uFullscreen: { value: isFullscreen ? 1.0 : 0.0 },
@@ -548,17 +550,17 @@ const FirefliesScene = forwardRef<FirefliesSceneRef, FirefliesSceneProps>(
           float strength = 1.0 - smoothstep(0.0, 0.5, distanceToCenter);
           strength = pow(strength, 3.0);
           
-          // Audio-reactive color mixing based on frequency ranges (purple theme)
-          vec3 bassColor = vec3(0.8, 0.2, 1.0);    // Deep purple for bass
-          vec3 midColor = vec3(0.9, 0.4, 1.0);     // Bright purple/magenta for mids
-          vec3 highColor = vec3(0.6, 0.3, 1.0);    // Dark purple/violet for highs
+          // Audio-reactive color mixing based on frequency ranges (enhanced purple theme)
+          vec3 bassColor = vec3(0.85, 0.15, 1.0);    // Rich deep purple for bass
+          vec3 midColor = vec3(0.95, 0.35, 1.0);     // Vibrant purple/magenta for mids
+          vec3 highColor = vec3(0.75, 0.25, 1.0);    // Deep violet for highs
           
-          // Mix colors based on frequency intensity
+          // Mix colors based on frequency intensity - enhanced purple baseline
           vec3 audioColor = bassColor * uBass + midColor * uMid + highColor * uHigh;
-          audioColor = normalize(audioColor + 0.1); // Prevent black colors
+          audioColor = normalize(audioColor + 0.2); // Enhanced baseline to prevent black colors
           
-          // Blend original color with audio-reactive color
-          vec3 finalColor = mix(vColor, audioColor, vAudioPulse * 0.7);
+          // Blend original color with audio-reactive color - stronger purple influence
+          vec3 finalColor = mix(vColor, audioColor, vAudioPulse * 0.8);
           finalColor *= strength * uIntensity;
           
           // Enhanced glow with audio pulse
@@ -626,16 +628,17 @@ const FirefliesScene = forwardRef<FirefliesSceneRef, FirefliesSceneProps>(
               pulseIntensity;
           material.uniforms.uPulse.value = basePulse;
 
-          // Smooth transition for opacity
+          // Smooth transition for opacity - maintain purple undertones
           const transition = transitionRef.current;
-          transition.targetOpacity = isPlaying ? 1.0 : 0.0;
+          transition.targetOpacity = isPlaying ? 1.0 : 0.15; // Keep some opacity for purple undertones
           transition.currentOpacity +=
             (transition.targetOpacity - transition.currentOpacity) * 0.05;
 
           material.uniforms.uOpacity.value = transition.currentOpacity;
           const intensityMultiplier = isFullscreen ? 3.5 : 2.5;
+          const baseIntensity = isPlaying ? intensityMultiplier : 0.4; // Enhanced base intensity
           material.uniforms.uIntensity.value =
-            transition.currentOpacity * intensityMultiplier * basePulse;
+            transition.currentOpacity * baseIntensity * basePulse;
 
           // Update fullscreen uniform
           material.uniforms.uFullscreen.value = isFullscreen ? 1.0 : 0.0;
@@ -769,15 +772,24 @@ const FirefliesScene = forwardRef<FirefliesSceneRef, FirefliesSceneProps>(
         const material = firefliesRef.current.material as THREE.ShaderMaterial;
         if (material.uniforms) {
           // Set initial target - smooth transition will be handled in animate loop
-          transitionRef.current.targetOpacity = isPlaying ? 1.0 : 0.0;
+          transitionRef.current.targetOpacity = isPlaying ? 1.0 : 0.15; // Keep purple baseline
 
           if (!isPlaying) {
-            // Reset spawn animation when stopping
+            // Reset spawn animation when stopping, but keep some fireflies visible
             material.uniforms.uSpawnTime.value = 0.0;
+            // Ensure some fireflies remain visible for purple undertones
+            const geometry = firefliesRef.current
+              .geometry as THREE.BufferGeometry;
+            const maxFireflies = isFullscreen
+              ? MAX_FIREFLIES_FULLSCREEN
+              : MAX_FIREFLIES_NORMAL;
+            const baselineCount = Math.floor(maxFireflies * 0.1);
+            geometry.setDrawRange(0, baselineCount);
+            currentFireflyCountRef.current = baselineCount;
           }
         }
       }
-    }, [isPlaying]);
+    }, [isPlaying, isFullscreen]);
 
     return (
       <div
