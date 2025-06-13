@@ -33,7 +33,8 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
 
   // Determine scroll hijack classes
   const getScrollHijackClasses = () => {
-    if (!scrollHijackState?.isScrollHijacked) return "";
+    if (!scrollHijackState?.isScrollHijacked || (!isPlaying && !isFullscreen))
+      return "";
     if (scrollHijackState.scrollResistance > 0.8) return "scroll-hijack-ready";
     if (scrollHijackState.scrollResistance > 0) return "scroll-hijack-active";
     return "";
