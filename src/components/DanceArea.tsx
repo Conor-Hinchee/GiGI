@@ -47,6 +47,8 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
           ? "fixed inset-0 z-50 h-screen w-screen border-0"
           : isPlaying
           ? "h-[100vh] border-b-8 border-purple-400/80 shadow-purple-400/40 shadow-2xl"
+          : isMobile
+          ? "h-[100vh] border-b-4 border-gray-800"
           : "h-[50vh] border-b-4 border-gray-800"
       } ${getScrollHijackClasses()}`}
     >
