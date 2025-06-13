@@ -1,12 +1,17 @@
 "use client";
 
 import React from "react";
-import { DanceArea, MainContent } from "../components";
+import {
+  DanceArea,
+  MainContent,
+  ScrollResistanceIndicator,
+} from "../components";
 import {
   useAudioPlayer,
   useFullscreen,
   useMobileDetection,
   useScrollPosition,
+  useScrollHijack,
 } from "../hooks";
 
 export default function Home() {
@@ -14,6 +19,7 @@ export default function Home() {
   const { isFullscreen, danceAreaRef, toggleFullscreen } = useFullscreen();
   const { isMobile } = useMobileDetection();
   const { scrollY } = useScrollPosition(isMobile);
+  const { scrollState } = useScrollHijack(isPlaying && !isFullscreen);
 
   const isScrolledPastDanceArea = scrollY > 100;
 
@@ -28,12 +34,23 @@ export default function Home() {
         toggleAudio={toggleAudio}
         toggleFullscreen={toggleFullscreen}
         audioRef={audioRef}
+        scrollHijackState={{
+          isScrollHijacked: scrollState.isScrollHijacked,
+          scrollResistance: scrollState.scrollResistance,
+          shouldSnap: scrollState.shouldSnap,
+        }}
       />
       <MainContent
         isPlaying={isPlaying}
         scrollY={scrollY}
         isMobile={isMobile}
         isScrolledPastDanceArea={isScrolledPastDanceArea}
+      />
+      <ScrollResistanceIndicator
+        scrollResistance={scrollState.scrollResistance}
+        isVisible={
+          scrollState.isScrollHijacked && scrollState.accumulatedScroll > 0
+        }
       />
     </div>
   );

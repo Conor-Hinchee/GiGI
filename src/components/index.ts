@@ -4,5 +4,6 @@ export { DanceButton } from './DanceButton';
 export { ExpansionIndicator } from './ExpansionIndicator';
 export { MainContent } from './MainContent';
 export { ParallaxLayer } from './ParallaxLayer';
+export { ScrollResistanceIndicator } from './ScrollResistanceIndicator';
 export { TourCard } from './TourCard';
 export { default as FirefliesScene } from './FirefliesScene';

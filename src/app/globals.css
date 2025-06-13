@@ -896,3 +896,62 @@ body, html {
   border: 2px solid transparent;
   animation: rounded-border-trace-rave 3s ease-in-out infinite;
 }
+
+/* Scroll Hijack Dance Mode Effects */
+@keyframes scroll-resistance-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
+
+@keyframes scroll-hijack-border-glow {
+  0%, 100% {
+    box-shadow: 
+      0 0 20px rgba(147, 51, 234, 0.3),
+      inset 0 0 20px rgba(147, 51, 234, 0.1);
+  }
+  50% {
+    box-shadow: 
+      0 0 40px rgba(147, 51, 234, 0.6),
+      inset 0 0 30px rgba(147, 51, 234, 0.2);
+  }
+}
+
+@keyframes scroll-hijack-ready {
+  0%, 100% {
+    border-color: rgba(147, 51, 234, 0.8);
+    box-shadow: 
+      0 0 30px rgba(255, 255, 0, 0.4),
+      inset 0 0 20px rgba(255, 255, 0, 0.1);
+  }
+  50% {
+    border-color: rgba(255, 255, 0, 0.9);
+    box-shadow: 
+      0 0 50px rgba(255, 255, 0, 0.8),
+      inset 0 0 30px rgba(255, 255, 0, 0.2);
+  }
+}
+
+.scroll-hijack-active {
+  animation: scroll-hijack-border-glow 2s ease-in-out infinite;
+}
+
+.scroll-hijack-ready {
+  animation: scroll-hijack-ready 1s ease-in-out infinite;
+}
+
+.scroll-resistance-indicator {
+  animation: scroll-resistance-pulse 1.5s ease-in-out infinite;
+}
+
+/* Disable scroll when hijacked */
+.scroll-hijacked {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+}

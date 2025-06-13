@@ -58,7 +58,7 @@ export const useScrollDance = () => {
     };
 
     const startTaperingAnimation = () => {
-      let startTime = Date.now();
+      const startTime = Date.now();
       const taperDuration = 1500; // 1.5 seconds to fully taper off
 
       const animateTaper = () => {

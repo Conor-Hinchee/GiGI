@@ -15,6 +15,11 @@ export interface DanceAreaProps {
   toggleAudio: () => void;
   toggleFullscreen: () => void;
   audioRef: React.RefObject<HTMLAudioElement | null>;
+  scrollHijackState?: {
+    isScrollHijacked: boolean;
+    scrollResistance: number;
+    shouldSnap: boolean;
+  };
 }
 
 export interface MainContentProps {

@@ -21,6 +21,7 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
   toggleAudio,
   toggleFullscreen,
   audioRef,
+  scrollHijackState,
 }) => {
   const [currentSong, setCurrentSong] = React.useState<string>("");
 
@@ -29,6 +30,14 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
     const randomIndex = Math.floor(Math.random() * AVAILABLE_SONGS.length);
     setCurrentSong(AVAILABLE_SONGS[randomIndex]);
   }, []);
+
+  // Determine scroll hijack classes
+  const getScrollHijackClasses = () => {
+    if (!scrollHijackState?.isScrollHijacked) return "";
+    if (scrollHijackState.scrollResistance > 0.8) return "scroll-hijack-ready";
+    if (scrollHijackState.scrollResistance > 0) return "scroll-hijack-active";
+    return "";
+  };
 
   return (
     <div
@@ -39,7 +48,7 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
           : isPlaying
           ? "h-[100vh] border-b-8 border-purple-400/80 shadow-purple-400/40 shadow-2xl"
           : "h-[50vh] border-b-4 border-gray-800"
-      }`}
+      } ${getScrollHijackClasses()}`}
     >
       {/* Desktop-only: Advanced background effects */}
       <div className="hidden xl:block absolute inset-0 opacity-30">
@@ -143,6 +152,33 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
 
       {/* Hero Dance Button */}
       <DanceButton isPlaying={isPlaying} toggleAudio={toggleAudio} />
+
+      {/* Scroll Hijack Indicator - only visible when hijacking is active */}
+      {scrollHijackState?.isScrollHijacked &&
+        scrollHijackState.scrollResistance > 0 && (
+          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-25 pointer-events-none">
+            <div className="flex flex-col items-center space-y-2">
+              <div className="text-white/80 text-sm font-medium animate-bounce">
+                Keep scrolling to continue...
+              </div>
+              <div className="flex space-x-1">
+                {[...Array(5)].map((_, i) => (
+                  <div
+                    key={i}
+                    className={`w-2 h-2 rounded-full transition-all duration-200 ${
+                      i < scrollHijackState.scrollResistance * 5
+                        ? scrollHijackState.scrollResistance > 0.8
+                          ? "bg-yellow-400 animate-pulse"
+                          : "bg-purple-400"
+                        : "bg-gray-600"
+                    }`}
+                    style={{ animationDelay: `${i * 0.1}s` }}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
 
       {/* Hidden Audio Element */}
       <audio
