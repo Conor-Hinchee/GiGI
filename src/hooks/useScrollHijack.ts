@@ -621,17 +621,46 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
     window.addEventListener('touchmove', handleTouchMove, { passive: false });
     window.addEventListener('resize', handleResize, { passive: true });
 
+    // Add keyboard navigation for desktop
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!scrollState.isScrollHijacked || isMobile || isSnapping.current) return;
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        const nextSection = Math.min(scrollState.currentSection + 1, scrollState.totalSections - 1);
+        handleSnapToSection(nextSection);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        const previousSection = Math.max(scrollState.currentSection - 1, 0);
+        handleSnapToSection(previousSection);
+      }
+    };
+
+    // Add event listener for keydown
+    window.addEventListener('keydown', handleKeyDown);
+
     return () => {
       window.removeEventListener('scroll', handleScroll, { capture: true });
       window.removeEventListener('wheel', handleWheel);
       window.removeEventListener('touchstart', handleTouchStart);
       window.removeEventListener('touchmove', handleTouchMove);
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('keydown', handleKeyDown);
       if (snapTimeoutRef.current) {
         clearTimeout(snapTimeoutRef.current);
       }
     };
-  }, [scrollState.isScrollHijacked, handleSnapToSection, updateSectionProgress, getCurrentSection, getSectionScrollY, calculateTotalSections, isMobile]);
+  }, [
+    scrollState.isScrollHijacked,
+    scrollState.currentSection,
+    scrollState.totalSections,
+    handleSnapToSection,
+    updateSectionProgress,
+    getCurrentSection,
+    getSectionScrollY,
+    calculateTotalSections,
+    isMobile
+  ]);
 
   return {
     scrollState,
