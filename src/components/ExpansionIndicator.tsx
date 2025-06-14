@@ -1,23 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 interface ExpansionIndicatorProps {
   isVisible: boolean;
-  isExpanding: boolean; // New prop to track if the dance button is expanding
 }
 
 export const ExpansionIndicator: React.FC<ExpansionIndicatorProps> = ({
   isVisible,
-  isExpanding,
 }) => {
-  const [hasShown, setHasShown] = useState(false);
-
-  useEffect(() => {
-    if (isExpanding && !hasShown) {
-      setHasShown(true);
-    }
-  }, [isExpanding, hasShown]);
-
-  if (!isVisible || (hasShown && !isExpanding)) return null; // Ensure it shows during the first play and hides afterward
+  if (!isVisible) return null;
 
   return (
     <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-30 opacity-0 animate-rave-fade-in-out-once px-4 max-w-[90vw]">
