@@ -38,11 +38,12 @@ This guide outlines the process for agents to effectively work on tickets. Follo
 
 ---
 
-## Step 5: Deliver the Work
+## Step 5: Complete the Work
 
-- Ensure all acceptance criteria are met.
-- Test the changes thoroughly.
-- Submit the work for review as per the project's workflow.
+- Ensure all acceptance criteria are met through code implementation.
+- Commit your changes with a descriptive commit message.
+- Move the completed ticket from `work-tickets/` to `done-tickets/` folder.
+- Update the ticket to mark acceptance criteria as completed and add implementation summary.
 
 ---
 
@@ -51,6 +52,14 @@ This guide outlines the process for agents to effectively work on tickets. Follo
 - **Move the Ticket**: Locate the failed ticket in the `failed-tickets` directory and move it to the `work-tickets` directory.
 - **Read the Failure**: Carefully review the failure reason and steps to reproduce documented in the ticket.
 - **Start the Work**: Follow the standard workflow for working on tickets, ensuring the failure is addressed and the acceptance criteria are met.
+
+---
+
+## Important Notes
+
+- **Do not run development commands** like `npm run dev`, `npm test`, or similar unless specifically requested.
+- **Do not perform UAT or testing** - focus on implementation only.
+- **Testing and validation** will be handled separately by the prompter.
 
 ---
 

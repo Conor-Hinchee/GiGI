@@ -15,6 +15,7 @@
 **Completed**: June 14, 2025
 
 ### Changes Made:
+
 - Added state management to track if the expansion indicator has been shown before (`hasShownExpansionIndicator`)
 - Added state to control when to show the indicator (`showExpansionIndicator`)
 - Implemented logic to show the indicator only once during the first play on desktop
@@ -22,6 +23,7 @@
 - Replaced complex scroll-based visibility logic with simple state-based logic
 
 ### Files Modified:
+
 - `src/components/DanceArea.tsx` - Updated expansion indicator logic
 
 ## Additional Notes

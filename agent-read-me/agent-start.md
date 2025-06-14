@@ -37,6 +37,15 @@ If **yes**, proceed to action on the ticket by following the provided instructio
 
 - if the ticket has a previous failed section assume we we are already on a feature branch and we don't need to check out a new branch
 
+### For Completing Tickets
+
+- When all acceptance criteria are met and implementation is complete:
+  - Move the ticket from `work-tickets/` to `done-tickets/` folder
+  - Update the ticket to mark acceptance criteria as completed (checkbox format)
+  - Add implementation summary with completion date and changes made
+  - Commit changes to the feature branch with descriptive commit message
+  - **Note**: Do not run `npm run dev`, `npm test`, or other development commands unless specifically required
+
 ---
 
 ## Step 3: Next Steps
@@ -44,5 +53,6 @@ If **yes**, proceed to action on the ticket by following the provided instructio
 - **For Creating a Ticket**: Use the template in the `ticket-creation.md` file to draft a clear and concise ticket.
 - **For Actioning on a Ticket**: Begin work on the task as described, ensuring all requirements are met.
 - **For Failed Tickets**: If a ticket does not meet the acceptance criteria or has unresolved issues following the workflow outlined in `ticket-fail.md`.
+- **For Completing Tickets**: When work is finished, move ticket to `done-tickets/` folder, update completion status, and commit changes.
 
 ---
