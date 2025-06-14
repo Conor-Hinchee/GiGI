@@ -14,14 +14,14 @@ const AudioStatusIndicator: React.FC<AudioStatusIndicatorProps> = ({
 }) => {
   const { scrollY } = useScrollPosition(isMobile);
   const [hasScrolledOnce, setHasScrolledOnce] = useState(false);
-  
+
   // Track if user has ever scrolled past threshold
   useEffect(() => {
     if (scrollY > 50 && !hasScrolledOnce) {
       setHasScrolledOnce(true);
     }
   }, [scrollY, hasScrolledOnce]);
-  
+
   // Once scrolled, always stay compact
   const isCompact = hasScrolledOnce;
 
