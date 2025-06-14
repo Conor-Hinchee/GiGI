@@ -37,9 +37,13 @@ you should reference any previous tickets that are related or could be related t
 - [ ] [Specific, measurable criteria for the ticket to be considered complete.]
 - [ ] [Additional criteria as needed.]
 
+**Note**: Focus on implementation requirements only. Do not include testing, UAT, or validation criteria as these are handled separately.
+
 ### Additional Notes
 
 - **Context**: [Any relevant background information or links.]
 - **Dependencies**: [List any dependencies or related tickets.]
 - **Attachments**: [Include any mockups, screenshots, or other assets.]
-  -- **failure**: adds the failure reason for documentation purposes
+- **Failure**: [Adds the failure reason for documentation purposes - only used when moving from failed-tickets]
+
+**Important**: Do not include testing requirements, UAT steps, or validation procedures in tickets. Focus on implementation and behavioral requirements only.
