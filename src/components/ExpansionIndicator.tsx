@@ -17,16 +17,6 @@ export const ExpansionIndicator: React.FC<ExpansionIndicatorProps> = ({
     }
   }, [isExpanding, hasShown]);
 
-  useEffect(() => {
-    if (!isExpanding) {
-      const timer = setTimeout(() => {
-        setHasShown(false); // Reset after animation completes
-      }, 3000); // Adjust timeout to match animation duration
-
-      return () => clearTimeout(timer);
-    }
-  }, [isExpanding]);
-
   if (!isVisible || hasShown) return null;
 
   return (
