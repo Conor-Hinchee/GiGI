@@ -33,6 +33,10 @@ If **yes**, proceed to create a ticket using the [User Experience Ticket Templat
 
 If **yes**, proceed to action on the ticket by following the provided instructions.
 
+### For Failed Tickets
+
+- if the ticket has a previous failed section assume we we are already on a feature branch and we don't need to check out a new branch
+
 ---
 
 ## Step 3: Next Steps

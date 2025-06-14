@@ -17,7 +17,7 @@ export const ExpansionIndicator: React.FC<ExpansionIndicatorProps> = ({
     }
   }, [isExpanding, hasShown]);
 
-  if (!isVisible || hasShown) return null;
+  if (!isVisible || (hasShown && !isExpanding)) return null; // Ensure it shows during the first play and hides afterward
 
   return (
     <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-30 opacity-0 animate-rave-fade-in-out-once px-4 max-w-[90vw]">

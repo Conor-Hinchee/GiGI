@@ -24,15 +24,14 @@
 
 ### Failure Reason
 
-- The `ExpansionIndicator` component is not receiving all required props, leading to unexpected behavior.
+- The `ExpansionIndicator` component is now completely hidden and does not display even during the first play. It should display once during the first play and never reappear afterward.
 
 ### Steps to Reproduce
 
 1. Navigate to the dance area on desktop.
-2. Trigger the expansion indicator by starting the dance mode.
-3. Observe that the indicator does not behave as expected due to missing props.
+2. Start the dance mode to trigger the expansion indicator.
+3. Observe that the indicator does not appear at all.
 
 ### Suggested Fix
 
-- Ensure all required props are passed to the `ExpansionIndicator` component in `DanceArea.tsx`.
-- Verify the `isExpanding` prop is correctly implemented and passed.
+- Ensure the `ExpansionIndicator` component displays during the first play and hides permanently after the animation completes.
