@@ -156,6 +156,7 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
           (!scrollHijackState?.isScrollHijacked ||
             scrollHijackState.accumulatedScroll === 0)
         }
+        isExpanding={isPlaying && !isFullscreen} // Pass the missing prop
       />
 
       {/* Fullscreen Button - Hidden on mobile */}
