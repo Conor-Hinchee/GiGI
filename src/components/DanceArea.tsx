@@ -24,6 +24,8 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
   scrollHijackState,
 }) => {
   const [currentSong, setCurrentSong] = React.useState<string>("");
+  const [hasShownExpansionIndicator, setHasShownExpansionIndicator] = React.useState<boolean>(false);
+  const [showExpansionIndicator, setShowExpansionIndicator] = React.useState<boolean>(false);
   const firefliesSceneRef = React.useRef<FirefliesSceneRef>(null);
 
   // Select random song on component mount
@@ -31,6 +33,25 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
     const randomIndex = Math.floor(Math.random() * AVAILABLE_SONGS.length);
     setCurrentSong(AVAILABLE_SONGS[randomIndex]);
   }, []);
+
+  // Handle expansion indicator logic - show only once on first play (desktop only)
+  React.useEffect(() => {
+    // Only show on desktop during expansion
+    if (isMobile) return;
+
+    // Show the indicator when playing starts and it hasn't been shown before
+    if (isPlaying && !isFullscreen && !hasShownExpansionIndicator) {
+      setShowExpansionIndicator(true);
+      setHasShownExpansionIndicator(true);
+
+      // Hide the indicator after the expansion animation completes (roughly 1 second)
+      const hideTimer = setTimeout(() => {
+        setShowExpansionIndicator(false);
+      }, 1000);
+
+      return () => clearTimeout(hideTimer);
+    }
+  }, [isPlaying, isFullscreen, isMobile, hasShownExpansionIndicator]);
 
   // Handle touch events for mobile firefly spawning
   const handleTouchStart = React.useCallback(
@@ -148,14 +169,9 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
         isMobile={isMobile}
       />
 
-      {/* Expansion Indicator - appears when expanding but hides when user starts scrolling */}
+      {/* Expansion Indicator - appears only once during first play on desktop */}
       <ExpansionIndicator
-        isVisible={
-          isPlaying &&
-          !isFullscreen &&
-          (!scrollHijackState?.isScrollHijacked ||
-            scrollHijackState.accumulatedScroll === 0)
-        }
+        isVisible={showExpansionIndicator}
       />
 
       {/* Fullscreen Button - Hidden on mobile */}
