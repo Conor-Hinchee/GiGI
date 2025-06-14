@@ -24,15 +24,15 @@
 
 ### Failure Reason
 
-- The `ExpansionIndicator` component displays again if the user scrolls up and re-enters the dance area. It should only display once during the first expansion.
+- The `ExpansionIndicator` component is not receiving all required props, leading to unexpected behavior.
 
 ### Steps to Reproduce
 
 1. Navigate to the dance area on desktop.
-2. Click the play button to trigger the expansion.
-3. Scroll up and re-enter the dance area.
-4. Observe that the `ExpansionIndicator` displays again.
+2. Trigger the expansion indicator by starting the dance mode.
+3. Observe that the indicator does not behave as expected due to missing props.
 
 ### Suggested Fix
 
-- Ensure the `ExpansionIndicator` component does not reappear after the first expansion, even if the user scrolls up and re-enters the dance area.
+- Ensure all required props are passed to the `ExpansionIndicator` component in `DanceArea.tsx`.
+- Verify the `isExpanding` prop is correctly implemented and passed.
