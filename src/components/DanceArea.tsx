@@ -113,20 +113,35 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
     return "";
   };
 
+  // Determine border color based on scroll state
+  const getBorderClasses = () => {
+    if (isFullscreen) {
+      return "fixed inset-0 z-50 h-screen w-screen border-0";
+    }
+    
+    if (isPlaying) {
+      // Check if user is scrolling in dance mode (gold border)
+      const isScrollingInDanceMode = scrollHijackState?.isScrollHijacked && scrollHijackState?.scrollResistance > 0;
+      
+      if (isScrollingInDanceMode) {
+        return "h-[100vh] border-b-8 border-yellow-400/80 shadow-yellow-400/40 shadow-2xl";
+      } else {
+        return "h-[100vh] border-b-8 border-purple-400/80 shadow-purple-400/40 shadow-2xl";
+      }
+    }
+    
+    // Default states when not playing
+    return isMobile
+      ? "h-[100vh] border-b-4 border-gray-800"
+      : "h-[50vh] border-b-4 border-gray-800";
+  };
+
   return (
     <div
       ref={danceAreaRef}
       className={`bg-gray-950 relative overflow-hidden shadow-inner hover-trail ${
         isMobile ? "" : "transition-all duration-1000 ease-in-out"
-      } ${
-        isFullscreen
-          ? "fixed inset-0 z-50 h-screen w-screen border-0"
-          : isPlaying
-          ? "h-[100vh] border-b-8 border-purple-400/80 shadow-purple-400/40 shadow-2xl"
-          : isMobile
-          ? "h-[100vh] border-b-4 border-gray-800"
-          : "h-[50vh] border-b-4 border-gray-800"
-      } ${getScrollHijackClasses()}`}
+      } ${getBorderClasses()} ${getScrollHijackClasses()}`}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
       onClick={handleClick}
