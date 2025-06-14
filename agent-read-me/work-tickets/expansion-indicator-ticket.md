@@ -2,21 +2,36 @@
 
 ## Description
 
-- **User Story**: As a user, I want the expansion indicator to only appear during the first play of the dance area and the dance button, so that it does not distract me during subsequent interactions.
-- **Problem Statement**: Currently, the expansion indicator may appear multiple times or in scenarios where it is not necessary, leading to a less polished user experience.
-- **Proposed Solution**: Update the `ExpansionIndicator` component to ensure it only displays:
-  - On the first play of the dance area.
-  - When the dance button is actively expanding.
+- **User Story**: As a user, I want the expansion indicator to only appear ONCE during the expansion of the dance area, which only plays on desktop. This ensures a clean and distraction-free user experience.
 
 ## Acceptance Criteria
 
-- [ ] The expansion indicator is displayed only during the first play of the dance area.
-- [ ] The expansion indicator is displayed only when the dance button is actively expanding.
-- [ ] The indicator does not reappear on subsequent plays or interactions unless explicitly reset.
-- [ ] Add tests to verify the behavior of the expansion indicator under these conditions.
+- [ ] The expansion indicator is hidden on initial render.
+- [ ] The expansion indicator displays when the user hits the play button and the dance area is expanding (desktop only).
+- [ ] The expansion indicator hides automatically after the expansion animation completes and does not reappear unless explicitly reset.
+- [ ] The behavior is consistent across all desktop browsers.
 
 ## Additional Notes
 
 - **Context**: The `ExpansionIndicator` component is located in `src/components/ExpansionIndicator.tsx`.
 - **Dependencies**: Ensure this behavior aligns with the logic in the `DanceButton` and any related components.
 - **Attachments**: None.
+
+### UAT
+
+- Test the behavior on desktop browsers to ensure the indicator appears and hides as expected.
+- Verify that the indicator does not reappear on subsequent interactions unless reset.
+
+### Failure Reason
+
+- The `ExpansionIndicator` component is now completely hidden and does not display even during the first play. It should display once during the first play and never reappear afterward.
+
+### Steps to Reproduce
+
+1. Navigate to the dance area on desktop.
+2. Start the dance mode to trigger the expansion indicator.
+3. Observe that the indicator does not appear at all.
+
+### Suggested Fix
+
+- Ensure the `ExpansionIndicator` component displays during the first play and hides permanently after the animation completes.

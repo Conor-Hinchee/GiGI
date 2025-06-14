@@ -12,6 +12,8 @@ You should not hesitate to breaking up complicated tasks into multiple tickets i
 
 You should ensure that each ticket is written in perspective of the user and the goal of the ticket should be that it is the smallest incremental improvement for the user experience possible
 
+You should also check the `work-tickets` and `done-tickets` directories for any tickets that might be related to the current one. Use the ticket titles as a quick reference to identify potential connections; there is no need to read the entire ticket unless necessary.
+
 you should reference any previous tickets that are related or could be related to the current one at the bottom of the ticket
 
 ## Ticket Template
@@ -40,5 +42,4 @@ you should reference any previous tickets that are related or could be related t
 - **Context**: [Any relevant background information or links.]
 - **Dependencies**: [List any dependencies or related tickets.]
 - **Attachments**: [Include any mockups, screenshots, or other assets.]
-
----
+  -- **failure**: adds the failure reason for documentation purposes

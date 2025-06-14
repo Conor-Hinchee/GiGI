@@ -46,4 +46,12 @@ This guide outlines the process for agents to effectively work on tickets. Follo
 
 ---
 
+## Step 6: Working on a Failed Ticket
+
+- **Move the Ticket**: Locate the failed ticket in the `failed-tickets` directory and move it to the `work-tickets` directory.
+- **Read the Failure**: Carefully review the failure reason and steps to reproduce documented in the ticket.
+- **Start the Work**: Follow the standard workflow for working on tickets, ensuring the failure is addressed and the acceptance criteria are met.
+
+---
+
 By following this guide, agents can ensure that tickets are handled efficiently and effectively, with clear communication and minimal roadblocks.
