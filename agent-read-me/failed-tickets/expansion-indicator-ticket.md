@@ -21,3 +21,18 @@
 
 - Test the behavior on desktop browsers to ensure the indicator appears and hides as expected.
 - Verify that the indicator does not reappear on subsequent interactions unless reset.
+
+### Failure Reason
+
+- The `ExpansionIndicator` component displays again if the user scrolls up and re-enters the dance area. It should only display once during the first expansion.
+
+### Steps to Reproduce
+
+1. Navigate to the dance area on desktop.
+2. Click the play button to trigger the expansion.
+3. Scroll up and re-enter the dance area.
+4. Observe that the `ExpansionIndicator` displays again.
+
+### Suggested Fix
+
+- Ensure the `ExpansionIndicator` component does not reappear after the first expansion, even if the user scrolls up and re-enters the dance area.

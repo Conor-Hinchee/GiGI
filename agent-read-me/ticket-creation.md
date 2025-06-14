@@ -42,5 +42,4 @@ you should reference any previous tickets that are related or could be related t
 - **Context**: [Any relevant background information or links.]
 - **Dependencies**: [List any dependencies or related tickets.]
 - **Attachments**: [Include any mockups, screenshots, or other assets.]
-
----
+  -- **failure**: adds the failure reason for documentation purposes
