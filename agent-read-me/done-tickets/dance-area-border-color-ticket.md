@@ -36,18 +36,21 @@ Update DanceArea Bottom Border Color to Gold During Scroll in Dance Mode
 **Completion Date**: June 14, 2025
 
 **Changes Made**:
-1. **Modified `DanceArea.tsx`**: 
+
+1. **Modified `DanceArea.tsx`**:
    - Created a new `getBorderClasses()` function to handle dynamic border color logic
    - Added conditional logic to apply yellow-400/80 border and shadow when `scrollHijackState.isScrollHijacked` is true and `scrollHijackState.scrollResistance > 0`
    - Maintained existing purple border behavior when not in scroll resistance mode
    - Preserved all existing border states for fullscreen and non-playing modes
 
 **Technical Details**:
+
 - Used `border-yellow-400/80` and `shadow-yellow-400/40` classes to match the gold color scheme used in `ScrollResistanceIndicator`
 - The border color dynamically switches between purple (`border-purple-400/80`) and gold (`border-yellow-400/80`) based on scroll hijack state
 - No CSS file changes were needed as yellow-400 classes are already available in Tailwind
 
 **Files Modified**:
+
 - `/Users/moarwaffles/dev/GiGi/src/components/DanceArea.tsx`
 
 The implementation successfully addresses all acceptance criteria, providing a cohesive visual experience where the DanceArea bottom border color aligns with the scroll resistance indicator during dance mode scrolling.
