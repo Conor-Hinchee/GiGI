@@ -184,7 +184,7 @@ export const SocialLinks: React.FC<SocialLinksProps> = ({ isPlaying }) => {
       </div>
 
       {/* Main Social Platforms */}
-      <div className="grid grid-cols-3 md:grid-cols-6 gap-6 max-w-4xl mx-auto mb-8 justify-items-center">
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-6 max-w-6xl mx-auto mb-8 justify-items-center">
         <SocialLinkCard
           href="https://www.gigidagostino.com"
           icon={
@@ -250,6 +250,22 @@ export const SocialLinks: React.FC<SocialLinksProps> = ({ isPlaying }) => {
         />
 
         <SocialLinkCard
+          href="https://www.youtube.com/channel/UC7Sqfp5sOFUI4436LBoB_JQ"
+          icon={
+            <svg
+              className="w-full h-full"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+            </svg>
+          }
+          label="YouTube"
+          color="red"
+          isPlaying={isPlaying}
+        />
+
+        <SocialLinkCard
           href="https://open.spotify.com/artist/1OAjDaKgg00KCUYqDe68un"
           icon={
             <svg
@@ -281,66 +297,7 @@ export const SocialLinks: React.FC<SocialLinksProps> = ({ isPlaying }) => {
           color="gray"
           isPlaying={isPlaying}
         />
-      </div>
 
-      {/* YouTube Channels */}
-      <div className="mb-8">
-        <h4 className="text-lg font-semibold text-purple-300 mb-4 text-center">
-          YouTube Channels
-        </h4>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-2xl mx-auto justify-items-center">
-          <SocialLinkCard
-            href="https://www.youtube.com/channel/UCExjoFjxg4Yzj6erY_xx_Dw"
-            icon={
-              <svg
-                className="w-full h-full"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
-              </svg>
-            }
-            label="Gigi Dag"
-            color="red"
-            isPlaying={isPlaying}
-          />
-
-          <SocialLinkCard
-            href="https://www.youtube.com/channel/UC7Sqfp5sOFUI4436LBoB_JQ"
-            icon={
-              <svg
-                className="w-full h-full"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
-              </svg>
-            }
-            label="Gigi D'Agostino"
-            color="red"
-            isPlaying={isPlaying}
-          />
-
-          <SocialLinkCard
-            href="https://www.youtube.com/c/lentoviolento"
-            icon={
-              <svg
-                className="w-full h-full"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
-              </svg>
-            }
-            label="Lento Violento"
-            color="red"
-            isPlaying={isPlaying}
-          />
-        </div>
-      </div>
-
-      {/* Casa DAG Forum */}
-      <div className="text-center flex justify-center">
         <SocialLinkCard
           href="http://www.casadag.com"
           icon={
@@ -352,7 +309,7 @@ export const SocialLinks: React.FC<SocialLinksProps> = ({ isPlaying }) => {
               <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
             </svg>
           }
-          label="Casa DAG - Official Forum"
+          label="Casa DAG"
           color="purple"
           isPlaying={isPlaying}
         />
