@@ -32,6 +32,7 @@ The current `useScrollHijack` hook has separate logic for desktop and mobile. Th
 1. **Removed device-specific logic**: Eliminated the `isMobile` parameter and all device-specific code paths from the `useScrollHijack` hook.
 
 2. **Unified scroll behavior**: All users (desktop and mobile) now experience the same scroll hijacking logic:
+
    - When in dance mode and within the dance area (first 100vh)
    - Scrolling applies resistance effect with visual feedback
    - Border indication shows when scroll resistance is active
@@ -42,10 +43,12 @@ The current `useScrollHijack` hook has separate logic for desktop and mobile. Th
 4. **Updated component usage**: Modified `src/app/page.tsx` to use the simplified hook signature without the `isMobile` parameter.
 
 ### Files Modified:
+
 - `/src/hooks/useScrollHijack.ts` - Unified scroll hijack logic
 - `/src/app/page.tsx` - Updated hook usage
 
 ### Technical Details:
+
 - Resistance threshold: 150px of accumulated scroll
 - Resistance factor: 0.2 for dramatic effect
 - Unified event handling for scroll, wheel, touch, and keyboard events
