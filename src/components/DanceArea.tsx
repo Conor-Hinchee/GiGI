@@ -55,58 +55,6 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
     }
   }, [isPlaying, isFullscreen, isMobile, hasShownExpansionIndicator]);
 
-  // Handle touch events for mobile firefly spawning
-  const handleTouchStart = React.useCallback(
-    (e: React.TouchEvent) => {
-      if (!isMobile || !firefliesSceneRef.current) return;
-
-      e.preventDefault(); // Prevent scrolling during dance interactions
-
-      const touch = e.touches[0];
-      if (touch) {
-        // Spawn fireflies at touch location
-        firefliesSceneRef.current.spawnFirefliesAtTouch(
-          touch.clientX,
-          touch.clientY,
-          false // Single firefly on touch start
-        );
-      }
-    },
-    [isMobile]
-  );
-
-  const handleTouchEnd = React.useCallback(
-    (e: React.TouchEvent) => {
-      if (!isMobile || !firefliesSceneRef.current) return;
-
-      const touch = e.changedTouches[0];
-      if (touch) {
-        // Spawn a burst of fireflies on touch end
-        firefliesSceneRef.current.spawnFirefliesAtTouch(
-          touch.clientX,
-          touch.clientY,
-          true // Burst of fireflies on release
-        );
-      }
-    },
-    [isMobile]
-  );
-
-  // Handle clicks on desktop (fallback behavior)
-  const handleClick = React.useCallback(
-    (e: React.MouseEvent) => {
-      if (isMobile || !firefliesSceneRef.current) return;
-
-      // For desktop, just spawn a small burst for visual feedback
-      firefliesSceneRef.current.spawnFirefliesAtTouch(
-        e.clientX,
-        e.clientY,
-        false
-      );
-    },
-    [isMobile]
-  );
-
   // Determine scroll hijack classes
   const getScrollHijackClasses = () => {
     if (!scrollHijackState?.isScrollHijacked) return "";
@@ -146,9 +94,6 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
       className={`bg-gray-950 relative overflow-hidden shadow-inner hover-trail ${
         isMobile ? "" : "transition-all duration-1000 ease-in-out"
       } ${getBorderClasses()} ${getScrollHijackClasses()}`}
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-      onClick={handleClick}
     >
       {/* Desktop-only: Advanced background effects */}
       <div className="hidden xl:block absolute inset-0 opacity-30">
