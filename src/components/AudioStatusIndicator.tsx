@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useScrollPosition } from "../hooks/useScrollPosition";
 
 interface AudioStatusIndicatorProps {
@@ -14,6 +14,8 @@ const AudioStatusIndicator: React.FC<AudioStatusIndicatorProps> = ({
 }) => {
   const { scrollY } = useScrollPosition(isMobile);
   const [hasScrolledOnce, setHasScrolledOnce] = useState(false);
+  const [isFlourishing, setIsFlourishing] = useState(false);
+  const previousPlayingState = useRef(isPlaying);
 
   // Track if user has ever scrolled past threshold
   useEffect(() => {
@@ -24,6 +26,20 @@ const AudioStatusIndicator: React.FC<AudioStatusIndicatorProps> = ({
 
   // Once scrolled, always stay compact
   const isCompact = hasScrolledOnce;
+
+  // Trigger flourish animation when play state changes in compact mode
+  useEffect(() => {
+    if (isCompact && previousPlayingState.current !== isPlaying) {
+      setIsFlourishing(true);
+      const timer = setTimeout(() => {
+        setIsFlourishing(false);
+      }, 800); // Animation duration
+      
+      previousPlayingState.current = isPlaying;
+      return () => clearTimeout(timer);
+    }
+    previousPlayingState.current = isPlaying;
+  }, [isPlaying, isCompact]);
 
   return (
     <button
@@ -64,7 +80,9 @@ const AudioStatusIndicator: React.FC<AudioStatusIndicatorProps> = ({
           isPlaying
             ? "text-purple-400 group-hover:text-red-400"
             : "text-gray-400 group-hover:text-purple-400"
-        } ${isCompact && isPlaying ? "animate-bounce" : ""}`}
+        } ${isCompact && isPlaying ? "animate-bounce" : ""} ${
+          isFlourishing ? "animate-spin-once" : ""
+        }`}
       >
         舞
       </span>
