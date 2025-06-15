@@ -1065,9 +1065,9 @@ body, html {
 }
 
 .social-button-glow {
-  animation: social-button-glow-pulse 2.5s ease-in-out infinite;
+  animation: social-button-glow-pulse 6s ease-in-out infinite;
 }
 
 .social-icon-rave {
-  animation: social-icon-rave 3s ease-in-out infinite;
+  animation: social-icon-rave 6s ease-in-out infinite;
 }
