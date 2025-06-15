@@ -6,7 +6,7 @@ Welcome to the starting guide for your workflow! This document will help you det
 
 ## Step 1: Understand the Prompt
 
-Carefully read the prompt provided. Identify whether the focus is on:
+Carefully read the prompt provided. The prompt is probably coming from voice to text so try infer maybe through spelling errors. Identify whether the focus is on:
 
 - **Creating a Ticket**: The prompt describes a new feature, enhancement, or issue that needs to be documented for future work.
 - **Actioning on a Ticket**: The prompt refers to an existing ticket or task that requires implementation, debugging, or further action.
