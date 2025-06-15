@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useMobileDetection } from "../hooks/useMobileDetection";
 
 interface SocialLinksProps {
   isPlaying: boolean;
@@ -20,6 +21,7 @@ const SocialLinkCard: React.FC<SocialLinkCardProps> = ({
   isPlaying,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const { isMobile } = useMobileDetection();
 
   // Determine if we should show rave effects (either playing or hovered)
   const showRaveEffect = isPlaying || isHovered;
@@ -95,7 +97,9 @@ const SocialLinkCard: React.FC<SocialLinkCardProps> = ({
       <div
         className={`relative w-16 h-16 rounded-full backdrop-blur-sm transition-all duration-500 flex items-center justify-center ${
           showRaveEffect
-            ? `bg-black/20 border border-transparent shadow-none`
+            ? `${
+                isMobile ? "bg-black/5" : "bg-black/20"
+              } border border-transparent shadow-none`
             : `bg-gray-800/50 border border-gray-600/50 hover:border-gray-500/70 shadow-lg hover:shadow-xl`
         }`}
       >
@@ -108,7 +112,9 @@ const SocialLinkCard: React.FC<SocialLinkCardProps> = ({
           }`}
           style={{
             filter: showRaveEffect
-              ? "drop-shadow(0 0 8px currentColor) drop-shadow(0 0 16px currentColor)"
+              ? isMobile
+                ? "drop-shadow(0 0 2px currentColor) drop-shadow(0 0 4px currentColor)"
+                : "drop-shadow(0 0 8px currentColor) drop-shadow(0 0 16px currentColor)"
               : "none",
             animation: showRaveEffect
               ? `social-icon-rave 2s ease-in-out infinite ${
@@ -125,7 +131,9 @@ const SocialLinkCard: React.FC<SocialLinkCardProps> = ({
           <>
             {/* Pulsing background glow */}
             <div
-              className="absolute inset-0 rounded-full animate-pulse opacity-60"
+              className={`absolute inset-0 rounded-full animate-pulse ${
+                isMobile ? "opacity-20" : "opacity-60"
+              }`}
               style={{
                 background: `radial-gradient(circle, ${colors.particle
                   .replace("bg-", "")
@@ -139,7 +147,9 @@ const SocialLinkCard: React.FC<SocialLinkCardProps> = ({
             {/* Particle effects around icon */}
             <div className="absolute -inset-1 rounded-full">
               <div
-                className={`absolute inset-0 rounded-full ${colors.particle} animate-ping opacity-30`}
+                className={`absolute inset-0 rounded-full ${
+                  colors.particle
+                } animate-ping ${isMobile ? "opacity-10" : "opacity-30"}`}
                 style={{ animationDelay: `${Math.random() * 0.5}s` }}
               ></div>
             </div>
@@ -152,7 +162,9 @@ const SocialLinkCard: React.FC<SocialLinkCardProps> = ({
         <span
           className={`text-xs font-medium transition-colors duration-300 ${
             showRaveEffect
-              ? "text-gray-300 opacity-75"
+              ? isMobile
+                ? "text-gray-500 opacity-40"
+                : "text-gray-300 opacity-75"
               : "text-gray-400 group-hover:text-gray-300"
           }`}
         >

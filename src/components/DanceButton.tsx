@@ -104,10 +104,18 @@ export const DanceButton: React.FC<DanceButtonProps> = ({
 
         {/* Outer glow ring - enhanced when playing with better hover - RAVE MODE ACTIVE */}
         <div
-          className={`absolute -inset-2 bg-gradient-to-br from-purple-600 via-pink-600 to-red-600 rounded-full blur opacity-75 transition-all duration-500 ${
-            isPlaying
-              ? "animate-spin opacity-100"
-              : "animate-[pulse_6s_ease-in-out_infinite] opacity-90 group-hover:opacity-100 group-hover:scale-110"
+          className={`absolute -inset-2 bg-gradient-to-br from-purple-600 via-pink-600 to-red-600 rounded-full blur transition-all duration-500 ${
+            isMobile
+              ? `opacity-20 ${
+                  isPlaying
+                    ? "animate-spin opacity-25"
+                    : "animate-[pulse_6s_ease-in-out_infinite] opacity-20"
+                }`
+              : `opacity-75 ${
+                  isPlaying
+                    ? "animate-spin opacity-100"
+                    : "animate-[pulse_6s_ease-in-out_infinite] opacity-90 group-hover:opacity-100 group-hover:scale-110"
+                }`
           }`}
           style={!isPlaying ? { animationDelay: "1s" } : {}}
         ></div>
@@ -130,10 +138,18 @@ export const DanceButton: React.FC<DanceButtonProps> = ({
 
         {/* Firefly sync glow - visible when playing, subtle when not */}
         <div
-          className={`absolute -inset-4 bg-gradient-to-br from-purple-400/20 via-pink-400/20 to-yellow-400/20 rounded-full blur-lg transition-all duration-500 ${
-            isPlaying
-              ? "animate-pulse opacity-100 group-hover:scale-125"
-              : "animate-[pulse_7s_ease-in-out_infinite] opacity-80 group-hover:opacity-100 group-hover:scale-110"
+          className={`absolute -inset-4 rounded-full blur-lg transition-all duration-500 ${
+            isMobile
+              ? `bg-gradient-to-br from-purple-400/5 via-pink-400/5 to-yellow-400/5 ${
+                  isPlaying
+                    ? "animate-pulse opacity-20"
+                    : "animate-[pulse_7s_ease-in-out_infinite] opacity-15"
+                }`
+              : `bg-gradient-to-br from-purple-400/20 via-pink-400/20 to-yellow-400/20 ${
+                  isPlaying
+                    ? "animate-pulse opacity-100 group-hover:scale-125"
+                    : "animate-[pulse_7s_ease-in-out_infinite] opacity-80 group-hover:opacity-100 group-hover:scale-110"
+                }`
           }`}
           style={!isPlaying ? { animationDelay: "3s" } : {}}
         ></div>

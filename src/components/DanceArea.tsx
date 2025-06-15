@@ -221,20 +221,20 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
 
       {/* Ambient particles */}
       <div
-        className={`absolute top-1/4 left-1/4 w-2 h-2 bg-purple-400/30 rounded-full z-15 ${
-          isPlaying ? "animate-rave-particle-glow" : "animate-pulse"
-        }`}
+        className={`absolute top-1/4 left-1/4 w-2 h-2 rounded-full z-15 ${
+          isMobile ? "bg-purple-400/8" : "bg-purple-400/30"
+        } ${isPlaying ? "animate-rave-particle-glow" : "animate-pulse"}`}
       ></div>
       <div
-        className={`absolute top-3/4 right-1/4 w-1 h-1 bg-pink-400/40 rounded-full z-15 ${
-          isPlaying ? "animate-rave-particle-glow" : "animate-pulse"
-        }`}
+        className={`absolute top-3/4 right-1/4 w-1 h-1 rounded-full z-15 ${
+          isMobile ? "bg-pink-400/10" : "bg-pink-400/40"
+        } ${isPlaying ? "animate-rave-particle-glow" : "animate-pulse"}`}
         style={{ animationDelay: "1s" }}
       ></div>
       <div
-        className={`absolute bottom-1/4 left-1/3 w-1.5 h-1.5 bg-blue-400/20 rounded-full z-15 ${
-          isPlaying ? "animate-rave-particle-glow" : "animate-pulse"
-        }`}
+        className={`absolute bottom-1/4 left-1/3 w-1.5 h-1.5 rounded-full z-15 ${
+          isMobile ? "bg-blue-400/5" : "bg-blue-400/20"
+        } ${isPlaying ? "animate-rave-particle-glow" : "animate-pulse"}`}
         style={{ animationDelay: "2s" }}
       ></div>
     </div>
