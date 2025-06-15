@@ -15,6 +15,11 @@ interface ScrollHijackState {
 const SCROLL_RESISTANCE_THRESHOLD = 150; // Reduced threshold for quicker snapping
 const SCROLL_RESISTANCE_FACTOR = 0.2; // More resistance for dramatic effect
 
+/**
+ * Custom hook for scroll hijacking in dance mode
+ * Provides unified behavior across mobile and desktop devices
+ * Only hijacks scrolling within the first 100vh (dance area)
+ */
 export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = false) => {
   const [scrollState, setScrollState] = useState<ScrollHijackState>({
     isScrollHijacked: false,
@@ -153,94 +158,7 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
       const scrollDelta = currentScrollY - lastScrollY.current;
       const isInDanceArea = currentScrollY < window.innerHeight; // First 100vh
       
-      // Mobile-specific scroll hijacking behavior
-      if (isMobile) {
-        // When scrolling down in dance area - apply resistance
-        if (scrollDelta > 0 && isInDanceArea) {
-          e.preventDefault();
-          e.stopPropagation();
-          preventingScroll.current = true;
-
-          setScrollState(prev => {
-            const newAccumulated = prev.accumulatedScroll + Math.abs(scrollDelta);
-            const newResistance = Math.min(newAccumulated / SCROLL_RESISTANCE_THRESHOLD, 1);
-            const newSectionProgress = Math.min(1, newResistance);
-
-            // Snap out of dance area when threshold is met
-            if (newAccumulated >= SCROLL_RESISTANCE_THRESHOLD && !prev.shouldSnap) {
-              if (snapTimeoutRef.current) {
-                clearTimeout(snapTimeoutRef.current);
-              }
-              
-              // Mark that user has completed first snap from dance area
-              hasEverSnappedFromDanceArea.current = true;
-              
-              snapTimeoutRef.current = setTimeout(() => {
-                handleSnapToSection(1); // Snap to section 1 (after dance area)
-              }, 100);
-
-              return {
-                ...prev,
-                accumulatedScroll: newAccumulated,
-                scrollResistance: newResistance,
-                sectionProgress: newSectionProgress,
-                shouldSnap: true,
-                isScrollingUp: false,
-                isFirstTimeActivation: false, // Disable indicator after first snap
-              };
-            }
-
-            return {
-              ...prev,
-              accumulatedScroll: newAccumulated,
-              scrollResistance: newResistance,
-              sectionProgress: newSectionProgress,
-              isScrollingUp: false,
-            };
-          });
-
-          // Allow small scroll for visual feedback
-          const allowedScroll = scrollDelta * SCROLL_RESISTANCE_FACTOR;
-          const newScrollY = Math.min(window.innerHeight - 1, lastScrollY.current + allowedScroll);
-          window.scrollTo(0, newScrollY);
-          lastScrollY.current = newScrollY;
-          return;
-        }
-        
-        // When scrolling up into dance area from below - snap to dance area
-        if (scrollDelta < 0 && currentScrollY > window.innerHeight && currentScrollY < window.innerHeight + 50) {
-          e.preventDefault();
-          e.stopPropagation();
-          
-          // Snap to top of dance area
-          if (snapTimeoutRef.current) {
-            clearTimeout(snapTimeoutRef.current);
-          }
-          
-          snapTimeoutRef.current = setTimeout(() => {
-            handleSnapToSection(0); // Snap to dance area
-          }, 50);
-          return;
-        }
-        
-        // Allow normal scrolling outside dance area
-        if (!isInDanceArea) {
-          lastScrollY.current = currentScrollY;
-          updateSectionProgress();
-          return;
-        }
-        
-        // Allow upward scrolling within dance area
-        if (scrollDelta < 0 && isInDanceArea) {
-          lastScrollY.current = currentScrollY;
-          return;
-        }
-        
-        lastScrollY.current = currentScrollY;
-        return;
-      }
-
-      // Desktop behavior - align with mobile (only hijack in dance area)
+      // Unified scroll hijacking behavior for both mobile and desktop
       // When scrolling down in dance area - apply resistance
       if (scrollDelta > 0 && isInDanceArea) {
         e.preventDefault();
@@ -331,80 +249,7 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
       const currentScrollY = window.scrollY;
       const isInDanceArea = currentScrollY < window.innerHeight; // First 100vh
       
-      // Mobile-specific wheel handling
-      if (isMobile) {
-        // When wheeling down in dance area - apply resistance
-        if (e.deltaY > 0 && isInDanceArea) {
-          e.preventDefault();
-          e.stopPropagation();
-          
-          setScrollState(prev => {
-            const newAccumulated = prev.accumulatedScroll + Math.abs(e.deltaY * 1.5);
-            const newResistance = Math.min(newAccumulated / SCROLL_RESISTANCE_THRESHOLD, 1);
-            const newSectionProgress = Math.min(1, newResistance);
-
-            // Snap out of dance area when threshold is met
-            if (newAccumulated >= SCROLL_RESISTANCE_THRESHOLD && !prev.shouldSnap) {
-              if (snapTimeoutRef.current) {
-                clearTimeout(snapTimeoutRef.current);
-              }
-              
-              // Mark that user has completed first snap from dance area
-              hasEverSnappedFromDanceArea.current = true;
-              
-              snapTimeoutRef.current = setTimeout(() => {
-                handleSnapToSection(1); // Snap to section 1
-              }, 100);
-
-              return {
-                ...prev,
-                accumulatedScroll: newAccumulated,
-                scrollResistance: newResistance,
-                sectionProgress: newSectionProgress,
-                shouldSnap: true,
-                isFirstTimeActivation: false, // Disable indicator after first snap
-              };
-            }
-
-            return {
-              ...prev,
-              accumulatedScroll: newAccumulated,
-              scrollResistance: newResistance,
-              sectionProgress: newSectionProgress,
-            };
-          });
-          return;
-        }
-        
-        // When wheeling up into dance area from below - snap to dance area
-        if (e.deltaY < 0 && currentScrollY > window.innerHeight && currentScrollY < window.innerHeight + 50) {
-          e.preventDefault();
-          e.stopPropagation();
-          
-          if (snapTimeoutRef.current) {
-            clearTimeout(snapTimeoutRef.current);
-          }
-          
-          snapTimeoutRef.current = setTimeout(() => {
-            handleSnapToSection(0); // Snap to dance area
-          }, 50);
-          return;
-        }
-        
-        // Allow normal wheeling outside dance area
-        if (!isInDanceArea) {
-          return;
-        }
-        
-        // Allow upward wheeling within dance area
-        if (e.deltaY < 0 && isInDanceArea) {
-          return;
-        }
-        
-        return;
-      }
-
-      // Desktop behavior - align with mobile (only hijack in dance area)
+      // Unified wheel handling for both mobile and desktop
       // When wheeling down in dance area - apply resistance
       if (e.deltaY > 0 && isInDanceArea) {
         e.preventDefault();
@@ -486,56 +331,8 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
       const currentScrollY = window.scrollY;
       const isInDanceArea = currentScrollY < window.innerHeight; // First 100vh
       
-      // Mobile-specific touch handling
-      if (isMobile) {
-        // When touching down in dance area - apply resistance
-        if (isInDanceArea) {
-          const touch = e.touches[0];
-          if (touch) {
-            setScrollState(prev => {
-              const newAccumulated = prev.accumulatedScroll + 8; // Fixed increment for touch
-              const newResistance = Math.min(newAccumulated / SCROLL_RESISTANCE_THRESHOLD, 1);
-              const newSectionProgress = Math.min(1, newResistance);
-
-              // Snap out of dance area when threshold is met
-              if (newAccumulated >= SCROLL_RESISTANCE_THRESHOLD && !prev.shouldSnap) {
-                if (snapTimeoutRef.current) {
-                  clearTimeout(snapTimeoutRef.current);
-                }
-                
-                // Mark that user has completed first snap from dance area
-                hasEverSnappedFromDanceArea.current = true;
-                
-                snapTimeoutRef.current = setTimeout(() => {
-                  handleSnapToSection(1); // Snap to section 1
-                }, 100);
-
-                return {
-                  ...prev,
-                  accumulatedScroll: newAccumulated,
-                  scrollResistance: newResistance,
-                  sectionProgress: newSectionProgress,
-                  shouldSnap: true,
-                  isFirstTimeActivation: false, // Disable indicator after first snap
-                };
-              }
-
-              return {
-                ...prev,
-                accumulatedScroll: newAccumulated,
-                scrollResistance: newResistance,
-                sectionProgress: newSectionProgress,
-              };
-            });
-          }
-          return;
-        }
-        
-        // Allow normal touch scrolling outside dance area
-        return;
-      }
-
-      // Desktop behavior - align with mobile (only hijack in dance area)
+      // Unified touch handling for both mobile and desktop
+      // When touching down in dance area - apply resistance
       if (isInDanceArea) {
         const touch = e.touches[0];
         if (touch) {
@@ -597,7 +394,7 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
     window.addEventListener('touchmove', handleTouchMove, { passive: false });
     window.addEventListener('resize', handleResize, { passive: true });
 
-    // Add keyboard navigation for desktop (only in dance area)
+    // Add keyboard navigation for desktop only (mobile devices don't typically use keyboard navigation)
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!scrollState.isScrollHijacked || isMobile || isSnapping.current) return;
 

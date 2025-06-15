@@ -44,6 +44,7 @@ The parallax scroll effect should be updated to move slightly even when the user
 **Completion Date:** June 15, 2025
 
 **Changes Made:**
+
 1. Enhanced `useScrollPosition` hook to create a continuous falling effect when the page is idle (after 500ms of no scrolling)
 2. Implemented falling motion with 15 pixels per second speed plus subtle side-to-side drift variations
 3. Updated `ParallaxLayer_new.tsx` to give each parallax image individual falling characteristics:
@@ -53,6 +54,7 @@ The parallax scroll effect should be updated to move slightly even when the user
    - Each image maintains its unique visual identity while participating in the falling motion
 
 **Technical Details:**
+
 - Falling effect activates 500ms after user stops scrolling
 - Uses `requestAnimationFrame` for smooth animation performance
 - Each image layer has different transform properties for varied falling behavior
