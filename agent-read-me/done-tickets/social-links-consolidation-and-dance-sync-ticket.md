@@ -65,8 +65,9 @@ The social links area needs to be updated with three main changes:
 5. **Dance Mode Sync**: All social icons now use the existing `SocialLinkCard` component which already had proper dance mode synchronization with `isPlaying` prop
 
 ### Final Social Links Layout:
+
 - Official Website (Gold)
-- Facebook (Blue) 
+- Facebook (Blue)
 - Instagram (Pink)
 - Twitter (Sky)
 - YouTube (Red)

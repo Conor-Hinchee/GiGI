@@ -39,10 +39,6 @@ const FirefliesScene = forwardRef<FirefliesSceneRef, FirefliesSceneProps>(
     // Camera and renderer refs for resize handling
     const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
 
-    // Touch-based firefly spawning refs
-    const touchFirefliesRef = useRef<THREE.Points[]>([]);
-    const maxTouchFireflies = 50; // Maximum touch-spawned fireflies at once
-
     // Audio Analysis References
     const audioContextRef = useRef<AudioContext | null>(null);
     const analyserRef = useRef<AnalyserNode | null>(null);
@@ -54,215 +50,13 @@ const FirefliesScene = forwardRef<FirefliesSceneRef, FirefliesSceneProps>(
     const lastSpawnTimeRef = useRef(performance.now());
     const SPAWN_INTERVAL = 800; // ms between each doubling (increased from 200)
 
-    // Convert screen coordinates to world coordinates
-    const screenToWorld = useCallback(
-      (screenX: number, screenY: number) => {
-        if (!cameraRef.current || !mountRef.current)
-          return { x: 0, y: 0, z: 0 };
-
-        const rect = mountRef.current.getBoundingClientRect();
-        const x = ((screenX - rect.left) / rect.width) * 2 - 1;
-        const y = -((screenY - rect.top) / rect.height) * 2 + 1;
-
-        // Convert to world coordinates
-        const vector = new THREE.Vector3(x, y, 0.5);
-        vector.unproject(cameraRef.current);
-
-        const direction = vector.sub(cameraRef.current.position).normalize();
-        const distance = -cameraRef.current.position.z / direction.z;
-        const position = cameraRef.current.position
-          .clone()
-          .add(direction.multiplyScalar(distance));
-
-        return {
-          x: position.x,
-          y: position.y,
-          z: Math.random() * 2 - 1, // Random Z depth
-        };
-      },
-      [cameraRef, mountRef]
-    );
-
-    // Create a single touch firefly
-    const createTouchFirefly = useCallback(
-      (worldPos: { x: number; y: number; z: number }) => {
-        if (!sceneRef.current) return null;
-
-        const geometry = new THREE.BufferGeometry();
-        const positions = new Float32Array(3);
-        const colors = new Float32Array(3);
-        const scales = new Float32Array(1);
-
-        // Set position
-        positions[0] = worldPos.x;
-        positions[1] = worldPos.y;
-        positions[2] = worldPos.z;
-
-        // Set random color (purple-dominant palette)
-        const colorChoice = Math.random();
-        if (colorChoice < 0.4) {
-          // Bright purple-pink for touch fireflies
-          colors[0] = 1.0;
-          colors[1] = 0.2;
-          colors[2] = 1.0;
-        } else if (colorChoice < 0.7) {
-          // Golden yellow for contrast
-          colors[0] = 1.0;
-          colors[1] = 0.8;
-          colors[2] = 0.2;
-        } else {
-          // Cyan-blue for variety
-          colors[0] = 0.2;
-          colors[1] = 0.8;
-          colors[2] = 1.0;
-        }
-
-        // Set scale
-        scales[0] = Math.random() * 1.5 + 1.0;
-
-        geometry.setAttribute(
-          "position",
-          new THREE.BufferAttribute(positions, 3)
-        );
-        geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
-        geometry.setAttribute("aScale", new THREE.BufferAttribute(scales, 1));
-
-        // Create material for touch fireflies
-        const material = new THREE.ShaderMaterial({
-          uniforms: {
-            uTime: { value: 0 },
-            uSize: { value: isMobile ? 50 : 40 },
-            uIntensity: { value: 3.0 },
-            uOpacity: { value: 1.0 },
-            uSpawnTime: { value: performance.now() / 1000 },
-            uPulse: { value: 1.0 },
-            uFullscreen: { value: isFullscreen ? 1.0 : 0.0 },
-            uBass: { value: 0.0 },
-            uMid: { value: 0.0 },
-            uHigh: { value: 0.0 },
-          },
-          vertexShader: `
-        uniform float uTime;
-        uniform float uSize;
-        uniform float uSpawnTime;
-        uniform float uPulse;
-        
-        attribute float aScale;
-        
-        varying vec3 vColor;
-        varying float vAlpha;
-        
-        void main() {
-          vColor = color;
-          
-          float age = uTime - uSpawnTime;
-          float life = 3.0; // 3 second lifespan for touch fireflies
-          
-          // Fade in quickly, then fade out
-          vAlpha = age < 0.2 ? age / 0.2 : 
-                   age > life - 0.5 ? (life - age) / 0.5 : 1.0;
-          
-          // Slight upward drift
-          vec3 pos = position;
-          pos.y += age * 0.5;
-          pos.x += sin(uTime * 2.0 + position.x * 10.0) * 0.1;
-          
-          vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
-          
-          gl_PointSize = uSize * aScale * uPulse * (1.0 + sin(uTime * 4.0) * 0.3);
-          gl_Position = projectionMatrix * mvPosition;
-        }
-      `,
-          fragmentShader: `
-        varying vec3 vColor;
-        varying float vAlpha;
-        
-        void main() {
-          vec2 coord = gl_PointCoord - vec2(0.5);
-          float dist = length(coord);
-          
-          if (dist > 0.5) discard;
-          
-          float alpha = 1.0 - smoothstep(0.0, 0.5, dist);
-          alpha *= vAlpha;
-          
-          gl_FragColor = vec4(vColor, alpha);
-        }
-      `,
-          transparent: true,
-          vertexColors: true,
-          blending: THREE.AdditiveBlending,
-        });
-
-        const points = new THREE.Points(geometry, material);
-        sceneRef.current.add(points);
-
-        // Schedule removal after 3 seconds
-        setTimeout(() => {
-          if (sceneRef.current && points) {
-            sceneRef.current.remove(points);
-            geometry.dispose();
-            material.dispose();
-
-            // Remove from tracking array
-            const index = touchFirefliesRef.current.indexOf(points);
-            if (index > -1) {
-              touchFirefliesRef.current.splice(index, 1);
-            }
-          }
-        }, 3000);
-
-        return points;
-      },
-      [isMobile, isFullscreen]
-    );
-
-    // Spawn fireflies at touch location
-    const spawnFirefliesAtTouch = useCallback(
-      (screenX: number, screenY: number, burst = false) => {
-        if (!isMobile) return; // Only on mobile
-
-        const worldPos = screenToWorld(screenX, screenY);
-        const count = burst ? Math.floor(Math.random() * 5) + 3 : 1; // 3-7 for burst, 1 for single
-
-        for (let i = 0; i < count; i++) {
-          const offsetPos = {
-            x: worldPos.x + (Math.random() - 0.5) * (burst ? 2 : 0.5),
-            y: worldPos.y + (Math.random() - 0.5) * (burst ? 2 : 0.5),
-            z: worldPos.z + (Math.random() - 0.5) * (burst ? 1 : 0.3),
-          };
-
-          const firefly = createTouchFirefly(offsetPos);
-          if (firefly) {
-            touchFirefliesRef.current.push(firefly);
-
-            // Clean up old fireflies if we have too many
-            if (touchFirefliesRef.current.length > maxTouchFireflies) {
-              const oldFirefly = touchFirefliesRef.current.shift();
-              if (oldFirefly && sceneRef.current) {
-                sceneRef.current.remove(oldFirefly);
-                oldFirefly.geometry.dispose();
-                (oldFirefly.material as THREE.Material).dispose();
-              }
-            }
-          }
-
-          // Slight delay between burst fireflies
-          if (burst && i < count - 1) {
-            setTimeout(() => {}, i * 50);
-          }
-        }
-      },
-      [isMobile, screenToWorld, createTouchFirefly]
-    );
-
     // Expose the spawn function via ref
     useImperativeHandle(
       ref,
       () => ({
-        spawnFirefliesAtTouch,
+        spawnFirefliesAtTouch: () => {},
       }),
-      [spawnFirefliesAtTouch]
+      []
     );
 
     // Setup audio analysis
@@ -664,23 +458,6 @@ const FirefliesScene = forwardRef<FirefliesSceneRef, FirefliesSceneProps>(
           fireflies.rotation.x += 0.001 * rotationSpeed;
         }
 
-        // Update touch fireflies uniforms
-        touchFirefliesRef.current.forEach((touchFirefly) => {
-          const touchMaterial = touchFirefly.material as THREE.ShaderMaterial;
-          if (touchMaterial.uniforms) {
-            touchMaterial.uniforms.uTime.value = material.uniforms.uTime.value;
-            touchMaterial.uniforms.uPulse.value =
-              material.uniforms.uPulse.value;
-
-            // Apply audio reactivity to touch fireflies too
-            if (isPlaying && audioLevelsRef.current) {
-              touchMaterial.uniforms.uBass.value = audioLevelsRef.current.bass;
-              touchMaterial.uniforms.uMid.value = audioLevelsRef.current.mid;
-              touchMaterial.uniforms.uHigh.value = audioLevelsRef.current.high;
-            }
-          }
-        });
-
         renderer.render(scene, camera);
       };
       animate();
@@ -706,8 +483,7 @@ const FirefliesScene = forwardRef<FirefliesSceneRef, FirefliesSceneProps>(
           mount.removeChild(renderer.domElement);
         }
         renderer.dispose();
-        geometry.dispose();
-        material.dispose();
+        firefliesRef.current?.geometry.dispose();
       };
     }, [
       isPlaying,

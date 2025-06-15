@@ -43,7 +43,10 @@ If **yes**, proceed to action on the ticket by following the provided instructio
   - Move the ticket from `work-tickets/` to `done-tickets/` folder
   - Update the ticket to mark acceptance criteria as completed (checkbox format)
   - Add implementation summary with completion date and changes made
-  - Commit changes to the feature branch with descriptive commit message
+  - **Check out to a branch based on the ticket name if not already on it**
+    - Example: `git checkout -b remove-touch-mouse-firefly-events` if the branch does not exist
+  - Commit changes to the feature branch with a descriptive commit message
+  - Push the branch to the remote repository: `git push origin <branch-name>`
   - **Note**: Do not run `npm run dev`, `npm test`, or other development commands unless specifically required
 
 ---
