@@ -4,11 +4,22 @@
 
 The social links component features a color-changing animation ("dance colors"). Currently, the time between color changes is too short, causing the colors to switch too quickly. We want users to be able to appreciate each color for a longer period.
 
-## Failure / Follow-up Issue
+## Failure / Follow-up Issue ✅ RESOLVED
 
-- There is an unwanted circular bloom/glow effect around the icon during dance mode (when the animation is active).
-- Desired behavior: Only the icon should change colors and be centered. There should be no bloom, glow, or circular effect around the button or icon during dance mode.
-- The visual should be clean: just the icon animating, no extra glowing or blooming background.
+- ✅ There is an unwanted circular bloom/glow effect around the icon during dance mode (when the animation is active).
+- ✅ Desired behavior: Only the icon should change colors and be centered. There should be no bloom, glow, or circular effect around the button or icon during dance mode.
+- ✅ The visual should be clean: just the icon animating, no extra glowing or blooming background.
+
+### Resolution of Bloom/Glow Issue:
+
+**Removed Elements:**
+
+1. **Pulsing background glow** - Removed the radial gradient background effect that created a circular bloom
+2. **Particle effects** - Removed the animate-ping circular particle effects around the icon
+3. **Drop shadow filters** - Removed the drop-shadow filters that were creating glow around the icon
+
+**Result:** Now only the icon changes colors via hue-rotate animation, with no bloom, glow, or circular effects around it.
+
 
 ## Problem
 
@@ -48,7 +59,13 @@ The social links component features a color-changing animation ("dance colors").
 - ✅ No TypeScript compilation errors
 - ✅ CSS animations properly updated
 - ✅ Component functionality preserved
+- ✅ Bloom/glow effects successfully removed
+- ✅ Icons now animate colors cleanly without any circular glow effects
+
 
 ---
 
 _Completed on June 15, 2025_
+
+_Bloom/glow issue resolved on June 15, 2025_
+

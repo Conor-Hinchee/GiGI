@@ -83,6 +83,29 @@ body {
   }
 }
 
+/* Flourish animation for audio status indicator */
+@keyframes spin-once {
+  0% {
+    transform: translateX(0) rotate(0deg);
+  }
+  25% {
+    transform: translateX(8px) rotate(90deg);
+  }
+  50% {
+    transform: translateX(12px) rotate(180deg);
+  }
+  75% {
+    transform: translateX(8px) rotate(270deg);
+  }
+  100% {
+    transform: translateX(0) rotate(360deg);
+  }
+}
+
+.animate-spin-once {
+  animation: spin-once 0.8s ease-in-out;
+}
+
 /* Parallax scroll animations */
 @keyframes float-up {
   0% {
