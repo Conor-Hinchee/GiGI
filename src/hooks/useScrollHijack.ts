@@ -151,7 +151,6 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
       
       const currentScrollY = window.scrollY;
       const scrollDelta = currentScrollY - lastScrollY.current;
-      const currentSection = getCurrentSection(currentScrollY);
       const isInDanceArea = currentScrollY < window.innerHeight; // First 100vh
       
       // Mobile-specific scroll hijacking behavior
@@ -241,78 +240,29 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
         return;
       }
 
-      // Desktop behavior (existing logic)
-      // Handle upward scrolling - prevent all movement until snap
-      if (scrollDelta < 0 && currentSection > 0) {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        // Set scrolling up state to disable visuals
-        setScrollState(prev => ({ ...prev, isScrollingUp: true }));
-        
-        if (!isProcessingUpwardScroll.current) {
-          upwardScrollAccumulator.current += Math.abs(scrollDelta);
-          
-          // Reduced threshold for easier upward snapping
-          const UPWARD_SNAP_THRESHOLD = 150;
-          if (upwardScrollAccumulator.current >= UPWARD_SNAP_THRESHOLD) {
-            isProcessingUpwardScroll.current = true;
-            
-            // Snap to previous section immediately
-            const previousSection = currentSection - 1;
-            if (snapTimeoutRef.current) {
-              clearTimeout(snapTimeoutRef.current);
-            }
-            
-            snapTimeoutRef.current = setTimeout(() => {
-              handleSnapToSection(previousSection);
-              upwardScrollAccumulator.current = 0;
-              isProcessingUpwardScroll.current = false;
-              // Reset scrolling up state after snap
-              setScrollState(prev => ({ ...prev, isScrollingUp: false }));
-            }, 100);
-            
-            return;
-          }
-        }
-        
-        // Keep the page locked at current position
-        window.scrollTo(0, lastScrollY.current);
-        
-        // Reset scrolling up state after a delay if no snap occurred
-        setTimeout(() => {
-          setScrollState(prev => ({ ...prev, isScrollingUp: false }));
-        }, 200);
-        
-        return;
-      }
-
-      // Check if we're at the edge of a section and trying to scroll down
-      const nextSectionStartY = getSectionScrollY(currentSection + 1);
-      const distanceToNextSection = nextSectionStartY - currentScrollY;
-
-      if (scrollDelta > 0 && distanceToNextSection <= window.innerHeight) {
+      // Desktop behavior - align with mobile (only hijack in dance area)
+      // When scrolling down in dance area - apply resistance
+      if (scrollDelta > 0 && isInDanceArea) {
         e.preventDefault();
         e.stopPropagation();
         preventingScroll.current = true;
 
-        // Accumulate the scroll resistance
         setScrollState(prev => {
           const newAccumulated = prev.accumulatedScroll + Math.abs(scrollDelta);
           const newResistance = Math.min(newAccumulated / SCROLL_RESISTANCE_THRESHOLD, 1);
           const newSectionProgress = Math.min(1, newResistance);
 
-          // Check if we should snap to next section
+          // Snap out of dance area when threshold is met
           if (newAccumulated >= SCROLL_RESISTANCE_THRESHOLD && !prev.shouldSnap) {
-            // Clear any existing timeout
             if (snapTimeoutRef.current) {
               clearTimeout(snapTimeoutRef.current);
             }
             
-            // Snap to next section after a brief delay
+            // Mark that user has completed first snap from dance area
+            hasEverSnappedFromDanceArea.current = true;
+            
             snapTimeoutRef.current = setTimeout(() => {
-              const nextSection = Math.min(currentSection + 1, prev.totalSections - 1);
-              handleSnapToSection(nextSection);
+              handleSnapToSection(1); // Snap to section 1 (after dance area)
             }, 100);
 
             return {
@@ -322,6 +272,7 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
               sectionProgress: newSectionProgress,
               shouldSnap: true,
               isScrollingUp: false,
+              isFirstTimeActivation: false, // Disable indicator after first snap
             };
           }
 
@@ -334,23 +285,50 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
           };
         });
 
-        // Allow a small amount of scroll for visual feedback
+        // Allow small scroll for visual feedback
         const allowedScroll = scrollDelta * SCROLL_RESISTANCE_FACTOR;
-        const newScrollY = Math.min(nextSectionStartY - 1, lastScrollY.current + allowedScroll);
+        const newScrollY = Math.min(window.innerHeight - 1, lastScrollY.current + allowedScroll);
         window.scrollTo(0, newScrollY);
         lastScrollY.current = newScrollY;
-      } else {
-        // Normal scroll behavior within the section
+        return;
+      }
+      
+      // When scrolling up into dance area from below - snap to dance area
+      if (scrollDelta < 0 && currentScrollY > window.innerHeight && currentScrollY < window.innerHeight + 50) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        // Snap to top of dance area
+        if (snapTimeoutRef.current) {
+          clearTimeout(snapTimeoutRef.current);
+        }
+        
+        snapTimeoutRef.current = setTimeout(() => {
+          handleSnapToSection(0); // Snap to dance area
+        }, 50);
+        return;
+      }
+      
+      // Allow normal scrolling outside dance area
+      if (!isInDanceArea) {
         lastScrollY.current = currentScrollY;
         updateSectionProgress();
+        return;
       }
+      
+      // Allow upward scrolling within dance area
+      if (scrollDelta < 0 && isInDanceArea) {
+        lastScrollY.current = currentScrollY;
+        return;
+      }
+      
+      lastScrollY.current = currentScrollY;
     };
 
     const handleWheel = (e: WheelEvent) => {
       if (isSnapping.current) return;
       
       const currentScrollY = window.scrollY;
-      const currentSection = getCurrentSection(currentScrollY);
       const isInDanceArea = currentScrollY < window.innerHeight; // First 100vh
       
       // Mobile-specific wheel handling
@@ -426,59 +404,28 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
         return;
       }
 
-      // Desktop behavior (existing logic)
-      // Handle upward wheel scrolling - prevent all movement until snap
-      if (scrollState.isScrollHijacked && e.deltaY < 0 && currentSection > 0) {
+      // Desktop behavior - align with mobile (only hijack in dance area)
+      // When wheeling down in dance area - apply resistance
+      if (e.deltaY > 0 && isInDanceArea) {
         e.preventDefault();
         e.stopPropagation();
         
-        // Set scrolling up state to disable visuals
-        setScrollState(prev => ({ ...prev, isScrollingUp: true }));
-        
-        if (!isProcessingUpwardScroll.current) {
-          upwardScrollAccumulator.current += Math.abs(e.deltaY);
-          
-          const UPWARD_WHEEL_THRESHOLD = 250;
-          if (upwardScrollAccumulator.current >= UPWARD_WHEEL_THRESHOLD) {
-            isProcessingUpwardScroll.current = true;
-            
-            if (snapTimeoutRef.current) {
-              clearTimeout(snapTimeoutRef.current);
-            }
-            
-            snapTimeoutRef.current = setTimeout(() => {
-              const previousSection = currentSection - 1;
-              handleSnapToSection(previousSection);
-              upwardScrollAccumulator.current = 0;
-              isProcessingUpwardScroll.current = false;
-              setScrollState(prev => ({ ...prev, isScrollingUp: false }));
-            }, 100);
-          }
-        }
-        return;
-      }
-      
-      const nextSectionStartY = getSectionScrollY(currentSection + 1);
-      const distanceToNextSection = nextSectionStartY - currentScrollY;
-
-      if (scrollState.isScrollHijacked && e.deltaY > 0 && distanceToNextSection <= window.innerHeight) {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        // Accumulate wheel delta for resistance
         setScrollState(prev => {
           const newAccumulated = prev.accumulatedScroll + Math.abs(e.deltaY * 1.5);
           const newResistance = Math.min(newAccumulated / SCROLL_RESISTANCE_THRESHOLD, 1);
           const newSectionProgress = Math.min(1, newResistance);
 
+          // Snap out of dance area when threshold is met
           if (newAccumulated >= SCROLL_RESISTANCE_THRESHOLD && !prev.shouldSnap) {
             if (snapTimeoutRef.current) {
               clearTimeout(snapTimeoutRef.current);
             }
             
+            // Mark that user has completed first snap from dance area
+            hasEverSnappedFromDanceArea.current = true;
+            
             snapTimeoutRef.current = setTimeout(() => {
-              const nextSection = Math.min(currentSection + 1, prev.totalSections - 1);
-              handleSnapToSection(nextSection);
+              handleSnapToSection(1); // Snap to section 1
             }, 100);
 
             return {
@@ -487,6 +434,7 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
               scrollResistance: newResistance,
               sectionProgress: newSectionProgress,
               shouldSnap: true,
+              isFirstTimeActivation: false, // Disable indicator after first snap
             };
           }
 
@@ -497,6 +445,32 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
             sectionProgress: newSectionProgress,
           };
         });
+        return;
+      }
+      
+      // When wheeling up into dance area from below - snap to dance area
+      if (e.deltaY < 0 && currentScrollY > window.innerHeight && currentScrollY < window.innerHeight + 50) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (snapTimeoutRef.current) {
+          clearTimeout(snapTimeoutRef.current);
+        }
+        
+        snapTimeoutRef.current = setTimeout(() => {
+          handleSnapToSection(0); // Snap to dance area
+        }, 50);
+        return;
+      }
+      
+      // Allow normal wheeling outside dance area
+      if (!isInDanceArea) {
+        return;
+      }
+      
+      // Allow upward wheeling within dance area
+      if (e.deltaY < 0 && isInDanceArea) {
+        return;
       }
     };
 
@@ -510,7 +484,6 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
       if (isSnapping.current) return;
       
       const currentScrollY = window.scrollY;
-      const currentSection = getCurrentSection(currentScrollY);
       const isInDanceArea = currentScrollY < window.innerHeight; // First 100vh
       
       // Mobile-specific touch handling
@@ -562,27 +535,26 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
         return;
       }
 
-      // Desktop behavior (existing logic)
-      const nextSectionStartY = getSectionScrollY(currentSection + 1);
-      const distanceToNextSection = nextSectionStartY - currentScrollY;
-
-      if (scrollState.isScrollHijacked && distanceToNextSection <= window.innerHeight) {
+      // Desktop behavior - align with mobile (only hijack in dance area)
+      if (isInDanceArea) {
         const touch = e.touches[0];
         if (touch) {
-          // Touch scrolling resistance
           setScrollState(prev => {
             const newAccumulated = prev.accumulatedScroll + 8; // Fixed increment for touch
             const newResistance = Math.min(newAccumulated / SCROLL_RESISTANCE_THRESHOLD, 1);
             const newSectionProgress = Math.min(1, newResistance);
 
+            // Snap out of dance area when threshold is met
             if (newAccumulated >= SCROLL_RESISTANCE_THRESHOLD && !prev.shouldSnap) {
               if (snapTimeoutRef.current) {
                 clearTimeout(snapTimeoutRef.current);
               }
               
+              // Mark that user has completed first snap from dance area
+              hasEverSnappedFromDanceArea.current = true;
+              
               snapTimeoutRef.current = setTimeout(() => {
-                const nextSection = Math.min(currentSection + 1, prev.totalSections - 1);
-                handleSnapToSection(nextSection);
+                handleSnapToSection(1); // Snap to section 1
               }, 100);
 
               return {
@@ -591,6 +563,7 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
                 scrollResistance: newResistance,
                 sectionProgress: newSectionProgress,
                 shouldSnap: true,
+                isFirstTimeActivation: false, // Disable indicator after first snap
               };
             }
 
@@ -602,7 +575,10 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
             };
           });
         }
+        return;
       }
+      
+      // Allow normal touch scrolling outside dance area
     };
 
     // Update total sections on window resize
@@ -621,18 +597,19 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
     window.addEventListener('touchmove', handleTouchMove, { passive: false });
     window.addEventListener('resize', handleResize, { passive: true });
 
-    // Add keyboard navigation for desktop
+    // Add keyboard navigation for desktop (only in dance area)
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!scrollState.isScrollHijacked || isMobile || isSnapping.current) return;
 
-      if (e.key === 'ArrowDown') {
+      const currentScrollY = window.scrollY;
+      const isInDanceArea = currentScrollY < window.innerHeight;
+
+      if (e.key === 'ArrowDown' && isInDanceArea) {
         e.preventDefault();
-        const nextSection = Math.min(scrollState.currentSection + 1, scrollState.totalSections - 1);
-        handleSnapToSection(nextSection);
-      } else if (e.key === 'ArrowUp') {
+        handleSnapToSection(1); // Snap out of dance area
+      } else if (e.key === 'ArrowUp' && currentScrollY >= window.innerHeight && currentScrollY < window.innerHeight + 50) {
         e.preventDefault();
-        const previousSection = Math.max(scrollState.currentSection - 1, 0);
-        handleSnapToSection(previousSection);
+        handleSnapToSection(0); // Snap to dance area
       }
     };
 

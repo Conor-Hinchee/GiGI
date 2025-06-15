@@ -78,10 +78,12 @@ Given the scope of this ticket, rolling back these commits is not recommended as
 ## Implementation Summary
 
 ### Changes Made
+
 1. Removed `handleTouchStart`, `handleTouchEnd`, and `handleClick` functions from `DanceArea.tsx`.
 2. Removed `onTouchStart`, `onTouchEnd`, and `onClick` props from the `div` in `DanceArea`.
 3. Removed `spawnFirefliesAtTouch` and `createTouchFirefly` functions from `FirefliesScene.tsx`.
 4. Fixed related errors and cleaned up unused code.
 
 ### Completion Date
+
 June 15, 2025
