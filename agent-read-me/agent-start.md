@@ -53,6 +53,6 @@ If **yes**, proceed to action on the ticket by following the provided instructio
 - **For Creating a Ticket**: Use the template in the `ticket-creation.md` file to draft a clear and concise ticket.
 - **For Actioning on a Ticket**: Begin work on the task as described, ensuring all requirements are met.
 - **For Failed Tickets**: If a ticket does not meet the acceptance criteria or has unresolved issues following the workflow outlined in `ticket-fail.md`.
-- **For Completing Tickets**: When work is finished, move ticket to `done-tickets/` folder, update completion status, and commit changes.
+- **For Completing Tickets**: When work is finished, move ticket to `done-tickets/` folder, update completion status, and commit changes and push to the feature branch.
 
 ---

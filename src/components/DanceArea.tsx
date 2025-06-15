@@ -24,8 +24,10 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
   scrollHijackState,
 }) => {
   const [currentSong, setCurrentSong] = React.useState<string>("");
-  const [hasShownExpansionIndicator, setHasShownExpansionIndicator] = React.useState<boolean>(false);
-  const [showExpansionIndicator, setShowExpansionIndicator] = React.useState<boolean>(false);
+  const [hasShownExpansionIndicator, setHasShownExpansionIndicator] =
+    React.useState<boolean>(false);
+  const [showExpansionIndicator, setShowExpansionIndicator] =
+    React.useState<boolean>(false);
   const firefliesSceneRef = React.useRef<FirefliesSceneRef>(null);
 
   // Select random song on component mount
@@ -118,18 +120,20 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
     if (isFullscreen) {
       return "fixed inset-0 z-50 h-screen w-screen border-0";
     }
-    
+
     if (isPlaying) {
       // Check if user is scrolling in dance mode (gold border)
-      const isScrollingInDanceMode = scrollHijackState?.isScrollHijacked && scrollHijackState?.scrollResistance > 0;
-      
+      const isScrollingInDanceMode =
+        scrollHijackState?.isScrollHijacked &&
+        scrollHijackState?.scrollResistance > 0;
+
       if (isScrollingInDanceMode) {
         return "h-[100vh] border-b-8 border-yellow-400/80 shadow-yellow-400/40 shadow-2xl";
       } else {
         return "h-[100vh] border-b-8 border-purple-400/80 shadow-purple-400/40 shadow-2xl";
       }
     }
-    
+
     // Default states when not playing
     return isMobile
       ? "h-[100vh] border-b-4 border-gray-800"
@@ -185,9 +189,7 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
       />
 
       {/* Expansion Indicator - appears only once during first play on desktop */}
-      <ExpansionIndicator
-        isVisible={showExpansionIndicator}
-      />
+      <ExpansionIndicator isVisible={showExpansionIndicator} />
 
       {/* Fullscreen Button - Hidden on mobile */}
       {!isMobile && (
