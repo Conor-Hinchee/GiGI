@@ -34,7 +34,7 @@ const AudioStatusIndicator: React.FC<AudioStatusIndicatorProps> = ({
       const timer = setTimeout(() => {
         setIsFlourishing(false);
       }, 800); // Animation duration
-      
+
       previousPlayingState.current = isPlaying;
       return () => clearTimeout(timer);
     }

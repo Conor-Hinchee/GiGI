@@ -23,6 +23,7 @@ As a user, when I interact with the play/pause button (or when audio playback st
 **Commit:** 3f7351a
 
 **Changes Made:**
+
 - Added `isFlourishing` state and `useRef` to track previous playing state in AudioStatusIndicator component
 - Created `useEffect` to trigger flourish animation only when play state changes in compact mode
 - Added `animate-spin-once` CSS class with custom `@keyframes spin-once` animation
