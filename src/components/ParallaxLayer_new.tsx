@@ -53,7 +53,9 @@ export const ParallaxLayer: React.FC<ParallaxLayerProps> = ({
             mixBlendMode: "color-dodge",
             animationDelay: "4s",
             animationDuration: "20s",
-            transform: `translateY(${scrollY * 0.18}px) translateX(${scrollY * 0.02}px)`, // Falling with drift
+            transform: `translateY(${scrollY * 0.18}px) translateX(${
+              scrollY * 0.02
+            }px)`, // Falling with drift
           }}
         />
 
@@ -79,7 +81,9 @@ export const ParallaxLayer: React.FC<ParallaxLayerProps> = ({
             mixBlendMode: "overlay",
             animationDelay: "12s",
             animationDuration: "30s",
-            transform: `translateY(${scrollY * 0.25}px) rotate(${scrollY * 0.01}deg)`, // Faster falling with rotation
+            transform: `translateY(${scrollY * 0.25}px) rotate(${
+              scrollY * 0.01
+            }deg)`, // Faster falling with rotation
           }}
         />
 
@@ -92,7 +96,9 @@ export const ParallaxLayer: React.FC<ParallaxLayerProps> = ({
             mixBlendMode: "color-burn",
             animationDelay: "6s",
             animationDuration: "18s",
-            transform: `translateY(${scrollY * 0.20}px) translateX(${scrollY * -0.01}px)`, // Falling with left drift
+            transform: `translateY(${scrollY * 0.2}px) translateX(${
+              scrollY * -0.01
+            }px)`, // Falling with left drift
           }}
         />
 
@@ -105,7 +111,9 @@ export const ParallaxLayer: React.FC<ParallaxLayerProps> = ({
             mixBlendMode: "soft-light",
             animationDelay: "10s",
             animationDuration: "22s",
-            transform: `translateY(${scrollY * 0.16}px) scale(${1 + scrollY * 0.0001})`, // Falling with subtle scaling
+            transform: `translateY(${scrollY * 0.16}px) scale(${
+              1 + scrollY * 0.0001
+            })`, // Falling with subtle scaling
           }}
         />
 
@@ -118,7 +126,9 @@ export const ParallaxLayer: React.FC<ParallaxLayerProps> = ({
             mixBlendMode: "multiply",
             animationDelay: "14s",
             animationDuration: "26s",
-            transform: `translateY(${scrollY * 0.28}px) translateX(${scrollY * 0.015}px)`, // Fast falling with drift
+            transform: `translateY(${scrollY * 0.28}px) translateX(${
+              scrollY * 0.015
+            }px)`, // Fast falling with drift
           }}
         />
       </div>
