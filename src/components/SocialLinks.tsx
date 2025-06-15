@@ -107,11 +107,9 @@ const SocialLinkCard: React.FC<SocialLinkCardProps> = ({
               : "text-gray-300 group-hover:text-gray-100"
           }`}
           style={{
-            filter: showRaveEffect
-              ? "drop-shadow(0 0 8px currentColor) drop-shadow(0 0 16px currentColor)"
-              : "none",
+            filter: "none",
             animation: showRaveEffect
-              ? `social-icon-rave 2s ease-in-out infinite ${
+              ? `social-icon-rave 6s ease-in-out infinite ${
                   Math.random() * 0.5
                 }s`
               : "none",
@@ -120,31 +118,7 @@ const SocialLinkCard: React.FC<SocialLinkCardProps> = ({
           <div className="w-8 h-8 flex items-center justify-center">{icon}</div>
         </div>
 
-        {/* Rave mode glow effects - subtle and focused on icon */}
-        {showRaveEffect && (
-          <>
-            {/* Pulsing background glow */}
-            <div
-              className="absolute inset-0 rounded-full animate-pulse opacity-60"
-              style={{
-                background: `radial-gradient(circle, ${colors.particle
-                  .replace("bg-", "")
-                  .replace("/60", "")} 20%, transparent 70%)`,
-                animation: `social-button-glow-pulse 2.5s ease-in-out infinite ${
-                  Math.random() * 0.3
-                }s`,
-              }}
-            ></div>
 
-            {/* Particle effects around icon */}
-            <div className="absolute -inset-1 rounded-full">
-              <div
-                className={`absolute inset-0 rounded-full ${colors.particle} animate-ping opacity-30`}
-                style={{ animationDelay: `${Math.random() * 0.5}s` }}
-              ></div>
-            </div>
-          </>
-        )}
       </div>
 
       {/* Label - more prominent when not in rave mode */}
