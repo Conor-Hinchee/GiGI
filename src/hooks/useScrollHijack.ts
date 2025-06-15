@@ -16,11 +16,11 @@ const SCROLL_RESISTANCE_THRESHOLD = 150; // Reduced threshold for quicker snappi
 const SCROLL_RESISTANCE_FACTOR = 0.2; // More resistance for dramatic effect
 
 /**
- * Custom hook for scroll hijacking in dance mode
- * Provides unified behavior across mobile and desktop devices
- * Only hijacks scrolling within the first 100vh (dance area)
+ * Unified scroll hijack hook for all users (desktop & mobile)
+ * When in dance mode and in the dance area, applies resistance, shows border, and jumps after threshold.
+ * Maintains the dancer rave feel and energy consistent with the rest of the page.
  */
-export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = false) => {
+export const useScrollHijack = (isDanceModeActive: boolean) => {
   const [scrollState, setScrollState] = useState<ScrollHijackState>({
     isScrollHijacked: false,
     accumulatedScroll: 0,
@@ -394,9 +394,9 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
     window.addEventListener('touchmove', handleTouchMove, { passive: false });
     window.addEventListener('resize', handleResize, { passive: true });
 
-    // Add keyboard navigation for desktop only (mobile devices don't typically use keyboard navigation)
+    // Unified keyboard navigation for all users
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (!scrollState.isScrollHijacked || isMobile || isSnapping.current) return;
+      if (!scrollState.isScrollHijacked || isSnapping.current) return;
 
       const currentScrollY = window.scrollY;
       const isInDanceArea = currentScrollY < window.innerHeight;
@@ -433,7 +433,6 @@ export const useScrollHijack = (isDanceModeActive: boolean, isMobile: boolean = 
     getCurrentSection,
     getSectionScrollY,
     calculateTotalSections,
-    isMobile
   ]);
 
   return {
