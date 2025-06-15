@@ -58,6 +58,7 @@ This guide outlines the process for agents to effectively work on tickets. Follo
 ## Important Notes
 
 - **Do not run development commands** like `npm run dev`, `npm test`, or similar unless specifically requested.
+- **Never run any test commands (e.g., `npm test`, `npm run test`) as this project does not use tests.**
 - **Do not perform UAT or testing** - focus on implementation only.
 - **Testing and validation** will be handled separately by the prompter.
 
