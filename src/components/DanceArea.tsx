@@ -7,9 +7,9 @@ import AudioStatusIndicator from "./AudioStatusIndicator";
 
 // Available songs array
 const AVAILABLE_SONGS = [
-  "Gigi D'Agostino - Cuba Libre ( L'Amour Toujours ) [UWMYjD16qFc].mp3",
-  "GIGI D’AGOSTINO & LUCA NOISE - LIKE A FLOW FLOAT (GIGI DAG & LUC ON ROCKING MIX) [17bJ-XXxbu0].mp3",
-  "Gigi D’Agostino & Luca Noise - Smoke A Beat [ From the album SMODERANZA ] [w3KP8UhTdys].mp3",
+  "/audio/Gigi D'Agostino - Cuba Libre ( L'Amour Toujours ) [UWMYjD16qFc].mp3",
+  "/audio/GIGI D’AGOSTINO & LUCA NOISE - LIKE A FLOW FLOAT (GIGI DAG & LUC ON ROCKING MIX) [17bJ-XXxbu0].mp3",
+  "/audio/Gigi D’Agostino & Luca Noise - Smoke A Beat [ From the album SMODERANZA ] [w3KP8UhTdys].mp3",
 ];
 
 export const DanceArea: React.FC<DanceAreaProps> = ({
