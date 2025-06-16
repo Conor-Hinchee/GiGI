@@ -32,7 +32,7 @@ export const MainContent: React.FC<MainContentProps> = ({
       <div className="absolute inset-0 z-5">
         <div className="hero-background-container">
           <Image
-            src="/maxresdefault.jpg"
+            src="/photos/maxresdefault.jpg"
             alt="GiGi D'Agostino Background"
             className="hero-background-image"
             fill
@@ -106,11 +106,13 @@ export const MainContent: React.FC<MainContentProps> = ({
                   <div className="bg-purple-400/60 animate-ping w-full h-full rounded-full"></div>
                 </div>
               )}
-              <h3 className={`text-2xl md:text-3xl font-bold uppercase tracking-widest ${
-                isPlaying 
-                  ? "text-purple-300 bg-clip-text bg-gradient-to-r from-purple-200 via-purple-300 to-purple-500 animate-pulse scale-105"
-                  : "text-white"
-              }`}>
+              <h3
+                className={`text-2xl md:text-3xl font-bold uppercase tracking-widest ${
+                  isPlaying
+                    ? "text-purple-300 bg-clip-text bg-gradient-to-r from-purple-200 via-purple-300 to-purple-500 animate-pulse scale-105"
+                    : "text-white"
+                }`}
+              >
                 The Maestro of Italo-Dance
               </h3>
             </div>
@@ -120,11 +122,13 @@ export const MainContent: React.FC<MainContentProps> = ({
                   <div className="bg-purple-400/60 animate-ping w-full h-full rounded-full"></div>
                 </div>
               )}
-              <p className={`text-lg font-semibold mt-2 ${
-                isPlaying
-                  ? "text-purple-300 bg-clip-text bg-gradient-to-r from-purple-200 via-purple-300 to-purple-500 animate-pulse scale-105"
-                  : "text-gray-300"
-              }`}>
+              <p
+                className={`text-lg font-semibold mt-2 ${
+                  isPlaying
+                    ? "text-purple-300 bg-clip-text bg-gradient-to-r from-purple-200 via-purple-300 to-purple-500 animate-pulse scale-105"
+                    : "text-gray-300"
+                }`}
+              >
                 Luigino Celestino Di Agostino • Born December 17, 1967 • Turin,
                 Italy
               </p>
@@ -140,11 +144,13 @@ export const MainContent: React.FC<MainContentProps> = ({
                 <div className="bg-purple-400/60 animate-ping w-full h-full rounded-full"></div>
               </div>
             )}
-            <h3 className={`text-3xl md:text-4xl font-bold uppercase tracking-widest mb-8 ${
-              isPlaying
-                ? "text-purple-300 bg-clip-text bg-gradient-to-r from-purple-200 via-purple-300 to-purple-500 animate-pulse scale-105"
-                : "text-white"
-            }`}>
+            <h3
+              className={`text-3xl md:text-4xl font-bold uppercase tracking-widest mb-8 ${
+                isPlaying
+                  ? "text-purple-300 bg-clip-text bg-gradient-to-r from-purple-200 via-purple-300 to-purple-500 animate-pulse scale-105"
+                  : "text-white"
+              }`}
+            >
               World Tour 2025
             </h3>
           </div>
@@ -174,11 +180,13 @@ export const MainContent: React.FC<MainContentProps> = ({
                     <div className="bg-purple-400/60 animate-ping w-full h-full rounded-full"></div>
                   </div>
                 )}
-                <p className={`text-lg mb-2 ${
-                  isPlaying
-                    ? "text-purple-300 bg-clip-text bg-gradient-to-r from-purple-200 via-purple-300 to-purple-500 animate-pulse scale-105"
-                    : "text-gray-300"
-                }`}>
+                <p
+                  className={`text-lg mb-2 ${
+                    isPlaying
+                      ? "text-purple-300 bg-clip-text bg-gradient-to-r from-purple-200 via-purple-300 to-purple-500 animate-pulse scale-105"
+                      : "text-gray-300"
+                  }`}
+                >
                   <span className="text-gold-400 font-semibold">Latest:</span>
                   Continuing his Lento Violento explorations with
                   <span className="text-purple-300 font-semibold">
@@ -193,11 +201,13 @@ export const MainContent: React.FC<MainContentProps> = ({
                     <div className="bg-purple-400/60 animate-ping w-full h-full rounded-full"></div>
                   </div>
                 )}
-                <p className={`text-sm ${
-                  isPlaying
-                    ? "text-purple-300 bg-clip-text bg-gradient-to-r from-purple-200 via-purple-300 to-purple-500 animate-pulse scale-105"
-                    : "text-gray-400"
-                }`}>
+                <p
+                  className={`text-sm ${
+                    isPlaying
+                      ? "text-purple-300 bg-clip-text bg-gradient-to-r from-purple-200 via-purple-300 to-purple-500 animate-pulse scale-105"
+                      : "text-gray-400"
+                  }`}
+                >
                   Released under his own Lento Violento and Gigi D&apos;Agostino
                   Planet labels
                 </p>
