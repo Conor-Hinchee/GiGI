@@ -2,8 +2,14 @@ import React, { useState } from "react";
 import { TourCardProps } from "../types";
 
 export const TourCard: React.FC<TourCardProps> = ({ tourDate, isPlaying }) => {
-  const { city, venue, date, year, color } = tourDate;
+  const { city, venue, date, year, color, url } = tourDate;
   const [isHovered, setIsHovered] = useState(false);
+
+  const handleClick = () => {
+    if (url) {
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
+  };
 
   const getColorClasses = (color: string) => {
     const colorMap = {
@@ -37,6 +43,11 @@ export const TourCard: React.FC<TourCardProps> = ({ tourDate, isPlaying }) => {
         date: "text-red-300",
         particle: "bg-red-400/60",
       },
+      gold: {
+        text: "text-yellow-200",
+        date: "text-yellow-300",
+        particle: "bg-yellow-400/60",
+      },
     };
     return colorMap[color as keyof typeof colorMap] || colorMap.purple;
   };
@@ -52,9 +63,18 @@ export const TourCard: React.FC<TourCardProps> = ({ tourDate, isPlaying }) => {
         showRaveEffect
           ? "border-trace-rave transform scale-105"
           : "border border-gray-700"
-      } gigi-tour-card`}
+      } ${url ? "cursor-pointer hover:bg-gray-700/50" : ""} gigi-tour-card`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onClick={handleClick}
+      role={url ? "button" : undefined}
+      tabIndex={url ? 0 : undefined}
+      onKeyDown={(e) => {
+        if (url && (e.key === "Enter" || e.key === " ")) {
+          e.preventDefault();
+          handleClick();
+        }
+      }}
     >
       {/* Particle indicator - visible when playing or hovered */}
       {showRaveEffect && (

@@ -150,7 +150,7 @@ export const MainContent: React.FC<MainContentProps> = ({
                   : "text-white"
               }`}
             >
-              World Tour 2025
+              World Tour 2025 - 2026
             </h3>
           </div>
 
