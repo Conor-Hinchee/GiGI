@@ -20,10 +20,15 @@ Replace the current tour dates in the `tourDates` data file with the latest list
 - [x] The main content section displays the updated tour dates
 - [x] No old/fake tour dates remain
 - [x] All formatting and color-coding is preserved
+- [x] Each tour date is clickable and links to the corresponding Songkick concert page
+- [x] Links are extracted from the tour-date.md markdown file and added to tour data
 
 ## Technical Requirements
 
 - Update `src/data/tourDates.ts` with the new tour dates
+- Add `url` field to TourDate interface to store Songkick links
+- Extract links from tour-date.md and match them to corresponding tour dates
+- Update TourCard component to make tour dates clickable
 - Ensure the `TourCard` and `MainContent` components render the new data correctly
 - Double-check for typos or missing venues/cities
 
@@ -32,6 +37,8 @@ Replace the current tour dates in the `tourDates` data file with the latest list
 - [x] All new tour dates are visible on the site
 - [x] No console errors or warnings
 - [x] Data matches the Songkick markdown list
+- [x] All tour dates are clickable and open Songkick concert pages in new tabs
+- [x] Links work correctly for all tour dates
 
 ---
 
@@ -42,12 +49,15 @@ Replace the current tour dates in the `tourDates` data file with the latest list
 ### Changes Made:
 
 1. **Tour Dates Updated**: Replaced all placeholder/fake tour dates in `src/data/tourDates.ts` with actual Gigi D'Agostino tour dates from Songkick
-2. **Type Interface Extended**: Added optional `country` field and `gold` color option to `TourDate` interface in `src/types/index.ts`
-3. **Data Accuracy**: All 11 tour dates properly formatted with:
+2. **Type Interface Extended**: Added optional `country` field, `url` field, and `gold` color option to `TourDate` interface in `src/types/index.ts`
+3. **Clickable Tour Cards**: Updated `TourCard` component to make tour dates clickable, opening Songkick concert pages in new tabs
+4. **Songkick Links Added**: Extracted all concert URLs from tour-date.md and matched them to corresponding tour dates
+5. **Data Accuracy**: All 11 tour dates properly formatted with:
    - Correct cities and venues
    - Proper date formatting (MMM DD format)
    - Country information where available
-   - Color coding preserved
+   - Direct links to Songkick concert pages
+   - Color coding preserved including new 'gold' option
 
 ### Tour Dates Implemented:
 
@@ -60,6 +70,9 @@ Replace the current tour dates in the `tourDates` data file with the latest list
 - All changes committed and pushed to remote repository
 - No console errors or TypeScript issues
 - Main content section now displays accurate tour information
+- Tour dates are now clickable and open Songkick concert pages in new tabs
+- Added keyboard accessibility (Enter/Space key support) for tour date links
+- Added hover effects for clickable tour cards
 
 ---
 

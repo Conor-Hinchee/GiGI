@@ -5,6 +5,7 @@ export interface TourDate {
   year: string;
   color: 'purple' | 'pink' | 'blue' | 'green' | 'yellow' | 'red' | 'gold';
   country?: string;
+  url?: string;
 }
 
 export interface DanceAreaProps {

@@ -8,6 +8,7 @@ export const tourDates: TourDate[] = [
     year: '2025',
     country: 'Austria',
     color: 'purple',
+    url: 'https://www.songkick.com/concerts/42144113-gigi-dagostino-at-salzburgarena',
   },
   {
     city: 'Salzburg',
@@ -16,6 +17,7 @@ export const tourDates: TourDate[] = [
     year: '2025',
     country: 'Austria',
     color: 'purple',
+    url: 'https://www.songkick.com/concerts/42144114-gigi-dagostino-at-salzburgarena',
   },
   {
     city: 'Dornbirn',
@@ -24,6 +26,7 @@ export const tourDates: TourDate[] = [
     year: '2025',
     country: 'Austria',
     color: 'blue',
+    url: 'https://www.songkick.com/concerts/41833596-gigi-dagostino-at-messequartier-dornbirn',
   },
   {
     city: 'Turin',
@@ -32,6 +35,7 @@ export const tourDates: TourDate[] = [
     year: '2025',
     country: 'Italy',
     color: 'red',
+    url: 'https://www.songkick.com/concerts/42303139-gigi-dagostino-at-palaalpitour',
   },
   {
     city: 'Alba',
@@ -40,6 +44,7 @@ export const tourDates: TourDate[] = [
     year: '2025',
     country: 'Italy',
     color: 'yellow',
+    url: 'https://www.songkick.com/concerts/42581492-gigi-dagostino-at-piazza-medford',
   },
   {
     city: 'Riccione',
@@ -48,6 +53,7 @@ export const tourDates: TourDate[] = [
     year: '2025',
     country: 'Italy',
     color: 'pink',
+    url: 'https://www.songkick.com/concerts/42654220-gigi-dagostino-at-space-riccione',
   },
   {
     city: 'Palmanova',
@@ -56,6 +62,7 @@ export const tourDates: TourDate[] = [
     year: '2025',
     country: 'Italy',
     color: 'green',
+    url: 'https://www.songkick.com/concerts/42577819-gigi-dagostino-at-piazza-grande',
   },
   {
     city: 'Catania',
@@ -64,6 +71,7 @@ export const tourDates: TourDate[] = [
     year: '2025',
     country: 'Italy',
     color: 'blue',
+    url: 'https://www.songkick.com/concerts/42588819-gigi-dagostino-at-villa-bellini',
   },
   {
     city: 'Milan',
@@ -72,6 +80,7 @@ export const tourDates: TourDate[] = [
     year: '2025',
     country: 'Italy',
     color: 'purple',
+    url: 'https://www.songkick.com/concerts/42419953-gigi-dagostino-at-fiera-di-milano-area-concerti',
   },
   {
     city: 'Innsbruck',
@@ -80,6 +89,7 @@ export const tourDates: TourDate[] = [
     year: '2026',
     country: 'Austria',
     color: 'gold',
+    url: 'https://www.songkick.com/concerts/42569192-gigi-dagostino-at-olympiahalle',
   },
   {
     city: 'Linz',
@@ -88,5 +98,6 @@ export const tourDates: TourDate[] = [
     year: '2026',
     country: 'Austria',
     color: 'red',
+    url: 'https://www.songkick.com/concerts/42569194-gigi-dagostino-at-tipsarena-linz',
   },
 ];
