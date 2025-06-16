@@ -7,7 +7,7 @@ export const TourCard: React.FC<TourCardProps> = ({ tourDate, isPlaying }) => {
 
   const handleClick = () => {
     if (url) {
-      window.open(url, '_blank', 'noopener,noreferrer');
+      window.open(url, "_blank", "noopener,noreferrer");
     }
   };
 
@@ -70,7 +70,7 @@ export const TourCard: React.FC<TourCardProps> = ({ tourDate, isPlaying }) => {
       role={url ? "button" : undefined}
       tabIndex={url ? 0 : undefined}
       onKeyDown={(e) => {
-        if (url && (e.key === 'Enter' || e.key === ' ')) {
+        if (url && (e.key === "Enter" || e.key === " ")) {
           e.preventDefault();
           handleClick();
         }
