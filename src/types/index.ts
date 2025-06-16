@@ -3,7 +3,8 @@ export interface TourDate {
   venue: string;
   date: string;
   year: string;
-  color: 'purple' | 'pink' | 'blue' | 'green' | 'yellow' | 'red';
+  color: 'purple' | 'pink' | 'blue' | 'green' | 'yellow' | 'red' | 'gold';
+  country?: string;
 }
 
 export interface DanceAreaProps {
