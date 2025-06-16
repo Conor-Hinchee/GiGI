@@ -187,7 +187,7 @@ export const MainContent: React.FC<MainContentProps> = ({
                   }`}
                 >
                   <span className="text-gold-400 font-semibold">Latest:</span>
-                  GIGI D'AGOSTINO, LIZOT, WIDEMODE - YO TE DARÈ
+                  GIGI D&apos;AGOSTINO, LIZOT, WIDEMODE - YO TE DARÈ
                   <span className="text-purple-300 font-semibold">
                     {" "}
                     Suono Libero (2021)
