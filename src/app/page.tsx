@@ -13,6 +13,7 @@ import {
   useMobileDetection,
   useScrollPosition,
   useScrollHijack,
+  useSpacebarPause,
 } from "../hooks";
 
 export default function Home() {
@@ -21,6 +22,9 @@ export default function Home() {
   const { isMobile } = useMobileDetection();
   const { scrollY } = useScrollPosition(isMobile);
   const { scrollState } = useScrollHijack(isPlaying && !isFullscreen);
+
+  // Add spacebar pause functionality for Dance Mode
+  useSpacebarPause({ isPlaying, audioRef, setIsPlaying });
 
   const isScrolledPastDanceArea = scrollY > 100;
 
