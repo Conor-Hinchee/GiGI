@@ -4,3 +4,4 @@ export { useMobileDetection } from './useMobileDetection';
 export { useScrollPosition } from './useScrollPosition';
 export { useScrollHijack } from './useScrollHijack';
 export { useScrollDance } from './useScrollDance';
+export { useSpacebarPause } from './useSpacebarPause';
