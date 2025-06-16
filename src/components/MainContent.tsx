@@ -32,7 +32,7 @@ export const MainContent: React.FC<MainContentProps> = ({
       <div className="absolute inset-0 z-5">
         <div className="hero-background-container">
           <Image
-            src="/photos/maxresdefault.jpg"
+            src="/photos/gigi3.jpg"
             alt="GiGi D'Agostino Background"
             className="hero-background-image"
             fill
@@ -129,8 +129,7 @@ export const MainContent: React.FC<MainContentProps> = ({
                     : "text-gray-300"
                 }`}
               >
-                Luigino Celestino Di Agostino • Born December 17, 1967 • Turin,
-                Italy
+                Luigino Celestino Di Agostino
               </p>
             </div>
           </div>
@@ -188,7 +187,7 @@ export const MainContent: React.FC<MainContentProps> = ({
                   }`}
                 >
                   <span className="text-gold-400 font-semibold">Latest:</span>
-                  Continuing his Lento Violento explorations with
+                  GIGI D'AGOSTINO, LIZOT, WIDEMODE - YO TE DARÈ
                   <span className="text-purple-300 font-semibold">
                     {" "}
                     Suono Libero (2021)
