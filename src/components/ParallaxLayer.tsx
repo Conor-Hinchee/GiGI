@@ -278,7 +278,7 @@ export const ParallaxLayer: React.FC<ParallaxLayerProps> = ({
         <div
           className="absolute top-1/6 left-1/3 w-42 h-42 bg-cover bg-center rounded-lg opacity-85 blur-sm animate-rave-mode-image-dance"
           style={{
-            backgroundImage: "url('/photos/2023-12-11-b.jpg')",
+            backgroundImage: "url('/photos/gigi3.jpg')",
             filter:
               "sepia(30%) hue-rotate(260deg) brightness(1.1) contrast(1.4)",
             mixBlendMode: "multiply",
