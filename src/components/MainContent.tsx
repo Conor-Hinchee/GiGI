@@ -32,7 +32,7 @@ export const MainContent: React.FC<MainContentProps> = ({
       <div className="absolute inset-0 z-5">
         <div className="hero-background-container">
           <Image
-            src="/maxresdefault.jpg"
+            src="/photos/maxresdefault.jpg"
             alt="GiGi D'Agostino Background"
             className="hero-background-image"
             fill
