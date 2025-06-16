@@ -186,15 +186,22 @@ export const MainContent: React.FC<MainContentProps> = ({
                       : "text-gray-300"
                   }`}
                 >
-                  <span className="text-gold-400 font-semibold">Latest:</span>
-                  GIGI D&apos;AGOSTINO, LIZOT, WIDEMODE - YO TE DARÈ
-                  <span className="text-purple-300 font-semibold">
-                    {" "}
-                    Suono Libero (2021)
-                  </span>
+                  <span className="text-gold-400 font-semibold">Latest: </span>
+                  GIGI D&apos;AGOSTINO, LIZOT, WIDEMODE -
+                  <a
+                    href="https://www.youtube.com/watch?v=5J0XCcxC_nE"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="YO TE DARÈ (2025)"
+                  >
+                    <span className="text-purple-300 font-semibold">
+                      {" "}
+                      YO TE DARÈ (2025)
+                    </span>
+                  </a>
                 </p>
               </div>
-              <div className="relative">
+              {/* <div className="relative">
                 {isPlaying && (
                   <div className="hidden lg:block absolute -top-1 -right-1 w-2 h-2 rounded-full blur-sm">
                     <div className="bg-purple-400/60 animate-ping w-full h-full rounded-full"></div>
@@ -210,7 +217,7 @@ export const MainContent: React.FC<MainContentProps> = ({
                   Released under his own Lento Violento and Gigi D&apos;Agostino
                   Planet labels
                 </p>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
