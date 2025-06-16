@@ -27,7 +27,8 @@ export const ParallaxLayer: React.FC<ParallaxLayerProps> = ({
         <div
           className="absolute top-1/8 left-1/12 w-10 h-14 bg-cover bg-center rounded-md opacity-70 blur-md animate-image-pulse-glow"
           style={{
-            backgroundImage: "url('/photos/494129947_18347219656159300_4898537729932306818_n.jpg')",
+            backgroundImage:
+              "url('/photos/494129947_18347219656159300_4898537729932306818_n.jpg')",
             filter:
               "sepia(60%) hue-rotate(240deg) brightness(0.8) contrast(1.8)",
             mixBlendMode: "soft-light",
@@ -51,7 +52,8 @@ export const ParallaxLayer: React.FC<ParallaxLayerProps> = ({
         <div
           className="absolute bottom-2/5 left-1/5 w-12 h-8 bg-cover bg-center rounded-lg opacity-65 blur-md animate-image-pulse-glow"
           style={{
-            backgroundImage: "url('/photos/461998260_518091001085360_8321732667836278317_n.jpg')",
+            backgroundImage:
+              "url('/photos/461998260_518091001085360_8321732667836278317_n.jpg')",
             filter:
               "sepia(80%) hue-rotate(200deg) brightness(0.6) contrast(2.0)",
             mixBlendMode: "multiply",
@@ -75,7 +77,8 @@ export const ParallaxLayer: React.FC<ParallaxLayerProps> = ({
         <div
           className="absolute top-1/3 left-1/6 w-8 h-10 bg-cover bg-center rounded-md opacity-60 blur-sm animate-image-pulse-glow"
           style={{
-            backgroundImage: "url('/photos/470167483_573781295374567_3574809607622125311_n.jpg')",
+            backgroundImage:
+              "url('/photos/470167483_573781295374567_3574809607622125311_n.jpg')",
             filter:
               "sepia(50%) hue-rotate(120deg) brightness(0.8) contrast(1.6)",
             mixBlendMode: "color-burn",
@@ -99,7 +102,8 @@ export const ParallaxLayer: React.FC<ParallaxLayerProps> = ({
         <div
           className="absolute top-1/2 right-1/12 w-6 h-8 bg-cover bg-center rounded-md opacity-55 blur-lg animate-image-pulse-glow"
           style={{
-            backgroundImage: "url('/photos/30915563_301578003709556_3870154202466484224_n.jpg')",
+            backgroundImage:
+              "url('/photos/30915563_301578003709556_3870154202466484224_n.jpg')",
             filter:
               "sepia(70%) hue-rotate(340deg) brightness(0.7) contrast(2.2)",
             mixBlendMode: "multiply",
@@ -139,7 +143,8 @@ export const ParallaxLayer: React.FC<ParallaxLayerProps> = ({
         <div
           className="absolute top-1/4 right-1/6 w-36 h-52 bg-cover bg-center rounded-lg opacity-75 blur-sm animate-rave-mode-image-dance"
           style={{
-            backgroundImage: "url('/photos/494129947_18347219656159300_4898537729932306818_n.jpg')",
+            backgroundImage:
+              "url('/photos/494129947_18347219656159300_4898537729932306818_n.jpg')",
             filter:
               "sepia(30%) hue-rotate(240deg) brightness(0.9) contrast(1.4)",
             mixBlendMode: "overlay",
@@ -149,7 +154,8 @@ export const ParallaxLayer: React.FC<ParallaxLayerProps> = ({
         <div
           className="absolute bottom-1/3 left-1/8 w-44 h-64 bg-cover bg-center rounded-lg opacity-65 blur-sm animate-image-pulse-glow"
           style={{
-            backgroundImage: "url('/photos/470167483_573781295374567_3574809607622125311_n.jpg')",
+            backgroundImage:
+              "url('/photos/470167483_573781295374567_3574809607622125311_n.jpg')",
             filter:
               "sepia(40%) hue-rotate(280deg) brightness(0.8) contrast(1.5)",
             mixBlendMode: "soft-light",
@@ -184,7 +190,8 @@ export const ParallaxLayer: React.FC<ParallaxLayerProps> = ({
         <div
           className="absolute top-1/2 left-1/8 w-40 h-28 bg-cover bg-center rounded-lg opacity-65 blur-sm animate-image-pulse-glow"
           style={{
-            backgroundImage: "url('/photos/30915563_301578003709556_3870154202466484224_n.jpg')",
+            backgroundImage:
+              "url('/photos/30915563_301578003709556_3870154202466484224_n.jpg')",
             filter:
               "sepia(40%) hue-rotate(350deg) brightness(1.3) contrast(1.4)",
             mixBlendMode: "screen",
@@ -318,7 +325,8 @@ export const ParallaxLayer: React.FC<ParallaxLayerProps> = ({
         <div
           className="absolute bottom-1/8 left-1/4 w-44 h-24 bg-cover bg-center rounded-2xl opacity-55 blur-lg animate-rave-mode-image-dance"
           style={{
-            backgroundImage: "url('/photos/461998260_518091001085360_8321732667836278317_n.jpg')",
+            backgroundImage:
+              "url('/photos/461998260_518091001085360_8321732667836278317_n.jpg')",
             filter:
               "sepia(30%) hue-rotate(220deg) brightness(1.0) contrast(1.7)",
             mixBlendMode: "soft-light",
@@ -352,7 +360,8 @@ export const ParallaxLayer: React.FC<ParallaxLayerProps> = ({
         <div
           className="absolute top-1/4 left-1/5 w-18 h-22 bg-cover bg-center rounded-lg opacity-80 blur-sm animate-image-pulse-glow"
           style={{
-            backgroundImage: "url('/photos/30915563_301578003709556_3870154202466484224_n.jpg')",
+            backgroundImage:
+              "url('/photos/30915563_301578003709556_3870154202466484224_n.jpg')",
             filter:
               "sepia(45%) hue-rotate(15deg) brightness(1.5) contrast(1.6)",
             mixBlendMode: "screen",
@@ -374,7 +383,8 @@ export const ParallaxLayer: React.FC<ParallaxLayerProps> = ({
         <div
           className="absolute top-2/3 left-1/8 w-14 h-18 bg-cover bg-center rounded-xl opacity-85 blur-sm animate-image-pulse-glow"
           style={{
-            backgroundImage: "url('/photos/470167483_573781295374567_3574809607622125311_n.jpg')",
+            backgroundImage:
+              "url('/photos/470167483_573781295374567_3574809607622125311_n.jpg')",
             filter:
               "sepia(25%) hue-rotate(180deg) brightness(1.3) contrast(1.4)",
             mixBlendMode: "soft-light",
@@ -385,7 +395,8 @@ export const ParallaxLayer: React.FC<ParallaxLayerProps> = ({
         <div
           className="absolute top-1/8 right-1/6 w-12 h-16 bg-cover bg-center rounded-md opacity-65 blur-lg animate-rave-mode-image-dance"
           style={{
-            backgroundImage: "url('/photos/461998260_518091001085360_8321732667836278317_n.jpg')",
+            backgroundImage:
+              "url('/photos/461998260_518091001085360_8321732667836278317_n.jpg')",
             filter:
               "sepia(70%) hue-rotate(100deg) brightness(0.9) contrast(2.2)",
             mixBlendMode: "multiply",
