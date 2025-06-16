@@ -13,11 +13,13 @@ The social links component features a color-changing animation ("dance colors").
 ### Resolution of Bloom/Glow Issue:
 
 **Removed Elements:**
+
 1. **Pulsing background glow** - Removed the radial gradient background effect that created a circular bloom
 2. **Particle effects** - Removed the animate-ping circular particle effects around the icon
 3. **Drop shadow filters** - Removed the drop-shadow filters that were creating glow around the icon
 
 **Result:** Now only the icon changes colors via hue-rotate animation, with no bloom, glow, or circular effects around it.
+
 
 ## Problem
 
@@ -60,7 +62,10 @@ The social links component features a color-changing animation ("dance colors").
 - ✅ Bloom/glow effects successfully removed
 - ✅ Icons now animate colors cleanly without any circular glow effects
 
+
 ---
 
 _Completed on June 15, 2025_
+
 _Bloom/glow issue resolved on June 15, 2025_
+
