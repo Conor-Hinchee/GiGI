@@ -8,10 +8,20 @@ interface ParallaxLayerProps {
 
 export const ParallaxLayer: React.FC<ParallaxLayerProps> = ({
   scrollY,
-  isMobile, // Kept for future use
+  isMobile,
 }) => {
-  // Reference isMobile to avoid TypeScript error while keeping for future use
-  void isMobile;
+  // Reduce parallax multipliers for mobile to prevent jittering
+  const parallaxMultipliers = isMobile
+    ? { slow: 0.06, medium: 0.15, mediumFast: 0.25, fast: 0.35 }
+    : { slow: 0.12, medium: 0.2, mediumFast: 0.55, fast: 0.85 };
+
+  const rotationMultipliers = isMobile
+    ? { slow: 0.004, medium: 0.008, fast: 0.012 }
+    : { slow: 0.008, medium: 0.012, fast: 0.018 };
+
+  const translateXMultipliers = isMobile
+    ? { medium: 0.04, fast: 0.06 }
+    : { medium: 0.08, fast: 0.12 };
 
   return (
     <div className="absolute inset-0 overflow-hidden">
@@ -19,18 +29,22 @@ export const ParallaxLayer: React.FC<ParallaxLayerProps> = ({
       <div
         className="absolute inset-0 opacity-15 parallax-layer"
         style={{
-          transform: `translateY(${scrollY * 0.12}px) rotate(${
-            scrollY * 0.008
+          transform: `translate3d(0, ${scrollY * parallaxMultipliers.slow}px, 0) rotate(${
+            scrollY * rotationMultipliers.slow
           }deg)`,
+          willChange: "transform",
         }}
       >
         <div
-          className="absolute top-1/8 left-1/12 w-15 h-21 bg-cover bg-center rounded-md opacity-70 blur-md animate-image-pulse-glow"
+          className={`absolute top-1/8 left-1/12 w-15 h-21 bg-cover bg-center rounded-md opacity-70 blur-md ${
+            isMobile ? "" : "animate-image-pulse-glow"
+          }`}
           style={{
             backgroundImage:
               "url('/photos/494129947_18347219656159300_4898537729932306818_n.jpg')",
-            filter:
-              "sepia(60%) hue-rotate(240deg) brightness(0.8) contrast(1.8)",
+            filter: isMobile
+              ? "sepia(30%) brightness(0.9) contrast(1.2)"
+              : "sepia(60%) hue-rotate(240deg) brightness(0.8) contrast(1.8)",
             mixBlendMode: "soft-light",
             animationDelay: "0s",
             animationDuration: "18s",
@@ -38,11 +52,14 @@ export const ParallaxLayer: React.FC<ParallaxLayerProps> = ({
         />
 
         <div
-          className="absolute top-3/8 right-1/10 w-12 h-12 bg-cover bg-center rounded-full opacity-60 blur-sm animate-rave-mode-image-dance"
+          className={`absolute top-3/8 right-1/10 w-12 h-12 bg-cover bg-center rounded-full opacity-60 blur-sm ${
+            isMobile ? "" : "animate-rave-mode-image-dance"
+          }`}
           style={{
             backgroundImage: "url('/photos/舞.png')",
-            filter:
-              "sepia(40%) hue-rotate(300deg) brightness(0.9) contrast(1.6)",
+            filter: isMobile
+              ? "sepia(20%) brightness(1.0) contrast(1.3)"
+              : "sepia(40%) hue-rotate(300deg) brightness(0.9) contrast(1.6)",
             mixBlendMode: "color-dodge",
             animationDelay: "4s",
             animationDuration: "20s",
@@ -117,9 +134,8 @@ export const ParallaxLayer: React.FC<ParallaxLayerProps> = ({
       <div
         className="absolute inset-0 opacity-18 parallax-layer"
         style={{
-          transform: `translateY(${scrollY * 0.2}px) translateX(${
-            scrollY * 0.03
-          }px)`,
+          transform: `translate3d(${scrollY * (translateXMultipliers.medium * 0.375)}px, ${scrollY * parallaxMultipliers.medium}px, 0)`,
+          willChange: "transform",
           backgroundImage: `
             radial-gradient(circle at 20% 30%, rgba(147, 51, 234, 0.5) 0%, transparent 60%),
             radial-gradient(circle at 80% 70%, rgba(236, 72, 153, 0.4) 0%, transparent 60%),
@@ -135,37 +151,46 @@ export const ParallaxLayer: React.FC<ParallaxLayerProps> = ({
       <div
         className="absolute inset-0 opacity-25 parallax-layer"
         style={{
-          transform: `translateY(${scrollY * 0.35}px) scale(${
-            1 + scrollY * 0.0004
-          }) rotate(${scrollY * 0.015}deg)`,
+          transform: `translate3d(0, ${scrollY * parallaxMultipliers.mediumFast}px, 0) scale(${
+            1 + scrollY * (isMobile ? 0.0002 : 0.0004)
+          }) rotate(${scrollY * rotationMultipliers.medium}deg)`,
+          willChange: "transform",
         }}
       >
         <div
-          className="absolute top-1/4 right-1/6 w-54 h-78 bg-cover bg-center rounded-lg opacity-75 blur-sm animate-rave-mode-image-dance"
+          className={`absolute top-1/4 right-1/6 w-54 h-78 bg-cover bg-center rounded-lg opacity-75 blur-sm ${
+            isMobile ? "" : "animate-rave-mode-image-dance"
+          }`}
           style={{
             backgroundImage:
               "url('/photos/494129947_18347219656159300_4898537729932306818_n.jpg')",
-            filter:
-              "sepia(30%) hue-rotate(240deg) brightness(0.9) contrast(1.4)",
+            filter: isMobile
+              ? "sepia(15%) brightness(1.0) contrast(1.2)"
+              : "sepia(30%) hue-rotate(240deg) brightness(0.9) contrast(1.4)",
             mixBlendMode: "overlay",
           }}
         />
 
         <div
-          className="absolute bottom-1/3 left-1/8 w-66 h-96 bg-cover bg-center rounded-lg opacity-65 blur-sm animate-image-pulse-glow"
+          className={`absolute bottom-1/3 left-1/8 w-66 h-96 bg-cover bg-center rounded-lg opacity-65 blur-sm ${
+            isMobile ? "" : "animate-image-pulse-glow"
+          }`}
           style={{
             backgroundImage:
               "url('/photos/470167483_573781295374567_3574809607622125311_n.jpg')",
-            filter:
-              "sepia(40%) hue-rotate(280deg) brightness(0.8) contrast(1.5)",
+            filter: isMobile
+              ? "sepia(20%) brightness(0.9) contrast(1.2)"
+              : "sepia(40%) hue-rotate(280deg) brightness(0.8) contrast(1.5)",
             mixBlendMode: "soft-light",
-            transform: `rotate(${scrollY * 0.03}deg)`,
+            transform: `rotate(${scrollY * (rotationMultipliers.slow * 3.75)}deg)`,
             animationDelay: "1s",
           }}
         />
 
         <div
-          className="absolute top-1/6 left-1/2 w-48 h-69 bg-cover bg-center rounded-lg opacity-70 blur-sm animate-image-pulse-glow"
+          className={`absolute top-1/6 left-1/2 w-48 h-69 bg-cover bg-center rounded-lg opacity-70 blur-sm ${
+            isMobile ? "" : "animate-image-pulse-glow"
+          }`}
           style={{
             backgroundImage: "url('/photos/gigi3.jpg')",
             filter:
@@ -263,9 +288,8 @@ export const ParallaxLayer: React.FC<ParallaxLayerProps> = ({
       <div
         className="absolute inset-0 opacity-28 parallax-layer"
         style={{
-          transform: `translateY(${scrollY * 0.55}px) translateX(${
-            scrollY * -0.08
-          }px) rotate(${scrollY * 0.012}deg)`,
+          transform: `translate3d(${scrollY * -translateXMultipliers.medium}px, ${scrollY * parallaxMultipliers.mediumFast}px, 0) rotate(${scrollY * rotationMultipliers.medium}deg)`,
+          willChange: "transform",
           backgroundImage: `
             linear-gradient(45deg, transparent 30%, rgba(147, 51, 234, 0.20) 50%, transparent 70%),
             linear-gradient(-45deg, transparent 30%, rgba(236, 72, 153, 0.20) 50%, transparent 70%),
@@ -352,41 +376,49 @@ export const ParallaxLayer: React.FC<ParallaxLayerProps> = ({
       <div
         className="absolute inset-0 opacity-18 parallax-layer"
         style={{
-          transform: `translateY(${scrollY * 0.85}px) translateX(${
-            scrollY * 0.12
-          }px) rotate(${scrollY * -0.018}deg)`,
+          transform: `translate3d(${scrollY * translateXMultipliers.fast}px, ${scrollY * parallaxMultipliers.fast}px, 0) rotate(${scrollY * -rotationMultipliers.fast}deg)`,
+          willChange: "transform",
         }}
       >
         <div
-          className="absolute top-1/4 left-1/5 w-27 h-33 bg-cover bg-center rounded-lg opacity-80 blur-sm animate-image-pulse-glow"
+          className={`absolute top-1/4 left-1/5 w-27 h-33 bg-cover bg-center rounded-lg opacity-80 blur-sm ${
+            isMobile ? "" : "animate-image-pulse-glow"
+          }`}
           style={{
             backgroundImage:
               "url('/photos/30915563_301578003709556_3870154202466484224_n.jpg')",
-            filter:
-              "sepia(45%) hue-rotate(15deg) brightness(1.5) contrast(1.6)",
+            filter: isMobile
+              ? "sepia(20%) brightness(1.2) contrast(1.3)"
+              : "sepia(45%) hue-rotate(15deg) brightness(1.5) contrast(1.6)",
             mixBlendMode: "screen",
             animationDelay: "1.2s",
           }}
         />
 
         <div
-          className="absolute bottom-1/5 right-1/4 w-24 h-30 bg-cover bg-center rounded-full opacity-70 blur-md animate-rave-mode-image-dance"
+          className={`absolute bottom-1/5 right-1/4 w-24 h-30 bg-cover bg-center rounded-full opacity-70 blur-md ${
+            isMobile ? "" : "animate-rave-mode-image-dance"
+          }`}
           style={{
             backgroundImage: "url('/photos/beautiful.jpg')",
-            filter:
-              "sepia(60%) hue-rotate(260deg) brightness(1.0) contrast(1.9)",
+            filter: isMobile
+              ? "sepia(30%) brightness(1.0) contrast(1.4)"
+              : "sepia(60%) hue-rotate(260deg) brightness(1.0) contrast(1.9)",
             mixBlendMode: "color-dodge",
             animationDelay: "3.4s",
           }}
         />
 
         <div
-          className="absolute top-2/3 left-1/8 w-21 h-27 bg-cover bg-center rounded-xl opacity-85 blur-sm animate-image-pulse-glow"
+          className={`absolute top-2/3 left-1/8 w-21 h-27 bg-cover bg-center rounded-xl opacity-85 blur-sm ${
+            isMobile ? "" : "animate-image-pulse-glow"
+          }`}
           style={{
             backgroundImage:
               "url('/photos/470167483_573781295374567_3574809607622125311_n.jpg')",
-            filter:
-              "sepia(25%) hue-rotate(180deg) brightness(1.3) contrast(1.4)",
+            filter: isMobile
+              ? "sepia(15%) brightness(1.1) contrast(1.2)"
+              : "sepia(25%) hue-rotate(180deg) brightness(1.3) contrast(1.4)",
             mixBlendMode: "soft-light",
             animationDelay: "7.6s",
           }}

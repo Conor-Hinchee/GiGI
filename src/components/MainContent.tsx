@@ -3,7 +3,7 @@ import Image from "next/image";
 import { MainContentProps } from "../types";
 import { TourCard } from "./TourCard";
 import { SocialLinks } from "./SocialLinks";
-import { ParallaxLayer } from "./ParallaxLayer_new";
+import { ParallaxLayer } from "./ParallaxLayer";
 import { tourDates } from "../data/tourDates";
 
 export const MainContent: React.FC<MainContentProps> = ({
