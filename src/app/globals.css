@@ -335,6 +335,92 @@ html {
   animation: responsive-image-scale 8s ease-in-out infinite;
 }
 
+/* Enhanced Dance Mode Animations */
+.animate-dance-mode-intense {
+  animation: dance-mode-intense 1.2s ease-in-out infinite;
+}
+
+.animate-dance-mode-pulse {
+  animation: dance-mode-pulse 0.8s ease-in-out infinite;
+}
+
+.animate-dance-mode-spin {
+  animation: dance-mode-spin 1.5s linear infinite;
+}
+
+@keyframes dance-mode-intense {
+  0% {
+    transform: scale(1) rotate(0deg);
+    filter: sepia(30%) hue-rotate(240deg) brightness(1.0) contrast(1.4) saturate(1.0);
+  }
+  25% {
+    transform: scale(1.15) rotate(3deg);
+    filter: sepia(60%) hue-rotate(260deg) brightness(1.8) contrast(1.8) saturate(1.8);
+  }
+  50% {
+    transform: scale(0.9) rotate(-2deg);
+    filter: sepia(80%) hue-rotate(280deg) brightness(2.2) contrast(2.2) saturate(2.2);
+  }
+  75% {
+    transform: scale(1.1) rotate(2deg);
+    filter: sepia(50%) hue-rotate(300deg) brightness(1.6) contrast(1.6) saturate(1.6);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    filter: sepia(30%) hue-rotate(240deg) brightness(1.0) contrast(1.4) saturate(1.0);
+  }
+}
+
+@keyframes dance-mode-pulse {
+  0%, 100% {
+    transform: scale(1);
+    filter: brightness(1.0) contrast(1.2) saturate(1.2);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.2);
+    filter: brightness(2.0) contrast(2.0) saturate(2.0);
+    opacity: 1.0;
+  }
+}
+
+@keyframes dance-mode-spin {
+  0% {
+    transform: rotate(0deg) scale(1);
+    filter: hue-rotate(0deg) brightness(1.2);
+  }
+  25% {
+    transform: rotate(90deg) scale(1.05);
+    filter: hue-rotate(90deg) brightness(1.6);
+  }
+  50% {
+    transform: rotate(180deg) scale(0.95);
+    filter: hue-rotate(180deg) brightness(2.0);
+  }
+  75% {
+    transform: rotate(270deg) scale(1.05);
+    filter: hue-rotate(270deg) brightness(1.6);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+    filter: hue-rotate(360deg) brightness(1.2);
+  }
+}
+
+/* Dance Mode Container Effects */
+.dance-mode-active {
+  animation: dance-mode-container-pulse 3s ease-in-out infinite;
+}
+
+@keyframes dance-mode-container-pulse {
+  0%, 100% {
+    filter: contrast(1.2) saturate(1.3) brightness(1.1);
+  }
+  50% {
+    filter: contrast(1.4) saturate(1.6) brightness(1.3);
+  }
+}
+
 /* Rave Mode Full Viewport Expansion Animation */
 @keyframes rave-mode-expand {
   0% {
