@@ -1,7 +1,14 @@
-import type { NextConfig } from "next";
+import lingoCompiler from "lingo.dev/compiler";
 
-const nextConfig: NextConfig = {
-  /* config options here */
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  // Your existing Next.js configuration
 };
 
-export default nextConfig;
+export default lingoCompiler.next({
+  sourceLocale: "en",
+  targetLocales: ["es", "fr", "de"],
+  models: {
+    "*:*": "groq:mistral-saba-24b",
+  },
+})(nextConfig);
