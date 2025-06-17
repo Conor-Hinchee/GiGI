@@ -40,6 +40,9 @@ export const useScrollHijack = (isDanceModeActive: boolean) => {
   const upwardScrollAccumulator = useRef(0);
   const isProcessingUpwardScroll = useRef(false);
   const hasEverSnappedFromDanceArea = useRef(false); // Track if user has ever snapped out of dance area
+  const touchStartY = useRef(0);
+  const touchMoveAccumulator = useRef(0);
+  const lastTouchTime = useRef(0);
 
   // Calculate total sections based on document height
   const calculateTotalSections = useCallback(() => {
@@ -211,19 +214,22 @@ export const useScrollHijack = (isDanceModeActive: boolean) => {
         return;
       }
       
-      // When scrolling up into dance area from below - snap to dance area
-      if (scrollDelta < 0 && currentScrollY > window.innerHeight && currentScrollY < window.innerHeight + 50) {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        // Snap to top of dance area
-        if (snapTimeoutRef.current) {
-          clearTimeout(snapTimeoutRef.current);
+      // When scrolling up into dance area from below - snap to dance area (less aggressive)
+      if (scrollDelta < 0 && currentScrollY > window.innerHeight && currentScrollY < window.innerHeight + 100) {
+        // Only snap if user is scrolling up significantly
+        if (Math.abs(scrollDelta) > 10) {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          // Add a small delay to prevent rapid yo-yo effect
+          if (snapTimeoutRef.current) {
+            clearTimeout(snapTimeoutRef.current);
+          }
+          
+          snapTimeoutRef.current = setTimeout(() => {
+            handleSnapToSection(0); // Snap to dance area
+          }, 150); // Increased delay
         }
-        
-        snapTimeoutRef.current = setTimeout(() => {
-          handleSnapToSection(0); // Snap to dance area
-        }, 50);
         return;
       }
       
@@ -293,18 +299,21 @@ export const useScrollHijack = (isDanceModeActive: boolean) => {
         return;
       }
       
-      // When wheeling up into dance area from below - snap to dance area
-      if (e.deltaY < 0 && currentScrollY > window.innerHeight && currentScrollY < window.innerHeight + 50) {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        if (snapTimeoutRef.current) {
-          clearTimeout(snapTimeoutRef.current);
+      // When wheeling up into dance area from below - snap to dance area (less aggressive)
+      if (e.deltaY < 0 && currentScrollY > window.innerHeight && currentScrollY < window.innerHeight + 100) {
+        // Only snap if user is wheeling up significantly
+        if (Math.abs(e.deltaY) > 20) {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          if (snapTimeoutRef.current) {
+            clearTimeout(snapTimeoutRef.current);
+          }
+          
+          snapTimeoutRef.current = setTimeout(() => {
+            handleSnapToSection(0); // Snap to dance area
+          }, 150); // Increased delay
         }
-        
-        snapTimeoutRef.current = setTimeout(() => {
-          handleSnapToSection(0); // Snap to dance area
-        }, 50);
         return;
       }
       
@@ -319,9 +328,12 @@ export const useScrollHijack = (isDanceModeActive: boolean) => {
       }
     };
 
-    const handleTouchStart = () => {
+    const handleTouchStart = (e: TouchEvent) => {
       if (scrollState.isScrollHijacked) {
         lastScrollY.current = window.scrollY;
+        touchStartY.current = e.touches[0].clientY;
+        touchMoveAccumulator.current = 0;
+        lastTouchTime.current = Date.now();
       }
     };
 
@@ -330,48 +342,65 @@ export const useScrollHijack = (isDanceModeActive: boolean) => {
       
       const currentScrollY = window.scrollY;
       const isInDanceArea = currentScrollY < window.innerHeight; // First 100vh
+      const now = Date.now();
       
-      // Unified touch handling for both mobile and desktop
-      // When touching down in dance area - apply resistance
-      if (isInDanceArea) {
-        const touch = e.touches[0];
-        if (touch) {
-          setScrollState(prev => {
-            const newAccumulated = prev.accumulatedScroll + 8; // Fixed increment for touch
-            const newResistance = Math.min(newAccumulated / SCROLL_RESISTANCE_THRESHOLD, 1);
-            const newSectionProgress = Math.min(1, newResistance);
+      // Add debouncing - only process touch moves every 16ms (60fps)
+      if (now - lastTouchTime.current < 16) return;
+      lastTouchTime.current = now;
+      
+      // Only apply resistance when actually in dance area and scrolling down
+      if (isInDanceArea && e.touches[0]) {
+        const currentTouchY = e.touches[0].clientY;
+        const touchDelta = touchStartY.current - currentTouchY;
+        
+        // Only accumulate when scrolling down (positive delta)
+        if (touchDelta > 0) {
+          touchMoveAccumulator.current += Math.abs(touchDelta) * 0.3; // Reduced sensitivity
+          
+          // Only trigger resistance if we've accumulated enough movement
+          if (touchMoveAccumulator.current > 10) {
+            setScrollState(prev => {
+              const newAccumulated = prev.accumulatedScroll + 5; // Reduced increment
+              const newResistance = Math.min(newAccumulated / SCROLL_RESISTANCE_THRESHOLD, 1);
+              const newSectionProgress = Math.min(1, newResistance);
 
-            // Snap out of dance area when threshold is met
-            if (newAccumulated >= SCROLL_RESISTANCE_THRESHOLD && !prev.shouldSnap) {
-              if (snapTimeoutRef.current) {
-                clearTimeout(snapTimeoutRef.current);
+              // Snap out of dance area when threshold is met
+              if (newAccumulated >= SCROLL_RESISTANCE_THRESHOLD && !prev.shouldSnap) {
+                if (snapTimeoutRef.current) {
+                  clearTimeout(snapTimeoutRef.current);
+                }
+                
+                // Mark that user has completed first snap from dance area
+                hasEverSnappedFromDanceArea.current = true;
+                
+                snapTimeoutRef.current = setTimeout(() => {
+                  handleSnapToSection(1); // Snap to section 1
+                }, 100);
+
+                return {
+                  ...prev,
+                  accumulatedScroll: newAccumulated,
+                  scrollResistance: newResistance,
+                  sectionProgress: newSectionProgress,
+                  shouldSnap: true,
+                  isFirstTimeActivation: false, // Disable indicator after first snap
+                };
               }
-              
-              // Mark that user has completed first snap from dance area
-              hasEverSnappedFromDanceArea.current = true;
-              
-              snapTimeoutRef.current = setTimeout(() => {
-                handleSnapToSection(1); // Snap to section 1
-              }, 100);
 
               return {
                 ...prev,
                 accumulatedScroll: newAccumulated,
                 scrollResistance: newResistance,
                 sectionProgress: newSectionProgress,
-                shouldSnap: true,
-                isFirstTimeActivation: false, // Disable indicator after first snap
               };
-            }
-
-            return {
-              ...prev,
-              accumulatedScroll: newAccumulated,
-              scrollResistance: newResistance,
-              sectionProgress: newSectionProgress,
-            };
-          });
+            });
+            
+            touchMoveAccumulator.current = 0; // Reset after processing
+          }
         }
+        
+        // Update touch start position for next calculation
+        touchStartY.current = currentTouchY;
         return;
       }
       
