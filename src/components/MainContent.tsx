@@ -22,8 +22,8 @@ export const MainContent: React.FC<MainContentProps> = ({
           ${135 + Math.sin(scrollY * 0.002) * 45}deg,
           rgb(17, 24, 39) 0%,
           rgb(${31 + Math.sin(scrollY * 0.003) * 20}, ${
-          41 + Math.cos(scrollY * 0.004) * 30
-        }, ${59 + Math.sin(scrollY * 0.005) * 40}) 50%,
+            41 + Math.cos(scrollY * 0.004) * 30
+          }, ${59 + Math.sin(scrollY * 0.005) * 40}) 50%,
           rgb(17, 24, 39) 100%
         )`,
       }}
@@ -132,6 +132,31 @@ export const MainContent: React.FC<MainContentProps> = ({
                 Luigino Celestino Di Agostino
               </p>
             </div>
+          </div>
+        </div>
+
+        {/* Bio Section */}
+        <div className="mt-12 max-w-2xl mx-auto">
+          <div className="relative">
+            {isPlaying && (
+              <div className="hidden lg:block absolute -top-1 -right-1 w-2 h-2 rounded-full blur-sm">
+                <div className="bg-purple-400/60 animate-ping w-full h-full rounded-full"></div>
+              </div>
+            )}
+            <p
+              className={`text-lg leading-relaxed text-center ${
+                isPlaying
+                  ? "text-purple-200 bg-clip-text bg-gradient-to-r from-purple-100 via-purple-200 to-purple-400"
+                  : "text-gray-300"
+              }`}
+            >
+              {`Born in Turin, Italy, Gigi D'Agostino revolutionized
+              electronic dance music with his distinctive blend of Italo-dance,
+              progressive house, and techno. Known for iconic tracks like
+              "Bla Bla Bla", "Another Way", "La Passion", "Super", and "L'Amour Toujours". His unique
+              sound and energetic performances continue to captivate audiences
+              worldwide!`}
+            </p>
           </div>
         </div>
 

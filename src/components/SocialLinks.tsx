@@ -117,8 +117,6 @@ const SocialLinkCard: React.FC<SocialLinkCardProps> = ({
         >
           <div className="w-8 h-8 flex items-center justify-center">{icon}</div>
         </div>
-
-
       </div>
 
       {/* Label - more prominent when not in rave mode */}
@@ -288,11 +286,6 @@ export const SocialLinks: React.FC<SocialLinksProps> = ({ isPlaying }) => {
           isPlaying={isPlaying}
         />
       </div>
-
-      <p className="text-gray-400 mt-8 text-sm text-center">
-        Stay connected for exclusive content, behind-the-scenes updates, and the
-        latest Lento Violento releases
-      </p>
     </div>
   );
 };

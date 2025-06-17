@@ -1,20 +1,20 @@
-# GiGi - A Tribute to Gigi D'Agostino
+# GiGi D'agostino - A vibe coded website
 
-This project is a heartfelt tribute to the legendary DJ and producer Gigi D'Agostino, aiming to create an immersive and interactive experience for fans. It's built with [Next.js](https://nextjs.org) and features a dynamic visualizer powered by [Three.js](https://threejs.org/).
-
-## Project Vision
-
-The vision behind GiGi is to celebrate the timeless music of Gigi D'Agostino by crafting a unique digital space where fans can connect with his iconic tracks in a new way. We're leveraging modern web technologies to bring the energy of his music to life through captivating visuals and interactive elements.
+Vibe coding is new trend in the web development where its claimed that anyone can create anything as long as the vibes are just rights. Vibing is easier when you are listening to GiGi D'agostino's music so this project is dedicated to him.
 
 ## Key Features
 
-### The Dance Area
-The centerpiece of this project is the "Dance Area" – an interactive music visualizer.
-- **Immersive Experience**: Designed to draw you into the music with a full-screen, audio-reactive environment.
-- **Three.js Powered Fireflies**: A custom `FirefliesScene.tsx` component generates a mesmerizing display of fireflies that dance and react to the currently playing track. The intensity, color, and movement of the fireflies are synchronized with the audio's bass, mid, and high frequencies.
-- **Interactive Controls**: Users can play/pause the music, and toggle a fullscreen mode for maximum immersion.
-- **Responsive Design**: Adapts to different screen sizes, with optimizations for mobile and desktop experiences.
-- **Dynamic Backgrounds**: The `DanceArea.tsx` component orchestrates various visual layers, including animated gradients, particle effects, and shimmer overlays, enhancing the rave-like atmosphere.
+### Dance Area
+
+The centerpiece of this project is the "Dance Area" – an interactive music visualizer a **Three.js Powered Fireflies scene**:The intensity, color, and movement of the fireflies are synchronized with the audio's bass, mid, and high frequencies.
+
+### Dance Mode
+
+When the music is played by the user, the page enters "Dance Mode". In this mode, the page transforms into a vibrant, animated experience. Text and elements on the page animate in sync with the music, creating a lively atmosphere.
+
+### Audio Player
+
+A random song is selected from 3 available songs, users can play or pause the music by interaction with the (舞) audio status indicator or the main play pause button in the dance area.
 
 ## Technology Stack
 
@@ -22,39 +22,16 @@ The centerpiece of this project is the "Dance Area" – an interactive music vis
 - **3D Graphics**: [Three.js](https://threejs.org)
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Lingo.dev**: [Lingo.dev](https://lingo.dev) for translation and internationalization
+- **Hosting**: [Vercel](https://vercel.com) for deployment
 
-## Getting Started
+### Vibes
 
-First, run the development server:
+- **Music**: GiGi D'agostino's tracks provide the perfect vibe for this project.
+- **Copilot**: The project is built with the help of AI Copilot, which assisted in coding and design decisions.
+- **ChatGPT**: Used for documentation and project management tasks.
+- **Claude4**: Used to build the project.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Work Flow
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start exploring the main interactive component in `src/components/DanceArea.tsx` and the Three.js magic in `src/components/FirefliesScene.tsx`. The page auto-updates as you edit the files.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about the technologies used:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Three.js Documentation](https://threejs.org/docs/) - discover the world of 3D graphics on the web.
-- [Tailwind CSS Documentation](https://tailwindcss.com/docs) - for utility-first CSS.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Initially the project was vibe coded with github copilot in agent mode with prompts like "Create this feature" or "Add this functionality". Later, as the project neared completion, it was transitioned to a more structured workflow using the Agent Read Me system. This involved prompting AI agents to always reference the agent-read-me system to correctly parse the **intentions** of the request and either creating, working, or updating tickets.

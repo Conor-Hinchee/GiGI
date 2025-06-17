@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { TourCardProps } from "../types";
 
 export const TourCard: React.FC<TourCardProps> = ({ tourDate, isPlaying }) => {
-  const { city, venue, date, year, color, url } = tourDate;
+  const { city, venue, date, year, color, url, country } = tourDate;
   const [isHovered, setIsHovered] = useState(false);
 
   const handleClick = () => {
@@ -94,6 +94,15 @@ export const TourCard: React.FC<TourCardProps> = ({ tourDate, isPlaying }) => {
           >
             {city}
           </p>
+          {country && (
+            <p
+              className={`text-sm font-medium transition-colors ${
+                showRaveEffect ? "text-gray-200" : "text-gray-300"
+              }`}
+            >
+              {country}
+            </p>
+          )}
           <p
             className={`transition-colors ${
               showRaveEffect ? "text-gray-200" : "text-gray-300"
