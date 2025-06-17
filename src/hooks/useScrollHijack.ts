@@ -13,7 +13,7 @@ interface ScrollHijackState {
 }
 
 const SCROLL_RESISTANCE_THRESHOLD = 150; // Reduced threshold for quicker snapping
-const SCROLL_RESISTANCE_FACTOR = 0.2; // More resistance for dramatic effect
+// const SCROLL_RESISTANCE_FACTOR = 0.2; // More resistance for dramatic effect
 
 /**
  * Unified scroll hijack hook for all users (desktop & mobile)
@@ -204,10 +204,10 @@ export const useScrollHijack = (isDanceModeActive: boolean) => {
         });
 
         // Allow small scroll for visual feedback
-        const allowedScroll = scrollDelta * SCROLL_RESISTANCE_FACTOR;
-        const newScrollY = Math.min(window.innerHeight - 1, lastScrollY.current + allowedScroll);
-        window.scrollTo(0, newScrollY);
-        lastScrollY.current = newScrollY;
+        // const allowedScroll = scrollDelta * SCROLL_RESISTANCE_FACTOR;
+        // const newScrollY = Math.min(window.innerHeight - 1, lastScrollY.current + allowedScroll);
+        // window.scrollTo(0, newScrollY);
+        // lastScrollY.current = newScrollY;
         return;
       }
       
