@@ -21,6 +21,7 @@ const SCROLL_RESISTANCE_THRESHOLD = 150; // Reduced threshold for quicker snappi
  * Maintains the dancer rave feel and energy consistent with the rest of the page.
  */
 export const useScrollHijack = (isDanceModeActive: boolean) => {
+  // TEMPORARILY DISABLED - scroll hijack is turned off for desktop and mobile
   const [scrollState, setScrollState] = useState<ScrollHijackState>({
     isScrollHijacked: false,
     accumulatedScroll: 0,
@@ -143,6 +144,9 @@ export const useScrollHijack = (isDanceModeActive: boolean) => {
   }, [scrollState.isScrollHijacked, getCurrentSection, getSectionScrollY]);
 
   useEffect(() => {
+    // TEMPORARILY DISABLED - early return to disable all scroll hijacking
+    return;
+    
     if (!isDanceModeActive) {
       disableScrollHijack();
       return;
@@ -152,6 +156,9 @@ export const useScrollHijack = (isDanceModeActive: boolean) => {
   }, [isDanceModeActive, enableScrollHijack, disableScrollHijack]);
 
   useEffect(() => {
+    // TEMPORARILY DISABLED - early return to disable all scroll event handling
+    return;
+    
     if (!scrollState.isScrollHijacked) return;
 
     const handleScroll = (e: Event) => {
