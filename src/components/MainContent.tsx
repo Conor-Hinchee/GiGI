@@ -22,8 +22,8 @@ export const MainContent: React.FC<MainContentProps> = ({
           ${135 + Math.sin(scrollY * 0.002) * 45}deg,
           rgb(17, 24, 39) 0%,
           rgb(${31 + Math.sin(scrollY * 0.003) * 20}, ${
-            41 + Math.cos(scrollY * 0.004) * 30
-          }, ${59 + Math.sin(scrollY * 0.005) * 40}) 50%,
+          41 + Math.cos(scrollY * 0.004) * 30
+        }, ${59 + Math.sin(scrollY * 0.005) * 40}) 50%,
           rgb(17, 24, 39) 100%
         )`,
       }}
@@ -113,7 +113,7 @@ export const MainContent: React.FC<MainContentProps> = ({
                     : "text-white"
                 }`}
               >
-                The Maestro of Italo-Dance and Lento Violento
+                The Maestro of Italo-Dance
               </h3>
             </div>
             <div className="relative">
