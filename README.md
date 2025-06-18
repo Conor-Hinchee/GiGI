@@ -1,6 +1,6 @@
 # GiGi - A vibe coded website
 
-Vibe coding is new trend in softweare development where code is 100% written by Ai and the human just guides the vibes. Vibing is easier when you are listening to GiGi D'agostino's music so this project is dedicated to him, his music and the vibes.
+Vibe coding is new trend in software development where code is 100% written by Ai and the human just guides the vibes. Vibing is easier when you are listening to GiGi D'agostino's music so this project is dedicated to him, his music and the vibes.
 
 ## Vibe Coding Work Flow
 
