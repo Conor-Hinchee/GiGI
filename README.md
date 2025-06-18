@@ -1,8 +1,16 @@
-# GiGi D'agostino - A vibe coded website
+# GiGi - A vibe coded website
 
-Vibe coding is new trend in the web development where its claimed that anyone can create anything as long as the vibes are just rights. Vibing is easier when you are listening to GiGi D'agostino's music so this project is dedicated to him.
+Vibe coding is new trend in softweare development where code is 100% written by Ai and the human just guides the vibes. Vibing is easier when you are listening to GiGi D'agostino's music so this project is dedicated to him, his music and the vibes.
 
-## Key Features
+## Vibe Coding Work Flow
+
+Initially the work flow was only a direct promt like like "Create this feature" or "Add this functionality".
+
+As the project grew in size and complexity, A more defined work flow was created to get a more consistent output from the LLM.
+
+The workflow, itself made of vibes, generally splits prompts into *refining* requests and *actioning* on requests.
+
+I proofread nothing, as this project is more about the vibes but I can see how refining these workflows can be a powerful tool as developers stop coding so much and start vibing more.'
 
 ### Dance Area
 
@@ -32,6 +40,4 @@ A random song is selected from 3 available songs, users can play or pause the mu
 - **ChatGPT**: Used for documentation and project management tasks.
 - **Claude4**: Used to build the project.
 
-## Work Flow
 
-Initially the project was vibe coded with github copilot in agent mode with prompts like "Create this feature" or "Add this functionality". Later, as the project neared completion, it was transitioned to a more structured workflow using the Agent Read Me system. This involved prompting AI agents to always reference the agent-read-me system to correctly parse the **intentions** of the request and either creating, working, or updating tickets.
