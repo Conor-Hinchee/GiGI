@@ -66,9 +66,15 @@ export const MainContent: React.FC<MainContentProps> = ({
           <h1
             className={`text-7xl md:text-8xl lg:text-9xl font-black tracking-wider uppercase transition-all duration-700 cursor-default relative ${
               isScrolledPastDanceArea || isPlaying
-                ? "text-gold-400 md:text-transparent md:bg-clip-text md:bg-gradient-to-r md:from-gold-300 md:via-gold-400 md:to-gold-600"
-                : "text-white hover:text-gold-400 md:hover:text-transparent md:hover:bg-clip-text md:hover:bg-gradient-to-r md:hover:from-gold-300 md:hover:via-gold-400 md:hover:to-gold-600"
+                ? "text-gold-400 drop-shadow-lg"
+                : "text-white hover:text-gold-400"
             } gigi-hero-text`}
+            style={{
+              textShadow:
+                isScrolledPastDanceArea || isPlaying
+                  ? "0 0 20px rgba(251, 191, 36, 0.5), 0 0 40px rgba(251, 191, 36, 0.3)"
+                  : undefined,
+            }}
           >
             <span className="relative z-10">GiGi D&apos;Agostino</span>
           </h1>
