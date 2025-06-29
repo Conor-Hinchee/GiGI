@@ -76,21 +76,31 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
 
       // Base color changes based on playing state
       if (isPlaying) {
-        // Reddish gold metallic matcap when playing
+        // Ultra shiny reddish gold metallic matcap when playing
         mainGradient.addColorStop(0, "#ffffff");
+        mainGradient.addColorStop(0.05, "#ffffff");
         mainGradient.addColorStop(0.1, "#fff8dc");
+        mainGradient.addColorStop(0.2, "#ffef94");
         mainGradient.addColorStop(0.3, "#ffd700");
+        mainGradient.addColorStop(0.4, "#ffb347");
         mainGradient.addColorStop(0.5, "#daa520");
+        mainGradient.addColorStop(0.6, "#cd853f");
         mainGradient.addColorStop(0.7, "#b8860b");
+        mainGradient.addColorStop(0.8, "#996515");
         mainGradient.addColorStop(0.9, "#8b4513");
         mainGradient.addColorStop(1, "#2f1b14");
       } else {
-        // Chrome/silver metallic matcap when not playing
+        // Ultra shiny chrome/silver metallic matcap when not playing
         mainGradient.addColorStop(0, "#ffffff");
+        mainGradient.addColorStop(0.05, "#ffffff");
         mainGradient.addColorStop(0.1, "#f8f8ff");
-        mainGradient.addColorStop(0.3, "#dcdcdc");
+        mainGradient.addColorStop(0.2, "#f0f8ff");
+        mainGradient.addColorStop(0.3, "#e6e6fa");
+        mainGradient.addColorStop(0.4, "#dcdcdc");
         mainGradient.addColorStop(0.5, "#c0c0c0");
+        mainGradient.addColorStop(0.6, "#b0b0b0");
         mainGradient.addColorStop(0.7, "#a9a9a9");
+        mainGradient.addColorStop(0.8, "#808080");
         mainGradient.addColorStop(0.9, "#696969");
         mainGradient.addColorStop(1, "#2f2f2f");
       }
@@ -98,36 +108,69 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
       context.fillStyle = mainGradient;
       context.fillRect(0, 0, size, size);
 
-      // Add multiple highlight spots for realistic mirror reflections
+      // Add multiple ultra-bright highlight spots for maximum shininess
       context.globalCompositeOperation = "screen";
 
-      // Main highlight
+      // Primary ultra-bright highlight
       const highlight1 = context.createRadialGradient(
-        size * 0.25,
-        size * 0.25,
+        size * 0.2,
+        size * 0.2,
         0,
-        size * 0.25,
-        size * 0.25,
-        size * 0.15
+        size * 0.2,
+        size * 0.2,
+        size * 0.18
       );
-      highlight1.addColorStop(0, "rgba(255, 255, 255, 0.9)");
-      highlight1.addColorStop(0.5, "rgba(255, 255, 255, 0.3)");
+      highlight1.addColorStop(0, "rgba(255, 255, 255, 1.0)");
+      highlight1.addColorStop(0.3, "rgba(255, 255, 255, 0.8)");
+      highlight1.addColorStop(0.6, "rgba(255, 255, 255, 0.4)");
       highlight1.addColorStop(1, "rgba(255, 255, 255, 0)");
       context.fillStyle = highlight1;
       context.fillRect(0, 0, size, size);
 
-      // Secondary highlight
+      // Secondary bright highlight
       const highlight2 = context.createRadialGradient(
-        size * 0.7,
-        size * 0.6,
+        size * 0.75,
+        size * 0.65,
         0,
-        size * 0.7,
-        size * 0.6,
-        size * 0.1
+        size * 0.75,
+        size * 0.65,
+        size * 0.12
       );
-      highlight2.addColorStop(0, "rgba(255, 255, 255, 0.6)");
+      highlight2.addColorStop(0, "rgba(255, 255, 255, 0.9)");
+      highlight2.addColorStop(0.4, "rgba(255, 255, 255, 0.5)");
       highlight2.addColorStop(1, "rgba(255, 255, 255, 0)");
       context.fillStyle = highlight2;
+      context.fillRect(0, 0, size, size);
+
+      // Tertiary sparkle highlight
+      const highlight3 = context.createRadialGradient(
+        size * 0.6,
+        size * 0.25,
+        0,
+        size * 0.6,
+        size * 0.25,
+        size * 0.08
+      );
+      highlight3.addColorStop(0, "rgba(255, 255, 255, 0.7)");
+      highlight3.addColorStop(0.5, "rgba(255, 255, 255, 0.3)");
+      highlight3.addColorStop(1, "rgba(255, 255, 255, 0)");
+      context.fillStyle = highlight3;
+      context.fillRect(0, 0, size, size);
+
+      // Add rim lighting for extra shine
+      const rimGradient = context.createRadialGradient(
+        centerX,
+        centerY,
+        size * 0.35,
+        centerX,
+        centerY,
+        size * 0.5
+      );
+      rimGradient.addColorStop(0, "rgba(255, 255, 255, 0)");
+      rimGradient.addColorStop(0.8, "rgba(255, 255, 255, 0)");
+      rimGradient.addColorStop(0.95, "rgba(255, 255, 255, 0.3)");
+      rimGradient.addColorStop(1, "rgba(255, 255, 255, 0.1)");
+      context.fillStyle = rimGradient;
       context.fillRect(0, 0, size, size);
 
       // Reset composite operation
@@ -245,11 +288,11 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
 
       matcapTextureRef.current = matcapTexture;
 
-      // Create mirror material
+      // Create ultra-shiny mirror material
       const mirrorMaterial = new THREE.MeshMatcapMaterial({
         matcap: matcapTexture,
-        transparent: true,
-        opacity: 0.95,
+        transparent: false, // No transparency for maximum shine
+        side: THREE.FrontSide, // Only render front faces for better performance
       });
 
       // Create base sphere geometry with fewer segments for cleaner mirror placement
@@ -267,9 +310,18 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
           const b = indexAttribute.getX(i + 1);
           const c = indexAttribute.getX(i + 2);
 
-          const va = new THREE.Vector3().fromBufferAttribute(positionAttribute, a);
-          const vb = new THREE.Vector3().fromBufferAttribute(positionAttribute, b);
-          const vc = new THREE.Vector3().fromBufferAttribute(positionAttribute, c);
+          const va = new THREE.Vector3().fromBufferAttribute(
+            positionAttribute,
+            a
+          );
+          const vb = new THREE.Vector3().fromBufferAttribute(
+            positionAttribute,
+            b
+          );
+          const vc = new THREE.Vector3().fromBufferAttribute(
+            positionAttribute,
+            c
+          );
 
           // Calculate face center
           const center = new THREE.Vector3()
@@ -306,12 +358,11 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
         instancedMirrorMesh.setMatrixAt(index, dummy.matrix);
       });
 
-      // Create dark inner ball
+      // Create ultra-dark inner ball for maximum contrast and shine
       const innerBallGeometry = new THREE.SphereGeometry(0.47, 32, 32);
       const innerBallMaterial = new THREE.MeshBasicMaterial({
-        color: 0x111111,
-        transparent: true,
-        opacity: 0.9,
+        color: 0x000000, // Pure black for maximum contrast
+        transparent: false,
       });
       const innerBall = new THREE.Mesh(innerBallGeometry, innerBallMaterial);
 
