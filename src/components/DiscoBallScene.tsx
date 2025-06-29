@@ -383,7 +383,7 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
 
         // Always rotate disco ball left-right only, faster when playing
         if (discoBallRef.current) {
-          const rotationSpeed = isPlaying ? 0.012 : 0.004; // Slightly faster for more shine
+          const rotationSpeed = isPlaying ? 0.006 : 0.002; // Slower, more elegant rotation
           discoBallRef.current.rotation.y += rotationSpeed; // Only Y-axis rotation (left-right)
         }
 
