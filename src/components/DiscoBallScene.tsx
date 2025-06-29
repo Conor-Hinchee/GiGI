@@ -35,7 +35,7 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
     const mountRef = useRef<HTMLDivElement>(null);
     const sceneRef = useRef<THREE.Scene | null>(null);
     const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
-    const discoBallRef = useRef<THREE.Group | null>(null);
+    const discoBallRef = useRef<THREE.Mesh | null>(null);
     const danceCharacterRef = useRef<THREE.Sprite | null>(null);
     const spotlightsRef = useRef<THREE.Group | null>(null);
     const animationIdRef = useRef<number | null>(null);
@@ -48,137 +48,130 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
     const sourceRef = useRef<MediaElementAudioSourceNode | null>(null);
     const audioLevelsRef = useRef({ bass: 0, mid: 0, high: 0, overall: 0 });
     const materialRef = useRef<THREE.ShaderMaterial | null>(null);
-    const matcapTextureRef = useRef<THREE.Texture | null>(null);
 
-    // Create a programmatic matcap texture for mirror reflections
-    const createMatcapTexture = useCallback(() => {
-      const size = 512;
-      const canvas = document.createElement("canvas");
-      canvas.width = size;
-      canvas.height = size;
-      const context = canvas.getContext("2d");
+    // Fixed click handling - use direct click on container instead of raycasting
+    const handleClick = useCallback(() => {
+      toggleAudio();
+    }, [toggleAudio]);
 
-      if (!context) return null;
+    // Handle keyboard events
+    const handleKeyDown = useCallback(
+      (event: React.KeyboardEvent) => {
+        if (event.code === "Space" || event.code === "Enter") {
+          event.preventDefault();
+          toggleAudio();
+        }
+      },
+      [toggleAudio]
+    );
 
-      // Create a more realistic metallic matcap
-      const centerX = size * 0.5;
-      const centerY = size * 0.3; // Offset for more realistic lighting
+    // Create realistic shader-based disco ball with ultra-shine
+    const createShaderDiscoBall = useCallback(() => {
+      // Create disco ball geometry
+      const ballGeometry = new THREE.SphereGeometry(0.5, 32, 32);
 
-      // Main radial gradient for metallic look
-      const mainGradient = context.createRadialGradient(
-        centerX,
-        centerY,
-        0,
-        centerX,
-        centerY,
-        size * 0.6
-      );
+      // Create ultra-shiny shader material
+      const ballMaterial = new THREE.ShaderMaterial({
+        uniforms: {
+          uTime: { value: 0 },
+          uBass: { value: 0.0 },
+          uMid: { value: 0.0 },
+          uHigh: { value: 0.0 },
+          uOpacity: { value: 1.0 }, // Full opacity for maximum shine
+          uPlaying: { value: isPlaying ? 1.0 : 0.0 },
+        },
+        vertexShader: `
+          uniform float uTime;
+          uniform float uBass;
+          uniform float uMid;
+          uniform float uHigh;
+          uniform float uPlaying;
+          varying vec3 vNormal;
+          varying vec3 vPosition;
+          varying vec2 vUv;
+          
+          void main() {
+            vNormal = normalize(normalMatrix * normal);
+            vPosition = position;
+            vUv = uv;
+            
+            // Audio-reactive size pulsing only when playing
+            float audioScale = 1.0 + (uBass + uMid + uHigh) * 0.15 * uPlaying;
+            vec3 pos = position * audioScale;
+            
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+          }
+        `,
+        fragmentShader: `
+          uniform float uTime;
+          uniform float uBass;
+          uniform float uMid;
+          uniform float uHigh;
+          uniform float uOpacity;
+          uniform float uPlaying;
+          varying vec3 vNormal;
+          varying vec3 vPosition;
+          varying vec2 vUv;
+          
+          void main() {
+            // Create ultra-shiny disco ball mirror tiles effect
+            vec2 tileUv = vUv * 25.0; // More tiles for finer detail
+            vec2 tileId = floor(tileUv);
+            vec2 tileFract = fract(tileUv);
+            
+            // Each tile reflects different colors based on audio
+            float tileHash = fract(sin(dot(tileId, vec2(12.9898, 78.233))) * 43758.5453);
+            
+            // Ultra-shiny base silver/chrome color when not playing
+            vec3 baseColor = vec3(0.95, 0.95, 1.0); // Brighter silver
+            
+            // Ultra-shiny reddish gold color when playing
+            vec3 playingColor = vec3(1.0, 0.8, 0.3); // Brighter gold
+            
+            // Audio-reactive colors when playing - more vibrant
+            vec3 bassColor = vec3(1.0, 0.3, 0.9);    // Bright pink for bass
+            vec3 midColor = vec3(0.3, 0.9, 1.0);     // Bright cyan for mids
+            vec3 highColor = vec3(1.0, 1.0, 0.3);    // Bright yellow for highs
+            
+            // Mix colors based on frequency and tile position
+            vec3 audioColor = mix(mix(bassColor, midColor, tileHash), highColor, 
+                                sin(uTime + tileHash * 6.28) * 0.5 + 0.5);
+            audioColor *= vec3(uBass + 0.2, uMid + 0.2, uHigh + 0.2);
+            
+            // Blend between base color and playing color
+            vec3 discoBallColor = mix(baseColor, playingColor, uPlaying);
+            
+            // Add audio reactivity on top with more intensity
+            vec3 tileColor = mix(discoBallColor, audioColor, uPlaying * 0.5);
+            
+            // Ultra-enhanced metallic reflection with multiple highlights
+            float fresnel = pow(1.0 - dot(normalize(vNormal), vec3(0.0, 0.0, 1.0)), 1.5);
+            vec3 reflection = tileColor * (1.2 + fresnel * 0.8); // Brighter reflection
+            
+            // Ultra-shiny tile border for disco ball effect
+            vec2 border = smoothstep(0.0, 0.15, tileFract) * smoothstep(1.0, 0.85, tileFract);
+            float borderMask = border.x * border.y;
+            
+            // Add extra shine highlights
+            float shine = sin(tileHash * 10.0 + uTime * 2.0) * 0.1 + 0.9;
+            reflection *= shine;
+            
+            // Add rim lighting for extra glow
+            float rim = 1.0 - dot(normalize(vNormal), vec3(0.0, 0.0, 1.0));
+            rim = pow(rim, 3.0);
+            vec3 rimColor = vec3(1.0, 1.0, 1.0) * rim * 0.3;
+            
+            gl_FragColor = vec4(reflection * borderMask + rimColor, uOpacity * borderMask);
+          }
+        `,
+        transparent: false, // No transparency for maximum impact
+        side: THREE.FrontSide,
+      });
 
-      // Base color changes based on playing state
-      if (isPlaying) {
-        // Ultra shiny reddish gold metallic matcap when playing
-        mainGradient.addColorStop(0, "#ffffff");
-        mainGradient.addColorStop(0.05, "#ffffff");
-        mainGradient.addColorStop(0.1, "#fff8dc");
-        mainGradient.addColorStop(0.2, "#ffef94");
-        mainGradient.addColorStop(0.3, "#ffd700");
-        mainGradient.addColorStop(0.4, "#ffb347");
-        mainGradient.addColorStop(0.5, "#daa520");
-        mainGradient.addColorStop(0.6, "#cd853f");
-        mainGradient.addColorStop(0.7, "#b8860b");
-        mainGradient.addColorStop(0.8, "#996515");
-        mainGradient.addColorStop(0.9, "#8b4513");
-        mainGradient.addColorStop(1, "#2f1b14");
-      } else {
-        // Ultra shiny chrome/silver metallic matcap when not playing
-        mainGradient.addColorStop(0, "#ffffff");
-        mainGradient.addColorStop(0.05, "#ffffff");
-        mainGradient.addColorStop(0.1, "#f8f8ff");
-        mainGradient.addColorStop(0.2, "#f0f8ff");
-        mainGradient.addColorStop(0.3, "#e6e6fa");
-        mainGradient.addColorStop(0.4, "#dcdcdc");
-        mainGradient.addColorStop(0.5, "#c0c0c0");
-        mainGradient.addColorStop(0.6, "#b0b0b0");
-        mainGradient.addColorStop(0.7, "#a9a9a9");
-        mainGradient.addColorStop(0.8, "#808080");
-        mainGradient.addColorStop(0.9, "#696969");
-        mainGradient.addColorStop(1, "#2f2f2f");
-      }
+      const discoBall = new THREE.Mesh(ballGeometry, ballMaterial);
+      materialRef.current = ballMaterial;
 
-      context.fillStyle = mainGradient;
-      context.fillRect(0, 0, size, size);
-
-      // Add multiple ultra-bright highlight spots for maximum shininess
-      context.globalCompositeOperation = "screen";
-
-      // Primary ultra-bright highlight
-      const highlight1 = context.createRadialGradient(
-        size * 0.2,
-        size * 0.2,
-        0,
-        size * 0.2,
-        size * 0.2,
-        size * 0.18
-      );
-      highlight1.addColorStop(0, "rgba(255, 255, 255, 1.0)");
-      highlight1.addColorStop(0.3, "rgba(255, 255, 255, 0.8)");
-      highlight1.addColorStop(0.6, "rgba(255, 255, 255, 0.4)");
-      highlight1.addColorStop(1, "rgba(255, 255, 255, 0)");
-      context.fillStyle = highlight1;
-      context.fillRect(0, 0, size, size);
-
-      // Secondary bright highlight
-      const highlight2 = context.createRadialGradient(
-        size * 0.75,
-        size * 0.65,
-        0,
-        size * 0.75,
-        size * 0.65,
-        size * 0.12
-      );
-      highlight2.addColorStop(0, "rgba(255, 255, 255, 0.9)");
-      highlight2.addColorStop(0.4, "rgba(255, 255, 255, 0.5)");
-      highlight2.addColorStop(1, "rgba(255, 255, 255, 0)");
-      context.fillStyle = highlight2;
-      context.fillRect(0, 0, size, size);
-
-      // Tertiary sparkle highlight
-      const highlight3 = context.createRadialGradient(
-        size * 0.6,
-        size * 0.25,
-        0,
-        size * 0.6,
-        size * 0.25,
-        size * 0.08
-      );
-      highlight3.addColorStop(0, "rgba(255, 255, 255, 0.7)");
-      highlight3.addColorStop(0.5, "rgba(255, 255, 255, 0.3)");
-      highlight3.addColorStop(1, "rgba(255, 255, 255, 0)");
-      context.fillStyle = highlight3;
-      context.fillRect(0, 0, size, size);
-
-      // Add rim lighting for extra shine
-      const rimGradient = context.createRadialGradient(
-        centerX,
-        centerY,
-        size * 0.35,
-        centerX,
-        centerY,
-        size * 0.5
-      );
-      rimGradient.addColorStop(0, "rgba(255, 255, 255, 0)");
-      rimGradient.addColorStop(0.8, "rgba(255, 255, 255, 0)");
-      rimGradient.addColorStop(0.95, "rgba(255, 255, 255, 0.3)");
-      rimGradient.addColorStop(1, "rgba(255, 255, 255, 0.1)");
-      context.fillStyle = rimGradient;
-      context.fillRect(0, 0, size, size);
-
-      // Reset composite operation
-      context.globalCompositeOperation = "source-over";
-
-      const texture = new THREE.CanvasTexture(canvas);
-      texture.needsUpdate = true;
-      return texture;
+      return discoBall;
     }, [isPlaying]);
 
     // Setup audio analysis
@@ -262,118 +255,6 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
       }
     }, []);
 
-    // Fixed click handling - use direct click on container instead of raycasting
-    const handleClick = useCallback(() => {
-      toggleAudio();
-    }, [toggleAudio]);
-
-    // Handle keyboard events
-    const handleKeyDown = useCallback(
-      (event: React.KeyboardEvent) => {
-        if (event.code === "Space" || event.code === "Enter") {
-          event.preventDefault();
-          toggleAudio();
-        }
-      },
-      [toggleAudio]
-    );
-
-    // Create realistic disco ball with mirror surfaces
-    const createMirrorDiscoBall = useCallback(() => {
-      const dummy = new THREE.Object3D();
-
-      // Create the matcap texture
-      const matcapTexture = createMatcapTexture();
-      if (!matcapTexture) return null;
-
-      matcapTextureRef.current = matcapTexture;
-
-      // Create ultra-shiny mirror material
-      const mirrorMaterial = new THREE.MeshMatcapMaterial({
-        matcap: matcapTexture,
-        transparent: false, // No transparency for maximum shine
-        side: THREE.FrontSide, // Only render front faces for better performance
-      });
-
-      // Create base sphere geometry with fewer segments for cleaner mirror placement
-      const sphereGeometry = new THREE.SphereGeometry(0.5, 16, 12);
-
-      // Get face centers for mirror placement instead of vertices
-      const faces = [];
-      const positionAttribute = sphereGeometry.attributes.position;
-      const indexAttribute = sphereGeometry.index;
-
-      if (indexAttribute) {
-        // Calculate face centers from triangulated faces
-        for (let i = 0; i < indexAttribute.count; i += 3) {
-          const a = indexAttribute.getX(i);
-          const b = indexAttribute.getX(i + 1);
-          const c = indexAttribute.getX(i + 2);
-
-          const va = new THREE.Vector3().fromBufferAttribute(
-            positionAttribute,
-            a
-          );
-          const vb = new THREE.Vector3().fromBufferAttribute(
-            positionAttribute,
-            b
-          );
-          const vc = new THREE.Vector3().fromBufferAttribute(
-            positionAttribute,
-            c
-          );
-
-          // Calculate face center
-          const center = new THREE.Vector3()
-            .add(va)
-            .add(vb)
-            .add(vc)
-            .divideScalar(3);
-
-          // Calculate face normal
-          const normal = new THREE.Vector3()
-            .crossVectors(vb.clone().sub(va), vc.clone().sub(va))
-            .normalize();
-
-          faces.push({ center, normal });
-        }
-      }
-
-      // Create small square mirror geometry
-      const mirrorSize = 0.08;
-      const mirrorGeometry = new THREE.PlaneGeometry(mirrorSize, mirrorSize);
-
-      // Create instanced mesh for mirrors
-      const instancedMirrorMesh = new THREE.InstancedMesh(
-        mirrorGeometry,
-        mirrorMaterial,
-        faces.length
-      );
-
-      // Position mirrors on face centers
-      faces.forEach((face, index) => {
-        dummy.position.copy(face.center);
-        dummy.lookAt(face.center.clone().add(face.normal));
-        dummy.updateMatrix();
-        instancedMirrorMesh.setMatrixAt(index, dummy.matrix);
-      });
-
-      // Create ultra-dark inner ball for maximum contrast and shine
-      const innerBallGeometry = new THREE.SphereGeometry(0.47, 32, 32);
-      const innerBallMaterial = new THREE.MeshBasicMaterial({
-        color: 0x000000, // Pure black for maximum contrast
-        transparent: false,
-      });
-      const innerBall = new THREE.Mesh(innerBallGeometry, innerBallMaterial);
-
-      // Create group and add both components
-      const discoBallGroup = new THREE.Group();
-      discoBallGroup.add(innerBall);
-      discoBallGroup.add(instancedMirrorMesh);
-
-      return discoBallGroup;
-    }, [createMatcapTexture]);
-
     // Create dance character sprite
     const createDanceCharacter = useCallback(() => {
       // Create canvas for the dance character
@@ -456,11 +337,11 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
       rendererRef.current = renderer;
       mount.appendChild(renderer.domElement);
 
-      // Create realistic mirror disco ball
-      const mirrorDiscoBall = createMirrorDiscoBall();
-      if (mirrorDiscoBall) {
-        discoBallRef.current = mirrorDiscoBall;
-        scene.add(mirrorDiscoBall);
+      // Create realistic shader-based disco ball with ultra-shine
+      const shaderDiscoBall = createShaderDiscoBall();
+      if (shaderDiscoBall) {
+        discoBallRef.current = shaderDiscoBall;
+        scene.add(shaderDiscoBall);
       }
 
       // Create and add dance character sprite
@@ -484,48 +365,26 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
       const animate = () => {
         animationIdRef.current = requestAnimationFrame(animate);
 
-        // Update matcap texture only when playing state changes
-        const currentMatcapState =
-          matcapTextureRef.current?.userData?.isPlaying;
-        if (currentMatcapState !== isPlaying) {
-          const newMatcap = createMatcapTexture();
-          if (newMatcap && discoBallRef.current) {
-            newMatcap.userData = { isPlaying };
-            const instancedMesh = discoBallRef.current.children.find(
-              (child) => child instanceof THREE.InstancedMesh
-            ) as THREE.InstancedMesh;
-            if (
-              instancedMesh &&
-              instancedMesh.material instanceof THREE.MeshMatcapMaterial
-            ) {
-              instancedMesh.material.matcap = newMatcap;
-              instancedMesh.material.needsUpdate = true;
-              matcapTextureRef.current = newMatcap;
-            }
+        // Update shader uniforms
+        if (materialRef.current && materialRef.current.uniforms) {
+          materialRef.current.uniforms.uTime.value += 0.016; // ~60fps
+
+          // Analyze audio if playing
+          if (isPlaying && analyserRef.current) {
+            analyzeAudio();
           }
+
+          // Smooth playing state transition
+          const targetPlaying = isPlaying ? 1.0 : 0.0;
+          const currentPlaying = materialRef.current.uniforms.uPlaying.value;
+          materialRef.current.uniforms.uPlaying.value +=
+            (targetPlaying - currentPlaying) * 0.05;
         }
 
-        // Analyze audio if playing
-        if (isPlaying && analyserRef.current) {
-          analyzeAudio();
-        }
-
-        // Always rotate disco ball, but faster when playing
+        // Always rotate disco ball left-right only, faster when playing
         if (discoBallRef.current) {
-          const rotationSpeed = isPlaying ? 0.01 : 0.003; // Slower when not playing
-          discoBallRef.current.rotation.y += rotationSpeed;
-          discoBallRef.current.rotation.x += rotationSpeed * 0.5;
-
-          // Audio-reactive scaling when playing
-          if (isPlaying) {
-            const audioLevels = audioLevelsRef.current;
-            const scale =
-              1.0 +
-              (audioLevels.bass + audioLevels.mid + audioLevels.high) * 0.1;
-            discoBallRef.current.scale.setScalar(scale);
-          } else {
-            discoBallRef.current.scale.setScalar(1.0);
-          }
+          const rotationSpeed = isPlaying ? 0.012 : 0.004; // Slightly faster for more shine
+          discoBallRef.current.rotation.y += rotationSpeed; // Only Y-axis rotation (left-right)
         }
 
         renderer.render(scene, camera);
@@ -555,16 +414,14 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
         renderer.dispose();
         // Dispose disco ball geometry and materials
         if (discoBallRef.current) {
-          discoBallRef.current.traverse((child) => {
-            if (child instanceof THREE.Mesh) {
-              child.geometry.dispose();
-              if (Array.isArray(child.material)) {
-                child.material.forEach((material) => material.dispose());
-              } else {
-                child.material.dispose();
-              }
-            }
-          });
+          discoBallRef.current.geometry.dispose();
+          if (Array.isArray(discoBallRef.current.material)) {
+            discoBallRef.current.material.forEach((material) =>
+              material.dispose()
+            );
+          } else {
+            discoBallRef.current.material.dispose();
+          }
         }
       };
     }, [
@@ -575,8 +432,7 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
       setupAudioAnalysis,
       analyzeAudio,
       createDanceCharacter,
-      createMatcapTexture,
-      createMirrorDiscoBall,
+      createShaderDiscoBall,
     ]);
 
     // Handle container size changes when expanding/contracting
@@ -601,27 +457,6 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
         resizeObserver.disconnect();
       };
     }, [isExpanded, isPlaying]);
-
-    // Update matcap texture when playing state changes
-    useEffect(() => {
-      if (discoBallRef.current) {
-        const newMatcap = createMatcapTexture();
-        if (newMatcap) {
-          // Update instanced mesh material with new matcap
-          const instancedMesh = discoBallRef.current.children.find(
-            (child) => child instanceof THREE.InstancedMesh
-          ) as THREE.InstancedMesh;
-          if (
-            instancedMesh &&
-            instancedMesh.material instanceof THREE.MeshMatcapMaterial
-          ) {
-            instancedMesh.material.matcap = newMatcap;
-            instancedMesh.material.needsUpdate = true;
-            matcapTextureRef.current = newMatcap;
-          }
-        }
-      }
-    }, [isPlaying, createMatcapTexture]);
 
     // Update dance character when playing state changes
     useEffect(() => {
