@@ -42,12 +42,12 @@ Replace Firefly Scene with Disco Ball Scene and Integrate Disco Lights Around Pl
 
 ## Revised Acceptance Criteria
 
-- [ ] The play button is no longer a DOM element; it is now the disco ball rendered in Three.js at the center of the DanceArea.
-- [ ] The 舞 character is visually incorporated into the disco ball and remains at the center.
-- [ ] Clicking/tapping or using the keyboard on the disco ball toggles play/pause.
-- [ ] All play/pause logic and accessibility are handled via the 3D disco ball.
-- [ ] The effect is visually appealing, responsive, and works on both desktop and mobile.
-- [ ] No errors or regressions are introduced.
+- [x] The play button is no longer a DOM element; it is now the disco ball rendered in Three.js at the center of the DanceArea.
+- [x] The 舞 character is visually incorporated into the disco ball and remains at the center.
+- [x] Clicking/tapping or using the keyboard on the disco ball toggles play/pause.
+- [x] All play/pause logic and accessibility are handled via the 3D disco ball.
+- [x] The effect is visually appealing, responsive, and works on both desktop and mobile.
+- [x] No errors or regressions are introduced.
 
 ## Implementation Summary
 
@@ -74,17 +74,35 @@ Replace Firefly Scene with Disco Ball Scene and Integrate Disco Lights Around Pl
    - Updated touch and click handlers to trigger disco light effects
    - Preserved all existing button animations and interactions
 
-4. **Updated Component Exports** (`/src/components/index.ts`):
-   - Added DiscoBallScene to component exports
-   - Maintained FirefliesScene export for potential future use
+### Updated Implementation (Phase 2 - June 28, 2025)
+
+5. **Integrated Play Button into Disco Ball** (`/src/components/DiscoBallScene.tsx`):
+   - Removed DOM-based DanceButton component completely
+   - Added `toggleAudio` prop to DiscoBallScene for direct play/pause control
+   - Implemented raycasting for precise click detection on 3D disco ball
+   - Added keyboard accessibility (Space/Enter keys) with proper ARIA labels
+   - Created Chinese dance character (舞) sprite at center of disco ball
+   - Made disco ball always visible with different states (silver when not playing, colorful when playing)
+   - Always rotating disco ball (slower when paused, faster when playing)
+   - Light beams always visible but dimmed when not playing
+
+6. **Updated DanceArea Component** (Phase 2):
+   - Removed DanceButton import and usage completely
+   - Passed `toggleAudio` prop directly to DiscoBallScene
+   - All play/pause functionality now handled via 3D scene interaction
 
 ### Technical Implementation
 
 - **Disco Ball**: Shader-based sphere with mirror tile effect using procedural UV mapping
-- **Light Beams**: Rotating cone geometries with HSL color cycling
-- **Audio Reactivity**: Real-time frequency analysis affecting colors and animations
+- **3D Play Button**: Disco ball itself serves as clickable/tappable play button using Three.js raycasting
+- **Dance Character**: Canvas-based sprite with 舞 character, always visible at disco ball center
+- **Dual Visual States**: Silver/gray disco ball when paused, colorful audio-reactive when playing
+- **Light Beams**: Rotating cone geometries with HSL color cycling, always visible but dimmed when paused
+- **Audio Reactivity**: Real-time frequency analysis affecting colors and animations during playback
+- **Click Detection**: Precise raycasting for 3D object interaction instead of DOM event handling
+- **Accessibility**: Full keyboard support (Space/Enter), ARIA labels, and screen reader compatibility
 - **Performance**: Optimized for both desktop and mobile with responsive sizing
-- **Integration**: Seamlessly replaces fireflies while maintaining all existing UI functionality
+- **Integration**: Complete replacement of DOM button with immersive 3D interaction
 
 ### Completion Date
 
