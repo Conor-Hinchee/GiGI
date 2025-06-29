@@ -3,56 +3,56 @@ import React from "react";
 interface DanceButtonProps {
   isPlaying: boolean;
   toggleAudio: () => void;
-  onTouchFireflies?: (x: number, y: number, burst?: boolean) => void;
+  onTouchDiscoLights?: (x: number, y: number, burst?: boolean) => void;
   isMobile?: boolean;
 }
 
 export const DanceButton: React.FC<DanceButtonProps> = ({
   isPlaying,
   toggleAudio,
-  onTouchFireflies,
+  onTouchDiscoLights,
   isMobile = false,
 }) => {
-  // Handle touch events for mobile firefly spawning
+  // Handle touch events for mobile disco light spawning
   const handleTouchStart = React.useCallback(
     (e: React.TouchEvent) => {
-      if (!isMobile || !onTouchFireflies) return;
+      if (!isMobile || !onTouchDiscoLights) return;
 
       e.stopPropagation(); // Prevent parent touch handlers
 
       const touch = e.touches[0];
       if (touch) {
-        onTouchFireflies(touch.clientX, touch.clientY, false);
+        onTouchDiscoLights(touch.clientX, touch.clientY, false);
       }
     },
-    [isMobile, onTouchFireflies]
+    [isMobile, onTouchDiscoLights]
   );
 
   const handleTouchEnd = React.useCallback(
     (e: React.TouchEvent) => {
-      if (!isMobile || !onTouchFireflies) return;
+      if (!isMobile || !onTouchDiscoLights) return;
 
       e.stopPropagation(); // Prevent parent touch handlers
 
       const touch = e.changedTouches[0];
       if (touch) {
         // Spawn a bigger burst from the dance button
-        onTouchFireflies(touch.clientX, touch.clientY, true);
+        onTouchDiscoLights(touch.clientX, touch.clientY, true);
       }
     },
-    [isMobile, onTouchFireflies]
+    [isMobile, onTouchDiscoLights]
   );
 
   const handleClick = React.useCallback(
     (e: React.MouseEvent) => {
       toggleAudio();
 
-      // Also spawn fireflies on click for desktop
-      if (!isMobile && onTouchFireflies) {
-        onTouchFireflies(e.clientX, e.clientY, true);
+      // Also spawn disco lights on click for desktop
+      if (!isMobile && onTouchDiscoLights) {
+        onTouchDiscoLights(e.clientX, e.clientY, true);
       }
     },
-    [toggleAudio, isMobile, onTouchFireflies]
+    [toggleAudio, isMobile, onTouchDiscoLights]
   );
 
   return (

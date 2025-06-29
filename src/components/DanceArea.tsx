@@ -1,6 +1,6 @@
 import React from "react";
 import { DanceAreaProps } from "../types";
-import FirefliesScene, { FirefliesSceneRef } from "./FirefliesScene";
+import DiscoBallScene, { DiscoBallSceneRef } from "./DiscoBallScene";
 import { DanceButton } from "./DanceButton";
 import { ExpansionIndicator } from "./ExpansionIndicator";
 import AudioStatusIndicator from "./AudioStatusIndicator";
@@ -28,7 +28,7 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
     React.useState<boolean>(false);
   const [showExpansionIndicator, setShowExpansionIndicator] =
     React.useState<boolean>(false);
-  const firefliesSceneRef = React.useRef<FirefliesSceneRef>(null);
+  const discoBallSceneRef = React.useRef<DiscoBallSceneRef>(null);
 
   // Select random song on component mount
   React.useEffect(() => {
@@ -124,9 +124,9 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
         ></div>
       </div>
 
-      {/* Three.js Fireflies Background */}
-      <FirefliesScene
-        ref={firefliesSceneRef}
+      {/* Three.js Disco Ball Background */}
+      <DiscoBallScene
+        ref={discoBallSceneRef}
         isPlaying={isPlaying}
         isFullscreen={isFullscreen}
         isExpanded={isPlaying && !isFullscreen}
@@ -202,8 +202,8 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
       <DanceButton
         isPlaying={isPlaying}
         toggleAudio={toggleAudio}
-        onTouchFireflies={(x, y, burst) =>
-          firefliesSceneRef.current?.spawnFirefliesAtTouch(x, y, burst)
+        onTouchDiscoLights={(x, y, burst) =>
+          discoBallSceneRef.current?.spawnDiscoLights(x, y, burst)
         }
         isMobile={isMobile}
       />
