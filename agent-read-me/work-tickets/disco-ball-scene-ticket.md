@@ -77,6 +77,7 @@ Replace Firefly Scene with Disco Ball Scene and Integrate Disco Lights Around Pl
 ### Updated Implementation (Phase 2 - June 28, 2025)
 
 5. **Integrated Play Button into Disco Ball** (`/src/components/DiscoBallScene.tsx`):
+
    - Removed DOM-based DanceButton component completely
    - Added `toggleAudio` prop to DiscoBallScene for direct play/pause control
    - Implemented raycasting for precise click detection on 3D disco ball
@@ -104,9 +105,13 @@ Replace Firefly Scene with Disco Ball Scene and Integrate Disco Lights Around Pl
 - **Performance**: Optimized for both desktop and mobile with responsive sizing
 - **Integration**: Complete replacement of DOM button with immersive 3D interaction
 
+### Bug Fix (June 29, 2025)
+
+- **Fixed Click Detection Issue**: The dance character sprite (舞) was positioned in front of the disco ball center (z: 0.6), blocking clicks on that area. Updated raycasting to include both the disco ball AND the dance character sprite in intersection detection, ensuring clicks anywhere on the center (including the 舞 character) trigger play/pause functionality.
+
 ### Completion Date
 
-June 28, 2025
+June 28, 2025 (Updated: June 29, 2025)
 
 ### Branch
 
