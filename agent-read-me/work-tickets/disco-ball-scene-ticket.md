@@ -109,6 +109,11 @@ Replace Firefly Scene with Disco Ball Scene and Integrate Disco Lights Around Pl
 
 - **Fixed Click Detection Issue**: The dance character sprite (舞) was positioned in front of the disco ball center (z: 0.6), blocking clicks on that area. Updated raycasting to include both the disco ball AND the dance character sprite in intersection detection, ensuring clicks anywhere on the center (including the 舞 character) trigger play/pause functionality.
 
+### UX Improvement (June 29, 2025)
+
+- **Removed Expansion Animation**: Changed dance area to always be full viewport height (h-[100vh]) on desktop, eliminating the expansion animation from 50vh to 100vh when play button is pressed. This provides a more consistent and less distracting user experience.
+- **Cleanup**: Removed expansion indicator component and related state management since expansion animation is no longer needed.
+
 ### Completion Date
 
 June 28, 2025 (Updated: June 29, 2025)

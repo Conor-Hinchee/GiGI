@@ -37,7 +37,7 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
     const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
     const discoBallRef = useRef<THREE.Mesh | null>(null);
     const danceCharacterRef = useRef<THREE.Sprite | null>(null);
-    const lightBeamsRef = useRef<THREE.Group | null>(null);
+    // lightBeamsRef removed since light beams are no longer used
     const spotlightsRef = useRef<THREE.Group | null>(null);
     const animationIdRef = useRef<number | null>(null);
     const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
@@ -133,62 +133,7 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
       }
     }, []);
 
-    // Create light burst effect when button is pressed
-    const createLightBurst = useCallback(() => {
-      if (!spotlightsRef.current) return;
-
-      // Create temporary bright light beams
-      const burstGroup = new THREE.Group();
-      const numBursts = 8;
-
-      for (let i = 0; i < numBursts; i++) {
-        const angle = (i / numBursts) * Math.PI * 2;
-        const distance = 3;
-
-        const geometry = new THREE.ConeGeometry(0.1, 2, 8);
-        const material = new THREE.MeshBasicMaterial({
-          color: new THREE.Color().setHSL(Math.random(), 0.8, 0.7),
-          transparent: true,
-          opacity: 0.8,
-        });
-
-        const beam = new THREE.Mesh(geometry, material);
-        beam.position.set(
-          Math.cos(angle) * distance,
-          Math.sin(angle) * distance,
-          0
-        );
-        beam.lookAt(0, 0, 0);
-
-        burstGroup.add(beam);
-      }
-
-      spotlightsRef.current.add(burstGroup);
-
-      // Animate and remove burst
-      let opacity = 0.8;
-      const animateBurst = () => {
-        opacity -= 0.05;
-        burstGroup.children.forEach((beam) => {
-          const material = (beam as THREE.Mesh)
-            .material as THREE.MeshBasicMaterial;
-          material.opacity = opacity;
-        });
-
-        if (opacity > 0) {
-          requestAnimationFrame(animateBurst);
-        } else {
-          spotlightsRef.current?.remove(burstGroup);
-          burstGroup.children.forEach((beam) => {
-            const material = (beam as THREE.Mesh)
-              .material as THREE.MeshBasicMaterial;
-            material.dispose();
-            (beam as THREE.Mesh).geometry.dispose();
-          });
-        }
-      };
-      animateBurst();
-    }, []);
+    // Light burst effect removed for cleaner visual experience
 
     // Handle click/touch on disco ball
     const handleClick = useCallback(
@@ -227,10 +172,10 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
 
         if (intersects.length > 0) {
           toggleAudio();
-          createLightBurst();
+          // Light burst effect removed for cleaner interaction
         }
       },
-      [toggleAudio, createLightBurst]
+      [toggleAudio]
     );
 
     // Handle keyboard events
@@ -239,10 +184,10 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
         if (event.code === "Space" || event.code === "Enter") {
           event.preventDefault();
           toggleAudio();
-          createLightBurst();
+          // Light burst effect removed for cleaner interaction
         }
       },
-      [toggleAudio, createLightBurst]
+      [toggleAudio]
     );
 
     // Create dance character sprite
@@ -292,13 +237,10 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
       ref,
       () => ({
         spawnDiscoLights: () => {
-          // Trigger extra light burst when button is pressed
-          if (spotlightsRef.current && isPlaying) {
-            createLightBurst();
-          }
+          // Light burst effect removed - no longer needed
         },
       }),
-      [isPlaying, createLightBurst]
+      []
     );
 
     useEffect(() => {
@@ -424,35 +366,9 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
         scene.add(danceCharacter);
       }
 
-      // Create rotating light beams
-      const lightBeams = new THREE.Group();
-      lightBeamsRef.current = lightBeams;
-
-      const numBeams = 12;
-      for (let i = 0; i < numBeams; i++) {
-        const beamGeometry = new THREE.ConeGeometry(0.05, 4, 8);
-        const hue = i / numBeams;
-        const beamMaterial = new THREE.MeshBasicMaterial({
-          color: new THREE.Color().setHSL(hue, 0.8, 0.6),
-          transparent: true,
-          opacity: 0.3,
-        });
-
-        const beam = new THREE.Mesh(beamGeometry, beamMaterial);
-        const angle = (i / numBeams) * Math.PI * 2;
-        const radius = 2;
-
-        beam.position.set(
-          Math.cos(angle) * radius,
-          Math.sin(angle) * radius,
-          0
-        );
-        beam.lookAt(0, 0, 0);
-
-        lightBeams.add(beam);
-      }
-
-      scene.add(lightBeams);
+      // Light beams removed for cleaner visual experience
+      // const lightBeams = new THREE.Group();
+      // lightBeamsRef.current = lightBeams;
 
       // Create spotlights group for additional effects
       const spotlights = new THREE.Group();
@@ -490,34 +406,7 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
           discoBall.rotation.x += rotationSpeed * 0.5;
         }
 
-        // Always rotate light beams, but slower when not playing
-        if (lightBeams) {
-          const rotationSpeed = isPlaying ? 0.02 : 0.005;
-          lightBeams.rotation.z += rotationSpeed;
-
-          // Audio-reactive beam intensity when playing, subtle when not
-          const audioLevel = audioLevelsRef.current.overall;
-          lightBeams.children.forEach((beam, index) => {
-            const material = (beam as THREE.Mesh)
-              .material as THREE.MeshBasicMaterial;
-
-            if (isPlaying) {
-              // Full audio-reactive mode when playing
-              const baseOpacity = 0.3;
-              const audioBoost = audioLevel * 0.7;
-              material.opacity = Math.min(1.0, baseOpacity + audioBoost);
-
-              // Color cycling based on audio
-              const hue = (index / numBeams + audioLevel * 0.5) % 1;
-              material.color.setHSL(hue, 0.8, 0.6 + audioLevel * 0.3);
-            } else {
-              // Subtle static mode when not playing
-              material.opacity = 0.1;
-              const hue = (index / numBeams) % 1;
-              material.color.setHSL(hue, 0.3, 0.4); // Desaturated, dimmer
-            }
-          });
-        }
+        // Light beams animation removed for cleaner visual experience
 
         renderer.render(scene, camera);
       };
@@ -545,11 +434,7 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
         }
         renderer.dispose();
         discoBallRef.current?.geometry.dispose();
-        lightBeamsRef.current?.children.forEach((beam) => {
-          const mesh = beam as THREE.Mesh;
-          mesh.geometry.dispose();
-          (mesh.material as THREE.Material).dispose();
-        });
+        // Light beams cleanup removed since light beams are no longer created
       };
     }, [
       isPlaying,
@@ -558,7 +443,6 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
       isMobile,
       setupAudioAnalysis,
       analyzeAudio,
-      createLightBurst,
       createDanceCharacter,
     ]);
 
