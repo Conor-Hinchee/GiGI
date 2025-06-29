@@ -270,20 +270,25 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
       context.font = "bold 80px Arial";
       context.textAlign = "center";
       context.textBaseline = "middle";
-      
+
       // Draw black border/stroke first
       context.strokeStyle = "#000000";
-      context.lineWidth = 4;
+      context.lineWidth = 6; // Increased width for better visibility
       context.strokeText("舞", size / 2, size / 2);
-      
+
       // Draw the main character fill
       context.fillStyle = isPlaying ? "#c0c0c0" : "#fbbf24"; // Silver when playing, gold when not
       context.fillText("舞", size / 2, size / 2);
 
-      // Add glow effect when playing
+      // Add glow effect when playing - maintain black border
       if (isPlaying) {
         context.shadowColor = "#c0c0c0";
         context.shadowBlur = 20;
+        // Redraw black border to maintain consistency with glow
+        context.strokeStyle = "#000000";
+        context.lineWidth = 6;
+        context.strokeText("舞", size / 2, size / 2);
+        // Then the glowing fill
         context.fillText("舞", size / 2, size / 2);
       }
 
