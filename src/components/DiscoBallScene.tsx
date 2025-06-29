@@ -23,7 +23,13 @@ export interface DiscoBallSceneRef {
 
 const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
   (
-    { isPlaying, isFullscreen = false, isExpanded = false, isMobile = false, toggleAudio },
+    {
+      isPlaying,
+      isFullscreen = false,
+      isExpanded = false,
+      isMobile = false,
+      toggleAudio,
+    },
     ref
   ) => {
     const mountRef = useRef<HTMLDivElement>(null);
@@ -185,83 +191,93 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
     }, []);
 
     // Handle click/touch on disco ball
-    const handleClick = useCallback((event: React.MouseEvent | React.TouchEvent) => {
-      if (!mountRef.current || !cameraRef.current || !discoBallRef.current) return;
+    const handleClick = useCallback(
+      (event: React.MouseEvent | React.TouchEvent) => {
+        if (!mountRef.current || !cameraRef.current || !discoBallRef.current)
+          return;
 
-      const rect = mountRef.current.getBoundingClientRect();
-      let clientX: number, clientY: number;
+        const rect = mountRef.current.getBoundingClientRect();
+        let clientX: number, clientY: number;
 
-      if ('touches' in event.nativeEvent) {
-        const touch = event.nativeEvent.touches[0] || event.nativeEvent.changedTouches[0];
-        clientX = touch.clientX;
-        clientY = touch.clientY;
-      } else {
-        clientX = event.nativeEvent.clientX;
-        clientY = event.nativeEvent.clientY;
-      }
+        if ("touches" in event.nativeEvent) {
+          const touch =
+            event.nativeEvent.touches[0] || event.nativeEvent.changedTouches[0];
+          clientX = touch.clientX;
+          clientY = touch.clientY;
+        } else {
+          clientX = event.nativeEvent.clientX;
+          clientY = event.nativeEvent.clientY;
+        }
 
-      // Calculate normalized device coordinates
-      mouseRef.current.x = ((clientX - rect.left) / rect.width) * 2 - 1;
-      mouseRef.current.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+        // Calculate normalized device coordinates
+        mouseRef.current.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+        mouseRef.current.y = -((clientY - rect.top) / rect.height) * 2 + 1;
 
-      // Cast ray from camera through mouse point
-      raycasterRef.current.setFromCamera(mouseRef.current, cameraRef.current);
-      const intersects = raycasterRef.current.intersectObject(discoBallRef.current);
+        // Cast ray from camera through mouse point
+        raycasterRef.current.setFromCamera(mouseRef.current, cameraRef.current);
+        const intersects = raycasterRef.current.intersectObject(
+          discoBallRef.current
+        );
 
-      if (intersects.length > 0) {
-        toggleAudio();
-        createLightBurst();
-      }
-    }, [toggleAudio, createLightBurst]);
+        if (intersects.length > 0) {
+          toggleAudio();
+          createLightBurst();
+        }
+      },
+      [toggleAudio, createLightBurst]
+    );
 
     // Handle keyboard events
-    const handleKeyDown = useCallback((event: React.KeyboardEvent) => {
-      if (event.code === 'Space' || event.code === 'Enter') {
-        event.preventDefault();
-        toggleAudio();
-        createLightBurst();
-      }
-    }, [toggleAudio, createLightBurst]);
+    const handleKeyDown = useCallback(
+      (event: React.KeyboardEvent) => {
+        if (event.code === "Space" || event.code === "Enter") {
+          event.preventDefault();
+          toggleAudio();
+          createLightBurst();
+        }
+      },
+      [toggleAudio, createLightBurst]
+    );
 
     // Create dance character sprite
     const createDanceCharacter = useCallback(() => {
       // Create canvas for the dance character
-      const canvas = document.createElement('canvas');
+      const canvas = document.createElement("canvas");
       const size = 128;
       canvas.width = size;
       canvas.height = size;
-      const context = canvas.getContext('2d');
-      
+      const context = canvas.getContext("2d");
+
       if (!context) return null;
 
       // Draw the dance character
-      context.fillStyle = isPlaying ? '#fbbf24' : '#ffffff'; // Gold when playing, white when not
-      context.font = 'bold 80px Arial';
-      context.textAlign = 'center';
-      context.textBaseline = 'middle';
-      context.fillText('舞', size / 2, size / 2);
+      context.fillStyle = isPlaying ? "#fbbf24" : "#ffffff"; // Gold when playing, white when not
+      context.font = "bold 80px Arial";
+      context.textAlign = "center";
+      context.textBaseline = "middle";
+      context.fillText("舞", size / 2, size / 2);
 
       // Add glow effect when playing
       if (isPlaying) {
-        context.shadowColor = '#fbbf24';
+        context.shadowColor = "#fbbf24";
         context.shadowBlur = 20;
-        context.fillText('舞', size / 2, size / 2);
+        context.fillText("舞", size / 2, size / 2);
       }
 
       // Create texture and sprite
       const texture = new THREE.CanvasTexture(canvas);
       texture.needsUpdate = true;
-      
+
       const spriteMaterial = new THREE.SpriteMaterial({
         map: texture,
         transparent: true,
-        opacity: 0.9
+        opacity: 0.9,
       });
-      
+
       const sprite = new THREE.Sprite(spriteMaterial);
       sprite.scale.set(0.8, 0.8, 1);
       sprite.position.set(0, 0, 0.6); // Slightly in front of disco ball center
-      
+
       return sprite;
     }, [isPlaying]);
 
@@ -316,13 +332,15 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
           uBass: { value: 0.0 },
           uMid: { value: 0.0 },
           uHigh: { value: 0.0 },
-          uOpacity: { value: isPlaying ? 1.0 : 0.0 },
+          uOpacity: { value: 0.8 }, // Always visible
+          uPlaying: { value: isPlaying ? 1.0 : 0.0 }, // New uniform for playing state
         },
         vertexShader: `
           uniform float uTime;
           uniform float uBass;
           uniform float uMid;
           uniform float uHigh;
+          uniform float uPlaying;
           varying vec3 vNormal;
           varying vec3 vPosition;
           varying vec2 vUv;
@@ -332,8 +350,8 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
             vPosition = position;
             vUv = uv;
             
-            // Audio-reactive size pulsing
-            float audioScale = 1.0 + (uBass + uMid + uHigh) * 0.2;
+            // Audio-reactive size pulsing only when playing
+            float audioScale = 1.0 + (uBass + uMid + uHigh) * 0.2 * uPlaying;
             vec3 pos = position * audioScale;
             
             gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
@@ -345,6 +363,7 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
           uniform float uMid;
           uniform float uHigh;
           uniform float uOpacity;
+          uniform float uPlaying;
           varying vec3 vNormal;
           varying vec3 vPosition;
           varying vec2 vUv;
@@ -358,14 +377,20 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
             // Each tile reflects different colors based on audio
             float tileHash = fract(sin(dot(tileId, vec2(12.9898, 78.233))) * 43758.5453);
             
-            // Audio-reactive colors
+            // Base silver/gray disco ball color when not playing
+            vec3 baseColor = vec3(0.7, 0.7, 0.8);
+            
+            // Audio-reactive colors when playing
             vec3 bassColor = vec3(1.0, 0.2, 0.8);    // Pink for bass
             vec3 midColor = vec3(0.2, 0.8, 1.0);     // Cyan for mids
             vec3 highColor = vec3(1.0, 1.0, 0.2);    // Yellow for highs
             
             // Mix colors based on frequency and tile position
-            vec3 tileColor = mix(mix(bassColor, midColor, tileHash), highColor, sin(uTime + tileHash * 6.28) * 0.5 + 0.5);
-            tileColor *= vec3(uBass + 0.1, uMid + 0.1, uHigh + 0.1);
+            vec3 audioColor = mix(mix(bassColor, midColor, tileHash), highColor, sin(uTime + tileHash * 6.28) * 0.5 + 0.5);
+            audioColor *= vec3(uBass + 0.1, uMid + 0.1, uHigh + 0.1);
+            
+            // Blend between base color and audio-reactive color based on playing state
+            vec3 tileColor = mix(baseColor, audioColor, uPlaying);
             
             // Add metallic reflection
             float fresnel = pow(1.0 - dot(normalize(vNormal), vec3(0.0, 0.0, 1.0)), 2.0);
@@ -445,35 +470,46 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
             analyzeAudio();
           }
 
-          // Smooth opacity transition
-          const targetOpacity = isPlaying ? 1.0 : 0.0;
-          const currentOpacity = ballMaterial.uniforms.uOpacity.value;
-          ballMaterial.uniforms.uOpacity.value +=
-            (targetOpacity - currentOpacity) * 0.05;
+          // Smooth playing state transition
+          const targetPlaying = isPlaying ? 1.0 : 0.0;
+          const currentPlaying = ballMaterial.uniforms.uPlaying.value;
+          ballMaterial.uniforms.uPlaying.value +=
+            (targetPlaying - currentPlaying) * 0.05;
         }
 
-        // Rotate disco ball
-        if (discoBall && isPlaying) {
-          discoBall.rotation.y += 0.01;
-          discoBall.rotation.x += 0.005;
+        // Always rotate disco ball, but faster when playing
+        if (discoBall) {
+          const rotationSpeed = isPlaying ? 0.01 : 0.003; // Slower when not playing
+          discoBall.rotation.y += rotationSpeed;
+          discoBall.rotation.x += rotationSpeed * 0.5;
         }
 
-        // Rotate light beams
-        if (lightBeams && isPlaying) {
-          lightBeams.rotation.z += 0.02;
+        // Always rotate light beams, but slower when not playing
+        if (lightBeams) {
+          const rotationSpeed = isPlaying ? 0.02 : 0.005;
+          lightBeams.rotation.z += rotationSpeed;
 
-          // Audio-reactive beam intensity
+          // Audio-reactive beam intensity when playing, subtle when not
           const audioLevel = audioLevelsRef.current.overall;
           lightBeams.children.forEach((beam, index) => {
             const material = (beam as THREE.Mesh)
               .material as THREE.MeshBasicMaterial;
-            const baseOpacity = 0.3;
-            const audioBoost = audioLevel * 0.7;
-            material.opacity = Math.min(1.0, baseOpacity + audioBoost);
 
-            // Color cycling based on audio
-            const hue = (index / numBeams + audioLevel * 0.5) % 1;
-            material.color.setHSL(hue, 0.8, 0.6 + audioLevel * 0.3);
+            if (isPlaying) {
+              // Full audio-reactive mode when playing
+              const baseOpacity = 0.3;
+              const audioBoost = audioLevel * 0.7;
+              material.opacity = Math.min(1.0, baseOpacity + audioBoost);
+
+              // Color cycling based on audio
+              const hue = (index / numBeams + audioLevel * 0.5) % 1;
+              material.color.setHSL(hue, 0.8, 0.6 + audioLevel * 0.3);
+            } else {
+              // Subtle static mode when not playing
+              material.opacity = 0.1;
+              const hue = (index / numBeams) % 1;
+              material.color.setHSL(hue, 0.3, 0.4); // Desaturated, dimmer
+            }
           });
         }
 
@@ -562,7 +598,7 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
 
       // Remove old character
       sceneRef.current.remove(danceCharacterRef.current);
-      
+
       // Create and add new character with updated state
       const newCharacter = createDanceCharacter();
       if (newCharacter) {
@@ -575,7 +611,7 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
       <div
         ref={mountRef}
         className="absolute inset-0 w-full h-full"
-        style={{ zIndex: 1, outline: 'none' }} // Remove default focus outline since we have visual feedback
+        style={{ zIndex: 1, outline: "none" }} // Remove default focus outline since we have visual feedback
         onClick={handleClick}
         onTouchEnd={handleClick}
         onKeyDown={handleKeyDown}
