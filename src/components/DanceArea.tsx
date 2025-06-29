@@ -1,7 +1,6 @@
 import React from "react";
 import { DanceAreaProps } from "../types";
 import DiscoBallScene, { DiscoBallSceneRef } from "./DiscoBallScene";
-import { DanceButton } from "./DanceButton";
 import { ExpansionIndicator } from "./ExpansionIndicator";
 import AudioStatusIndicator from "./AudioStatusIndicator";
 
@@ -124,13 +123,14 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
         ></div>
       </div>
 
-      {/* Three.js Disco Ball Background */}
+      {/* Three.js Disco Ball Background - Now also the play button */}
       <DiscoBallScene
         ref={discoBallSceneRef}
         isPlaying={isPlaying}
         isFullscreen={isFullscreen}
         isExpanded={isPlaying && !isFullscreen}
         isMobile={isMobile}
+        toggleAudio={toggleAudio}
       />
 
       {/* Expansion Indicator - appears only once during first play on desktop */}
@@ -197,16 +197,6 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
           backgroundSize: "20px 20px",
         }}
       ></div>
-
-      {/* Hero Dance Button */}
-      <DanceButton
-        isPlaying={isPlaying}
-        toggleAudio={toggleAudio}
-        onTouchDiscoLights={(x, y, burst) =>
-          discoBallSceneRef.current?.spawnDiscoLights(x, y, burst)
-        }
-        isMobile={isMobile}
-      />
 
       {/* Hidden Audio Element */}
       <audio

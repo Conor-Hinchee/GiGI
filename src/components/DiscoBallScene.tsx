@@ -14,6 +14,7 @@ interface DiscoBallSceneProps {
   isFullscreen?: boolean;
   isExpanded?: boolean;
   isMobile?: boolean;
+  toggleAudio: () => void;
 }
 
 export interface DiscoBallSceneRef {
@@ -22,17 +23,20 @@ export interface DiscoBallSceneRef {
 
 const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
   (
-    { isPlaying, isFullscreen = false, isExpanded = false, isMobile = false },
+    { isPlaying, isFullscreen = false, isExpanded = false, isMobile = false, toggleAudio },
     ref
   ) => {
     const mountRef = useRef<HTMLDivElement>(null);
     const sceneRef = useRef<THREE.Scene | null>(null);
     const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
     const discoBallRef = useRef<THREE.Mesh | null>(null);
+    const danceCharacterRef = useRef<THREE.Sprite | null>(null);
     const lightBeamsRef = useRef<THREE.Group | null>(null);
     const spotlightsRef = useRef<THREE.Group | null>(null);
     const animationIdRef = useRef<number | null>(null);
     const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+    const raycasterRef = useRef<THREE.Raycaster>(new THREE.Raycaster());
+    const mouseRef = useRef<THREE.Vector2>(new THREE.Vector2());
 
     // Audio Analysis References
     const audioContextRef = useRef<AudioContext | null>(null);
@@ -180,6 +184,87 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
       animateBurst();
     }, []);
 
+    // Handle click/touch on disco ball
+    const handleClick = useCallback((event: React.MouseEvent | React.TouchEvent) => {
+      if (!mountRef.current || !cameraRef.current || !discoBallRef.current) return;
+
+      const rect = mountRef.current.getBoundingClientRect();
+      let clientX: number, clientY: number;
+
+      if ('touches' in event.nativeEvent) {
+        const touch = event.nativeEvent.touches[0] || event.nativeEvent.changedTouches[0];
+        clientX = touch.clientX;
+        clientY = touch.clientY;
+      } else {
+        clientX = event.nativeEvent.clientX;
+        clientY = event.nativeEvent.clientY;
+      }
+
+      // Calculate normalized device coordinates
+      mouseRef.current.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+      mouseRef.current.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+
+      // Cast ray from camera through mouse point
+      raycasterRef.current.setFromCamera(mouseRef.current, cameraRef.current);
+      const intersects = raycasterRef.current.intersectObject(discoBallRef.current);
+
+      if (intersects.length > 0) {
+        toggleAudio();
+        createLightBurst();
+      }
+    }, [toggleAudio, createLightBurst]);
+
+    // Handle keyboard events
+    const handleKeyDown = useCallback((event: React.KeyboardEvent) => {
+      if (event.code === 'Space' || event.code === 'Enter') {
+        event.preventDefault();
+        toggleAudio();
+        createLightBurst();
+      }
+    }, [toggleAudio, createLightBurst]);
+
+    // Create dance character sprite
+    const createDanceCharacter = useCallback(() => {
+      // Create canvas for the dance character
+      const canvas = document.createElement('canvas');
+      const size = 128;
+      canvas.width = size;
+      canvas.height = size;
+      const context = canvas.getContext('2d');
+      
+      if (!context) return null;
+
+      // Draw the dance character
+      context.fillStyle = isPlaying ? '#fbbf24' : '#ffffff'; // Gold when playing, white when not
+      context.font = 'bold 80px Arial';
+      context.textAlign = 'center';
+      context.textBaseline = 'middle';
+      context.fillText('舞', size / 2, size / 2);
+
+      // Add glow effect when playing
+      if (isPlaying) {
+        context.shadowColor = '#fbbf24';
+        context.shadowBlur = 20;
+        context.fillText('舞', size / 2, size / 2);
+      }
+
+      // Create texture and sprite
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.needsUpdate = true;
+      
+      const spriteMaterial = new THREE.SpriteMaterial({
+        map: texture,
+        transparent: true,
+        opacity: 0.9
+      });
+      
+      const sprite = new THREE.Sprite(spriteMaterial);
+      sprite.scale.set(0.8, 0.8, 1);
+      sprite.position.set(0, 0, 0.6); // Slightly in front of disco ball center
+      
+      return sprite;
+    }, [isPlaying]);
+
     // Expose the spawn function via ref
     useImperativeHandle(
       ref,
@@ -300,6 +385,13 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
       discoBallRef.current = discoBall;
       materialRef.current = ballMaterial;
       scene.add(discoBall);
+
+      // Create and add dance character sprite
+      const danceCharacter = createDanceCharacter();
+      if (danceCharacter) {
+        danceCharacterRef.current = danceCharacter;
+        scene.add(danceCharacter);
+      }
 
       // Create rotating light beams
       const lightBeams = new THREE.Group();
@@ -425,6 +517,7 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
       setupAudioAnalysis,
       analyzeAudio,
       createLightBurst,
+      createDanceCharacter,
     ]);
 
     // Handle container size changes when expanding/contracting
@@ -463,11 +556,32 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
       }
     }, [isPlaying]);
 
+    // Update dance character when playing state changes
+    useEffect(() => {
+      if (!sceneRef.current || !danceCharacterRef.current) return;
+
+      // Remove old character
+      sceneRef.current.remove(danceCharacterRef.current);
+      
+      // Create and add new character with updated state
+      const newCharacter = createDanceCharacter();
+      if (newCharacter) {
+        danceCharacterRef.current = newCharacter;
+        sceneRef.current.add(newCharacter);
+      }
+    }, [isPlaying, createDanceCharacter]);
+
     return (
       <div
         ref={mountRef}
         className="absolute inset-0 w-full h-full"
-        style={{ zIndex: 1 }}
+        style={{ zIndex: 1, outline: 'none' }} // Remove default focus outline since we have visual feedback
+        onClick={handleClick}
+        onTouchEnd={handleClick}
+        onKeyDown={handleKeyDown}
+        tabIndex={0} // Make the div focusable for keyboard events
+        role="button" // Accessibility role
+        aria-label={isPlaying ? "Pause music" : "Play music"}
       />
     );
   }
