@@ -266,11 +266,18 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
 
       if (!context) return null;
 
-      // Draw the dance character
-      context.fillStyle = isPlaying ? "#c0c0c0" : "#fbbf24"; // Silver when playing, gold when not
+      // Draw the dance character with black border
       context.font = "bold 80px Arial";
       context.textAlign = "center";
       context.textBaseline = "middle";
+      
+      // Draw black border/stroke first
+      context.strokeStyle = "#000000";
+      context.lineWidth = 4;
+      context.strokeText("舞", size / 2, size / 2);
+      
+      // Draw the main character fill
+      context.fillStyle = isPlaying ? "#c0c0c0" : "#fbbf24"; // Silver when playing, gold when not
       context.fillText("舞", size / 2, size / 2);
 
       // Add glow effect when playing
