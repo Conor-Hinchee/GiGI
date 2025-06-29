@@ -273,19 +273,23 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
 
       // Draw black border/stroke first
       context.strokeStyle = "#000000";
-      context.lineWidth = 6; // Increased width for better visibility
+      context.lineWidth = 6; // Base width for non-playing state
       context.strokeText("舞", size / 2, size / 2);
 
       // Draw the main character fill
       context.fillStyle = isPlaying ? "#c0c0c0" : "#fbbf24"; // Silver when playing, gold when not
       context.fillText("舞", size / 2, size / 2);
 
-      // Add glow effect when playing - maintain black border
+      // Add glow effect when playing - with darker, thicker black border
       if (isPlaying) {
         context.shadowColor = "#c0c0c0";
         context.shadowBlur = 20;
-        // Redraw black border to maintain consistency with glow
-        context.strokeStyle = "#000000";
+        // Redraw with darker, thicker black border for dance mode
+        context.strokeStyle = "rgba(0, 0, 0, 1.0)"; // Pure solid black
+        context.lineWidth = 8; // Thicker border for dance mode
+        context.strokeText("舞", size / 2, size / 2);
+        // Add second stroke layer for extra darkness
+        context.strokeStyle = "rgba(0, 0, 0, 0.8)";
         context.lineWidth = 6;
         context.strokeText("舞", size / 2, size / 2);
         // Then the glowing fill
