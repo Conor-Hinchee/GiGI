@@ -215,14 +215,15 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
 
         // Cast ray from camera through mouse point
         raycasterRef.current.setFromCamera(mouseRef.current, cameraRef.current);
-        
+
         // Check for intersections with both disco ball and dance character
         const objectsToCheck: THREE.Object3D[] = [discoBallRef.current];
         if (danceCharacterRef.current) {
           objectsToCheck.push(danceCharacterRef.current);
         }
-        
-        const intersects = raycasterRef.current.intersectObjects(objectsToCheck);
+
+        const intersects =
+          raycasterRef.current.intersectObjects(objectsToCheck);
 
         if (intersects.length > 0) {
           toggleAudio();

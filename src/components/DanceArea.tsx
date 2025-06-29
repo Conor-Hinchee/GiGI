@@ -1,7 +1,6 @@
 import React from "react";
 import { DanceAreaProps } from "../types";
 import DiscoBallScene, { DiscoBallSceneRef } from "./DiscoBallScene";
-import { ExpansionIndicator } from "./ExpansionIndicator";
 import AudioStatusIndicator from "./AudioStatusIndicator";
 
 // Available songs array
@@ -23,10 +22,7 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
   scrollHijackState,
 }) => {
   const [currentSong, setCurrentSong] = React.useState<string>("");
-  const [hasShownExpansionIndicator, setHasShownExpansionIndicator] =
-    React.useState<boolean>(false);
-  const [showExpansionIndicator, setShowExpansionIndicator] =
-    React.useState<boolean>(false);
+  // Removed expansion indicator state since dance area is always full height now
   const discoBallSceneRef = React.useRef<DiscoBallSceneRef>(null);
 
   // Select random song on component mount
@@ -35,24 +31,11 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
     setCurrentSong(AVAILABLE_SONGS[randomIndex]);
   }, []);
 
-  // Handle expansion indicator logic - show only once on first play (desktop only)
+  // Handle expansion indicator logic - disabled since we're always full height now
   React.useEffect(() => {
-    // Only show on desktop during expansion
-    if (isMobile) return;
-
-    // Show the indicator when playing starts and it hasn't been shown before
-    if (isPlaying && !isFullscreen && !hasShownExpansionIndicator) {
-      setShowExpansionIndicator(true);
-      setHasShownExpansionIndicator(true);
-
-      // Hide the indicator after the expansion animation completes (roughly 1 second)
-      const hideTimer = setTimeout(() => {
-        setShowExpansionIndicator(false);
-      }, 1000);
-
-      return () => clearTimeout(hideTimer);
-    }
-  }, [isPlaying, isFullscreen, isMobile, hasShownExpansionIndicator]);
+    // Expansion indicator no longer needed since dance area is always full height
+    // No dependencies needed since this effect is now disabled
+  }, []);
 
   // Determine scroll hijack classes
   const getScrollHijackClasses = () => {
@@ -81,10 +64,10 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
       }
     }
 
-    // Default states when not playing
+    // Default states when not playing - always full height on desktop
     return isMobile
       ? "h-[100vh] border-b-4 border-gray-800"
-      : "h-[50vh] border-b-4 border-gray-800";
+      : "h-[100vh] border-b-4 border-gray-800"; // Changed from h-[50vh] to h-[100vh]
   };
 
   return (
@@ -133,8 +116,7 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
         toggleAudio={toggleAudio}
       />
 
-      {/* Expansion Indicator - appears only once during first play on desktop */}
-      <ExpansionIndicator isVisible={showExpansionIndicator} />
+      {/* Expansion Indicator removed - no longer needed since dance area is always full height */}
 
       {/* Fullscreen Button - Hidden on mobile */}
       {!isMobile && (
