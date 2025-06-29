@@ -1,8 +1,6 @@
 import React from "react";
 import { DanceAreaProps } from "../types";
-import FirefliesScene, { FirefliesSceneRef } from "./FirefliesScene";
-import { DanceButton } from "./DanceButton";
-import { ExpansionIndicator } from "./ExpansionIndicator";
+import { DiscoBallScene } from "./DiscoBallScene";
 import AudioStatusIndicator from "./AudioStatusIndicator";
 
 // Available songs array
@@ -24,36 +22,12 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
   scrollHijackState,
 }) => {
   const [currentSong, setCurrentSong] = React.useState<string>("");
-  const [hasShownExpansionIndicator, setHasShownExpansionIndicator] =
-    React.useState<boolean>(false);
-  const [showExpansionIndicator, setShowExpansionIndicator] =
-    React.useState<boolean>(false);
-  const firefliesSceneRef = React.useRef<FirefliesSceneRef>(null);
 
   // Select random song on component mount
   React.useEffect(() => {
     const randomIndex = Math.floor(Math.random() * AVAILABLE_SONGS.length);
     setCurrentSong(AVAILABLE_SONGS[randomIndex]);
   }, []);
-
-  // Handle expansion indicator logic - show only once on first play (desktop only)
-  React.useEffect(() => {
-    // Only show on desktop during expansion
-    if (isMobile) return;
-
-    // Show the indicator when playing starts and it hasn't been shown before
-    if (isPlaying && !isFullscreen && !hasShownExpansionIndicator) {
-      setShowExpansionIndicator(true);
-      setHasShownExpansionIndicator(true);
-
-      // Hide the indicator after the expansion animation completes (roughly 1 second)
-      const hideTimer = setTimeout(() => {
-        setShowExpansionIndicator(false);
-      }, 1000);
-
-      return () => clearTimeout(hideTimer);
-    }
-  }, [isPlaying, isFullscreen, isMobile, hasShownExpansionIndicator]);
 
   // Determine scroll hijack classes
   const getScrollHijackClasses = () => {
@@ -82,10 +56,8 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
       }
     }
 
-    // Default states when not playing
-    return isMobile
-      ? "h-[100vh] border-b-4 border-gray-800"
-      : "h-[50vh] border-b-4 border-gray-800";
+    // Always fullscreen now (desktop and mobile)
+    return "h-[100vh] border-b-4 border-gray-800";
   };
 
   return (
@@ -124,17 +96,12 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
         ></div>
       </div>
 
-      {/* Three.js Fireflies Background */}
-      <FirefliesScene
-        ref={firefliesSceneRef}
+      {/* Disco Ball Scene Background */}
+      <DiscoBallScene
         isPlaying={isPlaying}
-        isFullscreen={isFullscreen}
-        isExpanded={isPlaying && !isFullscreen}
+        toggleAudio={toggleAudio}
         isMobile={isMobile}
       />
-
-      {/* Expansion Indicator - appears only once during first play on desktop */}
-      <ExpansionIndicator isVisible={showExpansionIndicator} />
 
       {/* Fullscreen Button - Hidden on mobile */}
       {!isMobile && (
@@ -197,16 +164,6 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
           backgroundSize: "20px 20px",
         }}
       ></div>
-
-      {/* Hero Dance Button */}
-      <DanceButton
-        isPlaying={isPlaying}
-        toggleAudio={toggleAudio}
-        onTouchFireflies={(x, y, burst) =>
-          firefliesSceneRef.current?.spawnFirefliesAtTouch(x, y, burst)
-        }
-        isMobile={isMobile}
-      />
 
       {/* Hidden Audio Element */}
       <audio

@@ -1,6 +1,7 @@
 // export { DanceArea } from './DanceArea';
 export { DanceArea } from './DanceArea';
 export { DanceButton } from './DanceButton';
+export { DiscoBallScene } from './DiscoBallScene';
 export { ExpansionIndicator } from './ExpansionIndicator';
 export { MainContent } from './MainContent';
 export { ParallaxLayer } from './ParallaxLayer';
