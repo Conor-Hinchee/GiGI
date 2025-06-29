@@ -8,7 +8,6 @@ import {
   useImperativeHandle,
 } from "react";
 import * as THREE from "three";
-import { mergeVertices } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 
 interface DiscoBallSceneProps {
   isPlaying: boolean;
@@ -36,11 +35,14 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
     const mountRef = useRef<HTMLDivElement>(null);
     const sceneRef = useRef<THREE.Scene | null>(null);
     const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
-    const discoBallRef = useRef<THREE.Group | null>(null);
+    const discoBallRef = useRef<THREE.Mesh | null>(null);
     const danceCharacterRef = useRef<THREE.Sprite | null>(null);
+    // lightBeamsRef removed since light beams are no longer used
     const spotlightsRef = useRef<THREE.Group | null>(null);
     const animationIdRef = useRef<number | null>(null);
     const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+    const raycasterRef = useRef<THREE.Raycaster>(new THREE.Raycaster());
+    const mouseRef = useRef<THREE.Vector2>(new THREE.Vector2());
 
     // Audio Analysis References
     const audioContextRef = useRef<AudioContext | null>(null);
@@ -49,58 +51,6 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
     const sourceRef = useRef<MediaElementAudioSourceNode | null>(null);
     const audioLevelsRef = useRef({ bass: 0, mid: 0, high: 0, overall: 0 });
     const materialRef = useRef<THREE.ShaderMaterial | null>(null);
-    const matcapTextureRef = useRef<THREE.Texture | null>(null);
-
-    // Create a programmatic matcap texture for mirror reflections
-    const createMatcapTexture = useCallback(() => {
-      const size = 256;
-      const canvas = document.createElement("canvas");
-      canvas.width = size;
-      canvas.height = size;
-      const context = canvas.getContext("2d");
-
-      if (!context) return null;
-
-      // Create a radial gradient that simulates metallic reflection
-      const gradient = context.createRadialGradient(
-        size * 0.3,
-        size * 0.3,
-        0,
-        size * 0.5,
-        size * 0.5,
-        size * 0.5
-      );
-
-      // Base color changes based on playing state
-      if (isPlaying) {
-        // Reddish gold matcap when playing
-        gradient.addColorStop(0, "#ffffff");
-        gradient.addColorStop(0.2, "#ffd700");
-        gradient.addColorStop(0.4, "#cd853f");
-        gradient.addColorStop(0.7, "#8b4513");
-        gradient.addColorStop(1, "#2f1b14");
-      } else {
-        // Silver/chrome matcap when not playing
-        gradient.addColorStop(0, "#ffffff");
-        gradient.addColorStop(0.2, "#e0e0e0");
-        gradient.addColorStop(0.4, "#c0c0c0");
-        gradient.addColorStop(0.7, "#808080");
-        gradient.addColorStop(1, "#404040");
-      }
-
-      context.fillStyle = gradient;
-      context.fillRect(0, 0, size, size);
-
-      // Add some highlight spots for more realistic reflection
-      context.fillStyle = "rgba(255, 255, 255, 0.8)";
-      context.beginPath();
-      context.ellipse(size * 0.25, size * 0.25, size * 0.1, size * 0.05, -Math.PI / 4, 0, Math.PI * 2);
-      context.fill();
-
-      const texture = new THREE.CanvasTexture(canvas);
-      texture.needsUpdate = true;
-      return texture;
-    }, [isPlaying]);
 
     // Setup audio analysis
     const setupAudioAnalysis = useCallback(() => {
@@ -183,10 +133,50 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
       }
     }, []);
 
-    // Fixed click handling - use direct click on container instead of raycasting
-    const handleClick = useCallback(() => {
-      toggleAudio();
-    }, [toggleAudio]);
+    // Light burst effect removed for cleaner visual experience
+
+    // Handle click/touch on disco ball
+    const handleClick = useCallback(
+      (event: React.MouseEvent | React.TouchEvent) => {
+        if (!mountRef.current || !cameraRef.current || !discoBallRef.current)
+          return;
+
+        const rect = mountRef.current.getBoundingClientRect();
+        let clientX: number, clientY: number;
+
+        if ("touches" in event.nativeEvent) {
+          const touch =
+            event.nativeEvent.touches[0] || event.nativeEvent.changedTouches[0];
+          clientX = touch.clientX;
+          clientY = touch.clientY;
+        } else {
+          clientX = event.nativeEvent.clientX;
+          clientY = event.nativeEvent.clientY;
+        }
+
+        // Calculate normalized device coordinates
+        mouseRef.current.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+        mouseRef.current.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+
+        // Cast ray from camera through mouse point
+        raycasterRef.current.setFromCamera(mouseRef.current, cameraRef.current);
+
+        // Check for intersections with both disco ball and dance character
+        const objectsToCheck: THREE.Object3D[] = [discoBallRef.current];
+        if (danceCharacterRef.current) {
+          objectsToCheck.push(danceCharacterRef.current);
+        }
+
+        const intersects =
+          raycasterRef.current.intersectObjects(objectsToCheck);
+
+        if (intersects.length > 0) {
+          toggleAudio();
+          // Light burst effect removed for cleaner interaction
+        }
+      },
+      [toggleAudio]
+    );
 
     // Handle keyboard events
     const handleKeyDown = useCallback(
@@ -194,79 +184,11 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
         if (event.code === "Space" || event.code === "Enter") {
           event.preventDefault();
           toggleAudio();
+          // Light burst effect removed for cleaner interaction
         }
       },
       [toggleAudio]
     );
-
-    // Create realistic disco ball with mirror surfaces
-    const createMirrorDiscoBall = useCallback(() => {
-      const dummy = new THREE.Object3D();
-      
-      // Create the matcap texture
-      const matcapTexture = createMatcapTexture();
-      if (!matcapTexture) return null;
-      
-      matcapTextureRef.current = matcapTexture;
-
-      // Create mirror material
-      const mirrorMaterial = new THREE.MeshMatcapMaterial({
-        matcap: matcapTexture,
-        transparent: true,
-        opacity: 0.9,
-      });
-
-      // Create base sphere geometry for positioning mirrors
-      const sphereGeometry = new THREE.SphereGeometry(0.5, 32, 32);
-      
-      // Prepare geometry for instancing
-      sphereGeometry.deleteAttribute('normal');
-      sphereGeometry.deleteAttribute('uv');
-      const mergedGeometry = mergeVertices(sphereGeometry);
-      mergedGeometry.computeVertexNormals();
-
-      // Create small mirror squares
-      const mirrorSize = 0.06;
-      const mirrorGeometry = new THREE.PlaneGeometry(mirrorSize, mirrorSize);
-      
-      // Create instanced mesh for mirrors
-      const instancedMirrorMesh = new THREE.InstancedMesh(
-        mirrorGeometry,
-        mirrorMaterial,
-        mergedGeometry.attributes.position.count
-      );
-
-      // Position mirrors on sphere surface
-      const positions = mergedGeometry.attributes.position.array;
-      const normals = mergedGeometry.attributes.normal.array;
-      
-      for (let i = 0; i < positions.length; i += 3) {
-        dummy.position.set(positions[i], positions[i + 1], positions[i + 2]);
-        dummy.lookAt(
-          positions[i] + normals[i],
-          positions[i + 1] + normals[i + 1],
-          positions[i + 2] + normals[i + 2]
-        );
-        dummy.updateMatrix();
-        instancedMirrorMesh.setMatrixAt(i / 3, dummy.matrix);
-      }
-
-      // Create dark inner ball
-      const innerBallGeometry = new THREE.SphereGeometry(0.48, 32, 32);
-      const innerBallMaterial = new THREE.MeshBasicMaterial({ 
-        color: 0x1a1a1a,
-        transparent: true,
-        opacity: 0.8
-      });
-      const innerBall = new THREE.Mesh(innerBallGeometry, innerBallMaterial);
-
-      // Create group and add both components
-      const discoBallGroup = new THREE.Group();
-      discoBallGroup.add(innerBall);
-      discoBallGroup.add(instancedMirrorMesh);
-
-      return discoBallGroup;
-    }, [createMatcapTexture]);
 
     // Create dance character sprite
     const createDanceCharacter = useCallback(() => {
@@ -280,7 +202,7 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
       if (!context) return null;
 
       // Draw the dance character
-      context.fillStyle = isPlaying ? "#c0c0c0" : "#fbbf24"; // Silver when playing, gold when not
+      context.fillStyle = isPlaying ? "#fbbf24" : "#ffffff"; // Gold when playing, white when not
       context.font = "bold 80px Arial";
       context.textAlign = "center";
       context.textBaseline = "middle";
@@ -288,7 +210,7 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
 
       // Add glow effect when playing
       if (isPlaying) {
-        context.shadowColor = "#c0c0c0";
+        context.shadowColor = "#fbbf24";
         context.shadowBlur = 20;
         context.fillText("舞", size / 2, size / 2);
       }
@@ -350,12 +272,92 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
       rendererRef.current = renderer;
       mount.appendChild(renderer.domElement);
 
-      // Create realistic mirror disco ball
-      const mirrorDiscoBall = createMirrorDiscoBall();
-      if (mirrorDiscoBall) {
-        discoBallRef.current = mirrorDiscoBall;
-        scene.add(mirrorDiscoBall);
-      }
+      // Create disco ball
+      const ballGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+      const ballMaterial = new THREE.ShaderMaterial({
+        uniforms: {
+          uTime: { value: 0 },
+          uBass: { value: 0.0 },
+          uMid: { value: 0.0 },
+          uHigh: { value: 0.0 },
+          uOpacity: { value: 0.8 }, // Always visible
+          uPlaying: { value: isPlaying ? 1.0 : 0.0 }, // New uniform for playing state
+        },
+        vertexShader: `
+          uniform float uTime;
+          uniform float uBass;
+          uniform float uMid;
+          uniform float uHigh;
+          uniform float uPlaying;
+          varying vec3 vNormal;
+          varying vec3 vPosition;
+          varying vec2 vUv;
+          
+          void main() {
+            vNormal = normalize(normalMatrix * normal);
+            vPosition = position;
+            vUv = uv;
+            
+            // Audio-reactive size pulsing only when playing
+            float audioScale = 1.0 + (uBass + uMid + uHigh) * 0.2 * uPlaying;
+            vec3 pos = position * audioScale;
+            
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+          }
+        `,
+        fragmentShader: `
+          uniform float uTime;
+          uniform float uBass;
+          uniform float uMid;
+          uniform float uHigh;
+          uniform float uOpacity;
+          uniform float uPlaying;
+          varying vec3 vNormal;
+          varying vec3 vPosition;
+          varying vec2 vUv;
+          
+          void main() {
+            // Create disco ball mirror tiles effect
+            vec2 tileUv = vUv * 20.0;
+            vec2 tileId = floor(tileUv);
+            vec2 tileFract = fract(tileUv);
+            
+            // Each tile reflects different colors based on audio
+            float tileHash = fract(sin(dot(tileId, vec2(12.9898, 78.233))) * 43758.5453);
+            
+            // Base silver/gray disco ball color when not playing
+            vec3 baseColor = vec3(0.7, 0.7, 0.8);
+            
+            // Audio-reactive colors when playing
+            vec3 bassColor = vec3(1.0, 0.2, 0.8);    // Pink for bass
+            vec3 midColor = vec3(0.2, 0.8, 1.0);     // Cyan for mids
+            vec3 highColor = vec3(1.0, 1.0, 0.2);    // Yellow for highs
+            
+            // Mix colors based on frequency and tile position
+            vec3 audioColor = mix(mix(bassColor, midColor, tileHash), highColor, sin(uTime + tileHash * 6.28) * 0.5 + 0.5);
+            audioColor *= vec3(uBass + 0.1, uMid + 0.1, uHigh + 0.1);
+            
+            // Blend between base color and audio-reactive color based on playing state
+            vec3 tileColor = mix(baseColor, audioColor, uPlaying);
+            
+            // Add metallic reflection
+            float fresnel = pow(1.0 - dot(normalize(vNormal), vec3(0.0, 0.0, 1.0)), 2.0);
+            vec3 reflection = tileColor * (0.8 + fresnel * 0.2);
+            
+            // Tile border for disco ball effect
+            vec2 border = smoothstep(0.0, 0.1, tileFract) * smoothstep(1.0, 0.9, tileFract);
+            float borderMask = border.x * border.y;
+            
+            gl_FragColor = vec4(reflection * borderMask, uOpacity * borderMask);
+          }
+        `,
+        transparent: true,
+      });
+
+      const discoBall = new THREE.Mesh(ballGeometry, ballMaterial);
+      discoBallRef.current = discoBall;
+      materialRef.current = ballMaterial;
+      scene.add(discoBall);
 
       // Create and add dance character sprite
       const danceCharacter = createDanceCharacter();
@@ -363,6 +365,10 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
         danceCharacterRef.current = danceCharacter;
         scene.add(danceCharacter);
       }
+
+      // Light beams removed for cleaner visual experience
+      // const lightBeams = new THREE.Group();
+      // lightBeamsRef.current = lightBeams;
 
       // Create spotlights group for additional effects
       const spotlights = new THREE.Group();
@@ -378,43 +384,29 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
       const animate = () => {
         animationIdRef.current = requestAnimationFrame(animate);
 
-        // Update matcap texture only when playing state changes
-        const currentMatcapState = matcapTextureRef.current?.userData?.isPlaying;
-        if (currentMatcapState !== isPlaying) {
-          const newMatcap = createMatcapTexture();
-          if (newMatcap && discoBallRef.current) {
-            newMatcap.userData = { isPlaying };
-            const instancedMesh = discoBallRef.current.children.find(
-              (child) => child instanceof THREE.InstancedMesh
-            ) as THREE.InstancedMesh;
-            if (instancedMesh && instancedMesh.material instanceof THREE.MeshMatcapMaterial) {
-              instancedMesh.material.matcap = newMatcap;
-              instancedMesh.material.needsUpdate = true;
-              matcapTextureRef.current = newMatcap;
-            }
-          }
-        }
+        if (ballMaterial.uniforms) {
+          ballMaterial.uniforms.uTime.value += 0.01;
 
-        // Analyze audio if playing
-        if (isPlaying && analyserRef.current) {
-          analyzeAudio();
+          // Analyze audio if playing
+          if (isPlaying && analyserRef.current) {
+            analyzeAudio();
+          }
+
+          // Smooth playing state transition
+          const targetPlaying = isPlaying ? 1.0 : 0.0;
+          const currentPlaying = ballMaterial.uniforms.uPlaying.value;
+          ballMaterial.uniforms.uPlaying.value +=
+            (targetPlaying - currentPlaying) * 0.05;
         }
 
         // Always rotate disco ball, but faster when playing
-        if (discoBallRef.current) {
+        if (discoBall) {
           const rotationSpeed = isPlaying ? 0.01 : 0.003; // Slower when not playing
-          discoBallRef.current.rotation.y += rotationSpeed;
-          discoBallRef.current.rotation.x += rotationSpeed * 0.5;
-
-          // Audio-reactive scaling when playing
-          if (isPlaying) {
-            const audioLevels = audioLevelsRef.current;
-            const scale = 1.0 + (audioLevels.bass + audioLevels.mid + audioLevels.high) * 0.1;
-            discoBallRef.current.scale.setScalar(scale);
-          } else {
-            discoBallRef.current.scale.setScalar(1.0);
-          }
+          discoBall.rotation.y += rotationSpeed;
+          discoBall.rotation.x += rotationSpeed * 0.5;
         }
+
+        // Light beams animation removed for cleaner visual experience
 
         renderer.render(scene, camera);
       };
@@ -441,19 +433,8 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
           mount.removeChild(renderer.domElement);
         }
         renderer.dispose();
-        // Dispose disco ball geometry and materials
-        if (discoBallRef.current) {
-          discoBallRef.current.traverse((child) => {
-            if (child instanceof THREE.Mesh) {
-              child.geometry.dispose();
-              if (Array.isArray(child.material)) {
-                child.material.forEach(material => material.dispose());
-              } else {
-                child.material.dispose();
-              }
-            }
-          });
-        }
+        discoBallRef.current?.geometry.dispose();
+        // Light beams cleanup removed since light beams are no longer created
       };
     }, [
       isPlaying,
@@ -463,8 +444,6 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
       setupAudioAnalysis,
       analyzeAudio,
       createDanceCharacter,
-      createMatcapTexture,
-      createMirrorDiscoBall,
     ]);
 
     // Handle container size changes when expanding/contracting
@@ -490,23 +469,18 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
       };
     }, [isExpanded, isPlaying]);
 
-    // Update matcap texture when playing state changes
+    // Update uniforms when playing state changes
     useEffect(() => {
-      if (discoBallRef.current) {
-        const newMatcap = createMatcapTexture();
-        if (newMatcap) {
-          // Update instanced mesh material with new matcap
-          const instancedMesh = discoBallRef.current.children.find(
-            (child) => child instanceof THREE.InstancedMesh
-          ) as THREE.InstancedMesh;
-          if (instancedMesh && instancedMesh.material instanceof THREE.MeshMatcapMaterial) {
-            instancedMesh.material.matcap = newMatcap;
-            instancedMesh.material.needsUpdate = true;
-            matcapTextureRef.current = newMatcap;
-          }
+      if (discoBallRef.current && discoBallRef.current.material) {
+        const material = discoBallRef.current.material as THREE.ShaderMaterial;
+        if (material.uniforms && !isPlaying) {
+          // Reset when stopping
+          material.uniforms.uBass.value = 0.0;
+          material.uniforms.uMid.value = 0.0;
+          material.uniforms.uHigh.value = 0.0;
         }
       }
-    }, [isPlaying, createMatcapTexture]);
+    }, [isPlaying]);
 
     // Update dance character when playing state changes
     useEffect(() => {

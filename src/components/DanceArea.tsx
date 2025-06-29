@@ -1,6 +1,6 @@
 import React from "react";
 import { DanceAreaProps } from "../types";
-import { DiscoBallScene } from "./DiscoBallScene";
+import DiscoBallScene from "./DiscoBallScene";
 import AudioStatusIndicator from "./AudioStatusIndicator";
 
 // Available songs array
@@ -99,8 +99,10 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
       {/* Disco Ball Scene Background */}
       <DiscoBallScene
         isPlaying={isPlaying}
-        toggleAudio={toggleAudio}
+        isFullscreen={isFullscreen}
+        isExpanded={isPlaying && !isFullscreen}
         isMobile={isMobile}
+        toggleAudio={toggleAudio}
       />
 
       {/* Fullscreen Button - Hidden on mobile */}

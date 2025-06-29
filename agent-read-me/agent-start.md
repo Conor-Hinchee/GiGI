@@ -46,7 +46,7 @@ If **yes**, proceed to action on the ticket by following the provided instructio
   - **Check out to a branch based on the ticket name if not already on it**
     - Example: `git checkout -b remove-touch-mouse-firefly-events` if the branch does not exist
   - Commit changes to the feature branch with a descriptive commit message
-  - Push the branch to the remote repository: `git push origin <branch-name>`
+  - **Do not push the branch to the remote repository unless specifically instructed. Only stage and commit locally.**
   - **Note**: Do not run `npm run dev`, `npm test`, or other development commands unless specifically required. **Do not run any test commands (e.g., `npm test`, `npm run test`) as this project does not use tests.**
 
 ---
