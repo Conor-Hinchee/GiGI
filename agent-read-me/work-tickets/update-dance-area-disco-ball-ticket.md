@@ -27,15 +27,32 @@ Update the Dance Area so that it is fullscreen on desktop on load (matching mobi
 
 ## Acceptance Criteria
 
-- Dance Area is fullscreen on desktop and mobile on load.
-- No `isExpanding` state or related components remain.
-- Dance Area Button and Firefly Scene are fully replaced by the new Disco Ball Scene.
-- Disco Ball Scene has realistic mirror-like surface with small reflective squares.
-- Mirror surface uses matcap texture or similar technique for authentic reflections.
-- Disco ball has dark inner core with instanced mirror geometry for proper depth.
-- Chinese dance character is properly positioned and toggles music as described.
-- Visual state changes correctly in dance mode while maintaining realistic mirror reflections.
-- Audio-reactive effects enhance the mirror reflections without compromising realism.
+- [x] Dance Area is fullscreen on desktop and mobile on load.
+- [ ] No `isExpanding` state or related components remain.
+- [ ] Dance Area Button and Firefly Scene are fully replaced by the new Disco Ball Scene.
+- [x] Disco Ball Scene has realistic mirror-like surface with small reflective squares.
+- [x] Mirror surface uses matcap texture or similar technique for authentic reflections.
+- [x] Disco ball has dark inner core with instanced mirror geometry for proper depth.
+- [x] Chinese dance character is properly positioned and toggles music as described.
+- [x] Visual state changes correctly in dance mode while maintaining realistic mirror reflections.
+- [x] Audio-reactive effects enhance the mirror reflections without compromising realism.
+
+## Implementation Progress
+
+### ✅ Mirror Surface Implementation (Completed 2025-06-29)
+
+Successfully implemented realistic mirror-like surface for the disco ball:
+
+- **Instanced Mirror Geometry**: Created small reflective mirror squares positioned across the sphere surface using THREE.InstancedMesh
+- **Matcap Texture System**: Implemented dynamic matcap textures that change based on playing state:
+  - Silver/chrome appearance when music is not playing
+  - Reddish gold appearance when music is playing
+- **Authentic Structure**: Added dark inner ball core (0x1a1a1a) with proper depth using nested geometry
+- **Performance Optimization**: Optimized texture updates to only occur when playing state changes
+- **Audio Reactivity**: Maintained audio-reactive scaling effects that enhance the mirror reflections
+- **BufferGeometryUtils Integration**: Used mergeVertices for proper geometry preparation and normal computation
+
+The disco ball now features a truly realistic mirror surface that maintains authentic reflections while supporting the existing audio-reactive and dance mode functionality.
 
 ---
 

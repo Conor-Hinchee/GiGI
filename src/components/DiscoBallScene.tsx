@@ -8,7 +8,6 @@ import {
   useImperativeHandle,
 } from "react";
 import * as THREE from "three";
-import { mergeVertices } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 
 interface DiscoBallSceneProps {
   isPlaying: boolean;
@@ -53,7 +52,7 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
 
     // Create a programmatic matcap texture for mirror reflections
     const createMatcapTexture = useCallback(() => {
-      const size = 256;
+      const size = 512;
       const canvas = document.createElement("canvas");
       canvas.width = size;
       canvas.height = size;
@@ -61,41 +60,78 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
 
       if (!context) return null;
 
-      // Create a radial gradient that simulates metallic reflection
-      const gradient = context.createRadialGradient(
-        size * 0.3,
-        size * 0.3,
+      // Create a more realistic metallic matcap
+      const centerX = size * 0.5;
+      const centerY = size * 0.3; // Offset for more realistic lighting
+
+      // Main radial gradient for metallic look
+      const mainGradient = context.createRadialGradient(
+        centerX,
+        centerY,
         0,
-        size * 0.5,
-        size * 0.5,
-        size * 0.5
+        centerX,
+        centerY,
+        size * 0.6
       );
 
       // Base color changes based on playing state
       if (isPlaying) {
-        // Reddish gold matcap when playing
-        gradient.addColorStop(0, "#ffffff");
-        gradient.addColorStop(0.2, "#ffd700");
-        gradient.addColorStop(0.4, "#cd853f");
-        gradient.addColorStop(0.7, "#8b4513");
-        gradient.addColorStop(1, "#2f1b14");
+        // Reddish gold metallic matcap when playing
+        mainGradient.addColorStop(0, "#ffffff");
+        mainGradient.addColorStop(0.1, "#fff8dc");
+        mainGradient.addColorStop(0.3, "#ffd700");
+        mainGradient.addColorStop(0.5, "#daa520");
+        mainGradient.addColorStop(0.7, "#b8860b");
+        mainGradient.addColorStop(0.9, "#8b4513");
+        mainGradient.addColorStop(1, "#2f1b14");
       } else {
-        // Silver/chrome matcap when not playing
-        gradient.addColorStop(0, "#ffffff");
-        gradient.addColorStop(0.2, "#e0e0e0");
-        gradient.addColorStop(0.4, "#c0c0c0");
-        gradient.addColorStop(0.7, "#808080");
-        gradient.addColorStop(1, "#404040");
+        // Chrome/silver metallic matcap when not playing
+        mainGradient.addColorStop(0, "#ffffff");
+        mainGradient.addColorStop(0.1, "#f8f8ff");
+        mainGradient.addColorStop(0.3, "#dcdcdc");
+        mainGradient.addColorStop(0.5, "#c0c0c0");
+        mainGradient.addColorStop(0.7, "#a9a9a9");
+        mainGradient.addColorStop(0.9, "#696969");
+        mainGradient.addColorStop(1, "#2f2f2f");
       }
 
-      context.fillStyle = gradient;
+      context.fillStyle = mainGradient;
       context.fillRect(0, 0, size, size);
 
-      // Add some highlight spots for more realistic reflection
-      context.fillStyle = "rgba(255, 255, 255, 0.8)";
-      context.beginPath();
-      context.ellipse(size * 0.25, size * 0.25, size * 0.1, size * 0.05, -Math.PI / 4, 0, Math.PI * 2);
-      context.fill();
+      // Add multiple highlight spots for realistic mirror reflections
+      context.globalCompositeOperation = "screen";
+
+      // Main highlight
+      const highlight1 = context.createRadialGradient(
+        size * 0.25,
+        size * 0.25,
+        0,
+        size * 0.25,
+        size * 0.25,
+        size * 0.15
+      );
+      highlight1.addColorStop(0, "rgba(255, 255, 255, 0.9)");
+      highlight1.addColorStop(0.5, "rgba(255, 255, 255, 0.3)");
+      highlight1.addColorStop(1, "rgba(255, 255, 255, 0)");
+      context.fillStyle = highlight1;
+      context.fillRect(0, 0, size, size);
+
+      // Secondary highlight
+      const highlight2 = context.createRadialGradient(
+        size * 0.7,
+        size * 0.6,
+        0,
+        size * 0.7,
+        size * 0.6,
+        size * 0.1
+      );
+      highlight2.addColorStop(0, "rgba(255, 255, 255, 0.6)");
+      highlight2.addColorStop(1, "rgba(255, 255, 255, 0)");
+      context.fillStyle = highlight2;
+      context.fillRect(0, 0, size, size);
+
+      // Reset composite operation
+      context.globalCompositeOperation = "source-over";
 
       const texture = new THREE.CanvasTexture(canvas);
       texture.needsUpdate = true;
@@ -202,61 +238,80 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
     // Create realistic disco ball with mirror surfaces
     const createMirrorDiscoBall = useCallback(() => {
       const dummy = new THREE.Object3D();
-      
+
       // Create the matcap texture
       const matcapTexture = createMatcapTexture();
       if (!matcapTexture) return null;
-      
+
       matcapTextureRef.current = matcapTexture;
 
       // Create mirror material
       const mirrorMaterial = new THREE.MeshMatcapMaterial({
         matcap: matcapTexture,
         transparent: true,
-        opacity: 0.9,
+        opacity: 0.95,
       });
 
-      // Create base sphere geometry for positioning mirrors
-      const sphereGeometry = new THREE.SphereGeometry(0.5, 32, 32);
-      
-      // Prepare geometry for instancing
-      sphereGeometry.deleteAttribute('normal');
-      sphereGeometry.deleteAttribute('uv');
-      const mergedGeometry = mergeVertices(sphereGeometry);
-      mergedGeometry.computeVertexNormals();
+      // Create base sphere geometry with fewer segments for cleaner mirror placement
+      const sphereGeometry = new THREE.SphereGeometry(0.5, 16, 12);
 
-      // Create small mirror squares
-      const mirrorSize = 0.06;
+      // Get face centers for mirror placement instead of vertices
+      const faces = [];
+      const positionAttribute = sphereGeometry.attributes.position;
+      const indexAttribute = sphereGeometry.index;
+
+      if (indexAttribute) {
+        // Calculate face centers from triangulated faces
+        for (let i = 0; i < indexAttribute.count; i += 3) {
+          const a = indexAttribute.getX(i);
+          const b = indexAttribute.getX(i + 1);
+          const c = indexAttribute.getX(i + 2);
+
+          const va = new THREE.Vector3().fromBufferAttribute(positionAttribute, a);
+          const vb = new THREE.Vector3().fromBufferAttribute(positionAttribute, b);
+          const vc = new THREE.Vector3().fromBufferAttribute(positionAttribute, c);
+
+          // Calculate face center
+          const center = new THREE.Vector3()
+            .add(va)
+            .add(vb)
+            .add(vc)
+            .divideScalar(3);
+
+          // Calculate face normal
+          const normal = new THREE.Vector3()
+            .crossVectors(vb.clone().sub(va), vc.clone().sub(va))
+            .normalize();
+
+          faces.push({ center, normal });
+        }
+      }
+
+      // Create small square mirror geometry
+      const mirrorSize = 0.08;
       const mirrorGeometry = new THREE.PlaneGeometry(mirrorSize, mirrorSize);
-      
+
       // Create instanced mesh for mirrors
       const instancedMirrorMesh = new THREE.InstancedMesh(
         mirrorGeometry,
         mirrorMaterial,
-        mergedGeometry.attributes.position.count
+        faces.length
       );
 
-      // Position mirrors on sphere surface
-      const positions = mergedGeometry.attributes.position.array;
-      const normals = mergedGeometry.attributes.normal.array;
-      
-      for (let i = 0; i < positions.length; i += 3) {
-        dummy.position.set(positions[i], positions[i + 1], positions[i + 2]);
-        dummy.lookAt(
-          positions[i] + normals[i],
-          positions[i + 1] + normals[i + 1],
-          positions[i + 2] + normals[i + 2]
-        );
+      // Position mirrors on face centers
+      faces.forEach((face, index) => {
+        dummy.position.copy(face.center);
+        dummy.lookAt(face.center.clone().add(face.normal));
         dummy.updateMatrix();
-        instancedMirrorMesh.setMatrixAt(i / 3, dummy.matrix);
-      }
+        instancedMirrorMesh.setMatrixAt(index, dummy.matrix);
+      });
 
       // Create dark inner ball
-      const innerBallGeometry = new THREE.SphereGeometry(0.48, 32, 32);
-      const innerBallMaterial = new THREE.MeshBasicMaterial({ 
-        color: 0x1a1a1a,
+      const innerBallGeometry = new THREE.SphereGeometry(0.47, 32, 32);
+      const innerBallMaterial = new THREE.MeshBasicMaterial({
+        color: 0x111111,
         transparent: true,
-        opacity: 0.8
+        opacity: 0.9,
       });
       const innerBall = new THREE.Mesh(innerBallGeometry, innerBallMaterial);
 
@@ -379,7 +434,8 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
         animationIdRef.current = requestAnimationFrame(animate);
 
         // Update matcap texture only when playing state changes
-        const currentMatcapState = matcapTextureRef.current?.userData?.isPlaying;
+        const currentMatcapState =
+          matcapTextureRef.current?.userData?.isPlaying;
         if (currentMatcapState !== isPlaying) {
           const newMatcap = createMatcapTexture();
           if (newMatcap && discoBallRef.current) {
@@ -387,7 +443,10 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
             const instancedMesh = discoBallRef.current.children.find(
               (child) => child instanceof THREE.InstancedMesh
             ) as THREE.InstancedMesh;
-            if (instancedMesh && instancedMesh.material instanceof THREE.MeshMatcapMaterial) {
+            if (
+              instancedMesh &&
+              instancedMesh.material instanceof THREE.MeshMatcapMaterial
+            ) {
               instancedMesh.material.matcap = newMatcap;
               instancedMesh.material.needsUpdate = true;
               matcapTextureRef.current = newMatcap;
@@ -409,7 +468,9 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
           // Audio-reactive scaling when playing
           if (isPlaying) {
             const audioLevels = audioLevelsRef.current;
-            const scale = 1.0 + (audioLevels.bass + audioLevels.mid + audioLevels.high) * 0.1;
+            const scale =
+              1.0 +
+              (audioLevels.bass + audioLevels.mid + audioLevels.high) * 0.1;
             discoBallRef.current.scale.setScalar(scale);
           } else {
             discoBallRef.current.scale.setScalar(1.0);
@@ -447,7 +508,7 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
             if (child instanceof THREE.Mesh) {
               child.geometry.dispose();
               if (Array.isArray(child.material)) {
-                child.material.forEach(material => material.dispose());
+                child.material.forEach((material) => material.dispose());
               } else {
                 child.material.dispose();
               }
@@ -499,7 +560,10 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
           const instancedMesh = discoBallRef.current.children.find(
             (child) => child instanceof THREE.InstancedMesh
           ) as THREE.InstancedMesh;
-          if (instancedMesh && instancedMesh.material instanceof THREE.MeshMatcapMaterial) {
+          if (
+            instancedMesh &&
+            instancedMesh.material instanceof THREE.MeshMatcapMaterial
+          ) {
             instancedMesh.material.matcap = newMatcap;
             instancedMesh.material.needsUpdate = true;
             matcapTextureRef.current = newMatcap;
