@@ -47,7 +47,7 @@ If **yes**, proceed to action on the ticket by following the provided instructio
     - Example: `git checkout -b remove-touch-mouse-firefly-events` if the branch does not exist
   - Commit changes to the feature branch with a descriptive commit message
   - Push the branch to the remote repository: `git push origin <branch-name>`
-  - **Note**: Do not run `npm run dev`, `npm test`, or other development commands unless specifically required. **Do not run any test commands (e.g., `npm test`, `npm run test`) as this project does not use tests.**
+  - **Note**: The validation loop is handled by the prompter. Do not run npm commands (`npm run dev`, `npm test`, `npm start`, `npm build`) unless explicitly requested by the prompter for specific debugging purposes.
 
 ---
 
