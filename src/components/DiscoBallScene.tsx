@@ -49,6 +49,10 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
     const audioLevelsRef = useRef({ bass: 0, mid: 0, high: 0, overall: 0 });
     const materialRef = useRef<THREE.ShaderMaterial | null>(null);
 
+    // Vertical rotation control for dance mode
+    const verticalRotationSpeedRef = useRef(0); // Current vertical rotation speed
+    const targetVerticalSpeedRef = useRef(0); // Target vertical rotation speed
+
     // Fixed click handling - use direct click on container instead of raycasting
     const handleClick = useCallback(() => {
       toggleAudio();
@@ -67,8 +71,8 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
 
     // Create realistic shader-based disco ball with ultra-shine
     const createShaderDiscoBall = useCallback(() => {
-      // Create disco ball geometry
-      const ballGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+      // Create disco ball geometry - increased size for better visibility
+      const ballGeometry = new THREE.SphereGeometry(0.65, 32, 32);
 
       // Create ultra-shiny shader material
       const ballMaterial = new THREE.ShaderMaterial({
@@ -78,7 +82,7 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
           uMid: { value: 0.0 },
           uHigh: { value: 0.0 },
           uOpacity: { value: 1.0 }, // Full opacity for maximum shine
-          uPlaying: { value: isPlaying ? 1.0 : 0.0 },
+          uPlaying: { value: 0.0 }, // Will be updated in animation loop
         },
         vertexShader: `
           uniform float uTime;
@@ -95,9 +99,8 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
             vPosition = position;
             vUv = uv;
             
-            // Audio-reactive size pulsing only when playing
-            float audioScale = 1.0 + (uBass + uMid + uHigh) * 0.15 * uPlaying;
-            vec3 pos = position * audioScale;
+            // Fixed size - no bouncing or audio-reactive scaling
+            vec3 pos = position;
             
             gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
           }
@@ -122,11 +125,8 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
             // Each tile reflects different colors based on audio
             float tileHash = fract(sin(dot(tileId, vec2(12.9898, 78.233))) * 43758.5453);
             
-            // Ultra-shiny base silver/chrome color when not playing
-            vec3 baseColor = vec3(0.95, 0.95, 1.0); // Brighter silver
-            
-            // Ultra-shiny reddish gold color when playing
-            vec3 playingColor = vec3(1.0, 0.8, 0.3); // Brighter gold
+            // Purple-goldish-silver disco ball color
+            vec3 discoBallColor = vec3(0.85, 0.75, 1.0); // Purple-goldish-silver blend
             
             // Audio-reactive colors when playing - more vibrant
             vec3 bassColor = vec3(1.0, 0.3, 0.9);    // Bright pink for bass
@@ -137,9 +137,6 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
             vec3 audioColor = mix(mix(bassColor, midColor, tileHash), highColor, 
                                 sin(uTime + tileHash * 6.28) * 0.5 + 0.5);
             audioColor *= vec3(uBass + 0.2, uMid + 0.2, uHigh + 0.2);
-            
-            // Blend between base color and playing color
-            vec3 discoBallColor = mix(baseColor, playingColor, uPlaying);
             
             // Add audio reactivity on top with more intensity
             vec3 tileColor = mix(discoBallColor, audioColor, uPlaying * 0.5);
@@ -172,7 +169,7 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
       materialRef.current = ballMaterial;
 
       return discoBall;
-    }, [isPlaying]);
+    }, []); // isPlaying intentionally excluded to prevent recreation
 
     // Setup audio analysis
     const setupAudioAnalysis = useCallback(() => {
@@ -271,30 +268,14 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
       context.textAlign = "center";
       context.textBaseline = "middle";
 
-      // Draw black border/stroke first
-      context.strokeStyle = "#000000";
-      context.lineWidth = 6; // Base width for non-playing state
+      // Draw white border/stroke first to make black character pop
+      context.strokeStyle = "#ffffff";
+      context.lineWidth = 6;
       context.strokeText("舞", size / 2, size / 2);
 
-      // Draw the main character fill
-      context.fillStyle = isPlaying ? "#c0c0c0" : "#fbbf24"; // Silver when playing, gold when not
+      // Draw the main character fill - always black
+      context.fillStyle = "#000000";
       context.fillText("舞", size / 2, size / 2);
-
-      // Add glow effect when playing - with darker, thicker black border
-      if (isPlaying) {
-        context.shadowColor = "#c0c0c0";
-        context.shadowBlur = 20;
-        // Redraw with darker, thicker black border for dance mode
-        context.strokeStyle = "rgba(0, 0, 0, 1.0)"; // Pure solid black
-        context.lineWidth = 8; // Thicker border for dance mode
-        context.strokeText("舞", size / 2, size / 2);
-        // Add second stroke layer for extra darkness
-        context.strokeStyle = "rgba(0, 0, 0, 0.8)";
-        context.lineWidth = 6;
-        context.strokeText("舞", size / 2, size / 2);
-        // Then the glowing fill
-        context.fillText("舞", size / 2, size / 2);
-      }
 
       // Create texture and sprite
       const texture = new THREE.CanvasTexture(canvas);
@@ -308,10 +289,10 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
 
       const sprite = new THREE.Sprite(spriteMaterial);
       sprite.scale.set(0.8, 0.8, 1);
-      sprite.position.set(0, 0, 0.6); // Slightly in front of disco ball center
+      sprite.position.set(0, 0, 0.7); // Slightly in front of larger disco ball center
 
       return sprite;
-    }, [isPlaying]);
+    }, []);
 
     // Expose the spawn function via ref
     useImperativeHandle(
@@ -397,10 +378,24 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
             (targetPlaying - currentPlaying) * 0.05;
         }
 
-        // Always rotate disco ball left-right only, faster when playing
+        // Update vertical rotation speed - ramp up when playing, slowly decay when paused
+        if (isPlaying) {
+          // Ramp up vertical rotation when playing
+          const targetVerticalSpeed = 0.004;
+          targetVerticalSpeedRef.current = targetVerticalSpeed;
+          const currentVerticalSpeed = verticalRotationSpeedRef.current;
+          verticalRotationSpeedRef.current +=
+            (targetVerticalSpeed - currentVerticalSpeed) * 0.02;
+        } else {
+          // Slowly decay vertical rotation when paused (maintain state longer)
+          verticalRotationSpeedRef.current *= 0.995; // Very slow decay
+        }
+
+        // Always rotate disco ball with both horizontal and vertical rotation
         if (discoBallRef.current) {
-          const rotationSpeed = isPlaying ? 0.006 : 0.002; // Slower, more elegant rotation
-          discoBallRef.current.rotation.y += rotationSpeed; // Only Y-axis rotation (left-right)
+          const horizontalSpeed = isPlaying ? 0.006 : 0.002; // Horizontal rotation (left-right)
+          discoBallRef.current.rotation.y += horizontalSpeed; // Y-axis rotation (left-right)
+          discoBallRef.current.rotation.x += verticalRotationSpeedRef.current; // X-axis rotation (up-down)
         }
 
         renderer.render(scene, camera);
@@ -440,15 +435,16 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
           }
         }
       };
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
-      isPlaying,
+      // isPlaying intentionally excluded to prevent disco ball recreation
+      // createShaderDiscoBall intentionally excluded to prevent disco ball recreation
+      // createDanceCharacter excluded as it has its own useEffect
       isFullscreen,
       isExpanded,
       isMobile,
       setupAudioAnalysis,
       analyzeAudio,
-      createDanceCharacter,
-      createShaderDiscoBall,
     ]);
 
     // Handle container size changes when expanding/contracting
@@ -492,8 +488,13 @@ const DiscoBallScene = forwardRef<DiscoBallSceneRef, DiscoBallSceneProps>(
     return (
       <div
         ref={mountRef}
-        className="absolute inset-0 w-full h-full"
-        style={{ zIndex: 1, outline: "none" }} // Remove default focus outline since we have visual feedback
+        className="absolute inset-0 w-full h-full cursor-pointer"
+        style={{
+          zIndex: 20, // Higher than all overlay elements (shadows z-10, particles z-15)
+          outline: "none",
+          pointerEvents: "auto", // Explicitly enable pointer events
+          userSelect: "none", // Prevent text selection
+        }}
         onClick={handleClick}
         onTouchEnd={handleClick}
         onKeyDown={handleKeyDown}
