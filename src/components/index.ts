@@ -1,4 +1,5 @@
 // export { DanceArea } from './DanceArea';
+export { CathedralArchitecture } from './CathedralArchitecture';
 export { DanceArea } from './DanceArea';
 export { DanceButton } from './DanceButton';
 export { DanceCharacter } from './DanceCharacter';
