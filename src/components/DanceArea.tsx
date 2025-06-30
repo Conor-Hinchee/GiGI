@@ -3,6 +3,7 @@ import { DanceAreaProps } from "../types";
 import FirefliesScene, { FirefliesSceneRef } from "./FirefliesScene";
 import { ExpansionIndicator } from "./ExpansionIndicator";
 import AudioStatusIndicator from "./AudioStatusIndicator";
+import { MarbleFloor } from "./MarbleFloor";
 
 // Available songs array
 const AVAILABLE_SONGS = [
@@ -235,6 +236,9 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
         }`}
         style={{ animationDelay: "2s" }}
       ></div>
+
+      {/* Marble Floor */}
+      <MarbleFloor isPlaying={isPlaying} />
     </div>
   );
 };
