@@ -19,6 +19,7 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --animate-shine: shine 3s ease-in-out infinite;
+  --animate-camera-pan-up: camera-pan-up 1.5s ease-out forwards;
 }
 
 body {
@@ -86,6 +87,17 @@ body {
   100% {
     transform: translateX(200%) skewX(-20deg);
     opacity: 0;
+  }
+}
+
+@keyframes camera-pan-up {
+  0% {
+    transform: translateY(50vh) scale(1.2);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
   }
 }
 

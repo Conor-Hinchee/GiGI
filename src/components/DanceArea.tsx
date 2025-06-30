@@ -32,6 +32,11 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
     React.useState<boolean>(false);
   const firefliesSceneRef = React.useRef<FirefliesSceneRef>(null);
 
+  // Camera pan animation state
+  const [cameraPanPhase, setCameraPanPhase] = React.useState<'floor' | 'character' | 'cathedral' | 'complete'>('floor');
+  const [showCharacter, setShowCharacter] = React.useState<boolean>(false);
+  const [showCathedral, setShowCathedral] = React.useState<boolean>(false);
+
   // Select random song on component mount
   React.useEffect(() => {
     const randomIndex = Math.floor(Math.random() * AVAILABLE_SONGS.length);
@@ -56,6 +61,39 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
       return () => clearTimeout(hideTimer);
     }
   }, [isPlaying, isFullscreen, isMobile, hasShownExpansionIndicator]);
+
+  // Camera pan animation - triggered when music starts playing
+  React.useEffect(() => {
+    if (isPlaying && cameraPanPhase === 'floor') {
+      // Start camera pan sequence
+      const timer1 = setTimeout(() => {
+        setCameraPanPhase('character');
+        setShowCharacter(true);
+      }, 1000); // Show character after 1 second
+
+      const timer2 = setTimeout(() => {
+        setCameraPanPhase('cathedral');
+        setShowCathedral(true);
+      }, 2500); // Show cathedral after 2.5 seconds
+
+      const timer3 = setTimeout(() => {
+        setCameraPanPhase('complete');
+      }, 4000); // Complete animation after 4 seconds
+
+      return () => {
+        clearTimeout(timer1);
+        clearTimeout(timer2);
+        clearTimeout(timer3);
+      };
+    }
+    
+    // Reset animation when music stops
+    if (!isPlaying) {
+      setCameraPanPhase('floor');
+      setShowCharacter(false);
+      setShowCathedral(false);
+    }
+  }, [isPlaying, cameraPanPhase]);
 
   // Determine scroll hijack classes
   const getScrollHijackClasses = () => {
@@ -94,7 +132,9 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
       onClick={toggleAudio} // Temporary: make entire area clickable to toggle audio
       className={`bg-gray-950 relative overflow-hidden shadow-inner hover-trail cursor-pointer ${
         isMobile ? "" : "transition-all duration-1000 ease-in-out"
-      } ${getBorderClasses()} ${getScrollHijackClasses()}`}
+      } ${getBorderClasses()} ${getScrollHijackClasses()} ${
+        isPlaying && cameraPanPhase !== 'floor' ? 'animate-camera-pan-up' : ''
+      }`}
     >
       {/* Desktop-only: Advanced background effects */}
       <div className="hidden xl:block absolute inset-0 opacity-30">
@@ -243,10 +283,10 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
       <MarbleFloor isPlaying={isPlaying} />
 
       {/* Cathedral Architecture */}
-      <CathedralArchitecture isPlaying={isPlaying} isVisible={true} />
+      <CathedralArchitecture isPlaying={isPlaying} isVisible={showCathedral} />
 
       {/* Dance Character 舞 with Reflection */}
-      <DanceCharacter isPlaying={isPlaying} isVisible={true} />
+      <DanceCharacter isPlaying={isPlaying} isVisible={showCharacter} />
     </div>
   );
 };
