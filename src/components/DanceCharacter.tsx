@@ -20,8 +20,8 @@ export const DanceCharacter: React.FC<DanceCharacterProps> = ({
         <div 
           className={`text-white drop-shadow-2xl transition-all duration-500 ${
             isPlaying 
-              ? "text-8xl md:text-9xl lg:text-[12rem] animate-pulse text-yellow-200" 
-              : "text-6xl md:text-8xl lg:text-9xl"
+              ? "text-7xl sm:text-8xl md:text-9xl lg:text-[12rem] xl:text-[14rem] animate-pulse text-yellow-200" 
+              : "text-5xl sm:text-6xl md:text-8xl lg:text-9xl xl:text-[10rem]"
           }`}
           style={{
             fontFamily: "'Noto Sans SC', 'SimSun', '宋体', serif",
@@ -50,8 +50,8 @@ export const DanceCharacter: React.FC<DanceCharacterProps> = ({
         <div 
           className={`text-white transition-all duration-500 ${
             isPlaying 
-              ? "text-6xl md:text-7xl lg:text-8xl text-yellow-200/60" 
-              : "text-4xl md:text-6xl lg:text-7xl text-white/40"
+              ? "text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl text-yellow-200/60" 
+              : "text-3xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl text-white/40"
           }`}
           style={{
             fontFamily: "'Noto Sans SC', 'SimSun', '宋体', serif",

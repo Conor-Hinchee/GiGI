@@ -287,6 +287,17 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
 
       {/* Dance Character 舞 with Reflection */}
       <DanceCharacter isPlaying={isPlaying} isVisible={showCharacter} />
+
+      {/* Temporary instruction overlay */}
+      {!isPlaying && (
+        <div className="absolute inset-0 z-30 flex items-center justify-center pointer-events-none">
+          <div className="bg-black/40 backdrop-blur-md rounded-lg px-6 py-3 border border-gray-600/40">
+            <p className="text-white text-lg font-light text-center">
+              Click anywhere to begin the cathedral dance experience
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
