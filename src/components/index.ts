@@ -8,3 +8,4 @@ export { ScrollResistanceIndicator } from './ScrollResistanceIndicator';
 export { TourCard } from './TourCard';
 export { default as ViewportBorderIndicator } from './ViewportBorderIndicator';
 export { default as FirefliesScene } from './FirefliesScene';
+export { default as RomanBustScene } from './RomanBustScene';

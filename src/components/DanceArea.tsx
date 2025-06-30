@@ -1,6 +1,6 @@
 import React from "react";
 import { DanceAreaProps } from "../types";
-import FirefliesScene, { FirefliesSceneRef } from "./FirefliesScene";
+import RomanBustScene, { RomanBustSceneRef } from "./RomanBustScene";
 import { DanceButton } from "./DanceButton";
 import { ExpansionIndicator } from "./ExpansionIndicator";
 import AudioStatusIndicator from "./AudioStatusIndicator";
@@ -28,7 +28,7 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
     React.useState<boolean>(false);
   const [showExpansionIndicator, setShowExpansionIndicator] =
     React.useState<boolean>(false);
-  const firefliesSceneRef = React.useRef<FirefliesSceneRef>(null);
+  const romanBustSceneRef = React.useRef<RomanBustSceneRef>(null);
 
   // Select random song on component mount
   React.useEffect(() => {
@@ -124,9 +124,9 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
         ></div>
       </div>
 
-      {/* Three.js Fireflies Background */}
-      <FirefliesScene
-        ref={firefliesSceneRef}
+      {/* Three.js Roman Bust Background */}
+      <RomanBustScene
+        ref={romanBustSceneRef}
         isPlaying={isPlaying}
         isFullscreen={isFullscreen}
         isExpanded={isPlaying && !isFullscreen}
@@ -203,7 +203,7 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
         isPlaying={isPlaying}
         toggleAudio={toggleAudio}
         onTouchFireflies={(x, y, burst) =>
-          firefliesSceneRef.current?.spawnFirefliesAtTouch(x, y, burst)
+          romanBustSceneRef.current?.spawnFirefliesAtTouch(x, y, burst)
         }
         isMobile={isMobile}
       />
