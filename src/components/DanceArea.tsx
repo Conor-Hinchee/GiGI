@@ -4,6 +4,7 @@ import FirefliesScene, { FirefliesSceneRef } from "./FirefliesScene";
 import { ExpansionIndicator } from "./ExpansionIndicator";
 import AudioStatusIndicator from "./AudioStatusIndicator";
 import { MarbleFloor } from "./MarbleFloor";
+import { DanceCharacter } from "./DanceCharacter";
 
 // Available songs array
 const AVAILABLE_SONGS = [
@@ -239,6 +240,9 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
 
       {/* Marble Floor */}
       <MarbleFloor isPlaying={isPlaying} />
+
+      {/* Dance Character 舞 with Reflection */}
+      <DanceCharacter isPlaying={isPlaying} isVisible={true} />
     </div>
   );
 };

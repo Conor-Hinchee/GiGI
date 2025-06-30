@@ -1,6 +1,7 @@
 // export { DanceArea } from './DanceArea';
 export { DanceArea } from './DanceArea';
 export { DanceButton } from './DanceButton';
+export { DanceCharacter } from './DanceCharacter';
 export { ExpansionIndicator } from './ExpansionIndicator';
 export { MainContent } from './MainContent';
 export { MarbleFloor } from './MarbleFloor';
