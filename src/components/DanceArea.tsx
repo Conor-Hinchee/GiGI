@@ -1,7 +1,6 @@
 import React from "react";
 import { DanceAreaProps } from "../types";
 import FirefliesScene, { FirefliesSceneRef } from "./FirefliesScene";
-import { DanceButton } from "./DanceButton";
 import { ExpansionIndicator } from "./ExpansionIndicator";
 import AudioStatusIndicator from "./AudioStatusIndicator";
 
@@ -63,7 +62,7 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
     return "";
   };
 
-  // Determine border color based on scroll state
+  // Determine border color based on scroll state - Always 100vh for marble floor
   const getBorderClasses = () => {
     if (isFullscreen) {
       return "fixed inset-0 z-50 h-screen w-screen border-0";
@@ -82,16 +81,15 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
       }
     }
 
-    // Default states when not playing
-    return isMobile
-      ? "h-[100vh] border-b-4 border-gray-800"
-      : "h-[50vh] border-b-4 border-gray-800";
+    // Always 100vh for marble floor reflection scene
+    return "h-[100vh] border-b-4 border-gray-800";
   };
 
   return (
     <div
       ref={danceAreaRef}
-      className={`bg-gray-950 relative overflow-hidden shadow-inner hover-trail ${
+      onClick={toggleAudio} // Temporary: make entire area clickable to toggle audio
+      className={`bg-gray-950 relative overflow-hidden shadow-inner hover-trail cursor-pointer ${
         isMobile ? "" : "transition-all duration-1000 ease-in-out"
       } ${getBorderClasses()} ${getScrollHijackClasses()}`}
     >
@@ -198,15 +196,15 @@ export const DanceArea: React.FC<DanceAreaProps> = ({
         }}
       ></div>
 
-      {/* Hero Dance Button */}
-      <DanceButton
+      {/* Hero Dance Button - Removed for marble floor reflection scene */}
+      {/* <DanceButton
         isPlaying={isPlaying}
         toggleAudio={toggleAudio}
         onTouchFireflies={(x, y, burst) =>
           firefliesSceneRef.current?.spawnFirefliesAtTouch(x, y, burst)
         }
         isMobile={isMobile}
-      />
+      /> */}
 
       {/* Hidden Audio Element */}
       <audio
